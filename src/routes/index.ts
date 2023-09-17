@@ -1,10 +1,29 @@
 import { Router, IRouter } from 'express'
 import { Handler } from '../handlers'
+import { WebSocketRouter, IWebSocketRouter } from './websockets';
 
-export const createRouter = async (hadlers: Handler): Promise<IRouter> => {
+interface Routes {
+    router: IRouter,
+    webSocketRouter: IWebSocketRouter,
+}
+
+export const createRouter = async (handlers: Handler): Promise<Routes> => {
     const router = Router()
+    const webSocketRouter = WebSocketRouter()
 
-    router.get('/', hadlers.UserHandler.getCurrentUser)
+    router.get('/', handlers.UserHandler.getCurrentUser)
 
-    return router
+    router.post('/bots/:token/sendMessage', handlers.BotHandler.sendMessage)
+
+    webSocketRouter.receive('connection', handlers.WebSocketHandler.onConnection)
+    webSocketRouter.receive('message', handlers.WebSocketHandler.onMessage)
+
+    return {
+        router,
+        webSocketRouter,
+    }
+}
+
+export {
+    IWebSocketRouter,
 }

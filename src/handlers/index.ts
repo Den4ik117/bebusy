@@ -1,11 +1,17 @@
 import { Service } from '../services'
 import { Server } from 'http'
-import { WebSocketServer, WebSocket } from 'ws'
+import { WebSocketServer, WebSocket, Server as IWebSocketServer } from 'ws'
 import { NewUserHandler, UserHandler } from './user.handler'
-import { IUser } from '../models/user'
+import { IUser } from '../models'
+import { IWebSocketRouter } from '../routes'
+import { NewWebSocketHandler, WebSocketHandler } from './websocket.handler'
+import { NewBotHandler, BotHandler } from './bot.handler'
+import { app } from '../utils'
 
 export interface Handler {
     UserHandler: UserHandler
+    WebSocketHandler: WebSocketHandler
+    BotHandler: BotHandler
 }
 
 export interface ConnectionWebsocketMessage {
@@ -25,13 +31,16 @@ export type WebsocketMessage = {
     id: number
     event: 'message'
     text: string
+    chat_id: number
 }
 
 export const createHandlers = async (service: Service): Promise<Handler> => ({
     UserHandler: await NewUserHandler(service),
+    WebSocketHandler: await NewWebSocketHandler(service),
+    BotHandler: await NewBotHandler(service),
 })
 
-export const createWebsocketHandlers = async (server: Server, service: Service) => {
+export const createWebsocketHandlers = async (server: Server, webSocketsRouter: IWebSocketRouter): Promise<IWebSocketServer> => {
     const websocket = new WebSocketServer({
         server: server,
     })
@@ -40,33 +49,11 @@ export const createWebsocketHandlers = async (server: Server, service: Service) 
         ws.on('message', async (data) => {
             const message: WebsocketMessage = JSON.parse(data.toString())
 
-            switch (message.event) {
-                case 'connection':
-                    const user = await service.UserService.getUserByToken(message.token)
-
-                    if (!user) {
-                        ws.send(JSON.stringify({
-                            error: 'User not found',
-                        }))
-                        break
-                    }
-
-                    ws.send(JSON.stringify({
-                        data: user,
-                    }))
-
-                    ws.user = user
-
-                    break
-                case 'message':
-                    
-                    ws.send(JSON.stringify({
-                        ...message,
-                        user: ws.user,
-                    }))
-                    break
-            }
+            webSocketsRouter.routes[message.event](ws, message)
         })
     })
-}
 
+    app.websocket = websocket
+
+    return websocket
+}

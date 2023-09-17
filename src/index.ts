@@ -1,6 +1,5 @@
 import http from 'http'
 import express from 'express'
-import { WebSocketServer } from 'ws'
 import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
 import { createConnection } from './database'
@@ -16,7 +15,7 @@ import { createHandlers, createWebsocketHandlers } from './handlers'
     const repositories = await createRepositories(connection)
     const services = await createServices(repositories)
     const handlers = await createHandlers(services)
-    const router = await createRouter(handlers)
+    const { router, webSocketRouter } = await createRouter(handlers)
 
     const app = express()
 
@@ -26,7 +25,7 @@ import { createHandlers, createWebsocketHandlers } from './handlers'
 
     const server = http.createServer(app)
 
-    await createWebsocketHandlers(server, services)
+    await createWebsocketHandlers(server, webSocketRouter)
 
     const port = process.env.APP_PORT
 

@@ -1,5 +1,4 @@
-import { User } from '../models'
-import { IUser } from '../models/user'
+import { IUser } from '../models'
 import { Repository } from '../repositories'
 
 export interface UserService {

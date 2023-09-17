@@ -1,4 +1,5 @@
 import { RowDataPacket } from 'mysql2'
+import { IUser } from './user';
 
 export interface IMessage extends RowDataPacket {
     id: number
@@ -7,9 +8,10 @@ export interface IMessage extends RowDataPacket {
     chat_id: number
     updated_at: string
     created_at: string
+    user?: IUser
 }
 
 
 export class Message {
-    
+
 }

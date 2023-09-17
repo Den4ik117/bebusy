@@ -1,10 +1,10 @@
 import { NewUserService, UserService } from './user.service'
-import { NewMessageService } from './message.service'
+import { MessageService, NewMessageService } from './message.service'
 import { Repository } from '../repositories'
 
 export interface Service {
     UserService: UserService
-    MessageService: any
+    MessageService: MessageService
 }
 
 export const createServices = async (repositories: Repository): Promise<Service> => ({
