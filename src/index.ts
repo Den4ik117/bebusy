@@ -7,6 +7,7 @@ import { createRepositories } from './repositories'
 import { createServices } from './services'
 import { createRouter } from './routes'
 import { createHandlers, createWebsocketHandlers } from './handlers'
+import cors from 'cors'
 
 (async () => {
     dotenv.config()
@@ -18,6 +19,8 @@ import { createHandlers, createWebsocketHandlers } from './handlers'
     const { router, webSocketRouter } = await createRouter(handlers)
 
     const app = express()
+
+    app.use(cors())
 
     app.use(bodyParser.json())
 

@@ -6,12 +6,14 @@ import { IUser } from '../models'
 import { IWebSocketRouter } from '../routes'
 import { NewWebSocketHandler, WebSocketHandler } from './websocket.handler'
 import { NewBotHandler, BotHandler } from './bot.handler'
+import { NewResumeHandler, ResumeHandler } from './resume.handler'
 import { app } from '../utils'
 
 export interface Handler {
     UserHandler: UserHandler
     WebSocketHandler: WebSocketHandler
     BotHandler: BotHandler
+    ResumeHandler: ResumeHandler
 }
 
 export interface ConnectionWebsocketMessage {
@@ -38,6 +40,7 @@ export const createHandlers = async (service: Service): Promise<Handler> => ({
     UserHandler: await NewUserHandler(service),
     WebSocketHandler: await NewWebSocketHandler(service),
     BotHandler: await NewBotHandler(service),
+    ResumeHandler: await NewResumeHandler(service),
 })
 
 export const createWebsocketHandlers = async (server: Server, webSocketsRouter: IWebSocketRouter): Promise<IWebSocketServer> => {

@@ -13,6 +13,9 @@ export const createRouter = async (handlers: Handler): Promise<Routes> => {
 
     router.get('/', handlers.UserHandler.getCurrentUser)
 
+    router.get('/api/resumes', handlers.ResumeHandler.getResumes)
+    router.post('/api/resumes/:uuid/publish', handlers.ResumeHandler.publishResume)
+
     router.post('/bots/:token/sendMessage', handlers.BotHandler.sendMessage)
 
     webSocketRouter.receive('connection', handlers.WebSocketHandler.onConnection)
