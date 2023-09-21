@@ -1,6 +1,8 @@
 import { Router, IRouter } from 'express'
 import { Handler } from '../handlers'
 import { WebSocketRouter, IWebSocketRouter } from './websockets'
+import fs from 'fs'
+import path from 'path'
 
 interface Routes {
     router: IRouter,
@@ -12,7 +14,10 @@ export const createRouter = async (handlers: Handler): Promise<Routes> => {
     const webSocketRouter = WebSocketRouter()
 
     router.get('/',  async (req, res) => {
-        res.render('index', { test: 'fsdfsdf' })
+        const manifest = fs.readFileSync(`${path.resolve()}/public/manifest.json`)
+
+        // res.render('index', { manifest: JSON.parse(manifest.toString()) })
+        res.render('auth', { manifest: JSON.parse(manifest.toString()) })
     })
 
     router.get('/login', handlers.AuthHandler.checkAuth, handlers.AuthHandler.showLoginPage)

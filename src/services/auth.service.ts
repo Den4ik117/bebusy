@@ -46,7 +46,7 @@ export const NewSessionService = async (repositories: Repository): Promise<Sessi
             response = await axios.post(url)
             // @ts-ignore
         } catch (e: AxiosError) {
-            console.log(e.message, e.toJSON(), e.response?.data)
+            console.log(e.response?.data)
             return null
         }
 

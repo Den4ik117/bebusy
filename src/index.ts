@@ -9,6 +9,7 @@ import { createServices } from './services'
 import { createRouter } from './routes'
 import { createHandlers, createWebsocketHandlers } from './handlers'
 import cors from 'cors'
+import path from 'path'
 
 (async () => {
     dotenv.config()
@@ -48,6 +49,8 @@ import cors from 'cors'
     app.use(bodyParser.urlencoded({ extended: false }))
     app.use(bodyParser.json())
     app.use(cookieParser())
+
+    app.use('/', express.static(path.join(path.resolve(), 'public')))
 
     app.use('/', router)
 
