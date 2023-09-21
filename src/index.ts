@@ -2,6 +2,7 @@ import http from 'http'
 import express from 'express'
 import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
 import { createConnection } from './database'
 import { createRepositories } from './repositories'
 import { createServices } from './services'
@@ -20,9 +21,12 @@ import cors from 'cors'
 
     const app = express()
 
+    app.set('view engine', 'ejs');
+
     app.use(cors())
 
     app.use(bodyParser.json())
+    app.use(cookieParser())
 
     app.use('/', router)
 

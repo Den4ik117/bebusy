@@ -1,6 +1,6 @@
 import { Router, IRouter } from 'express'
 import { Handler } from '../handlers'
-import { WebSocketRouter, IWebSocketRouter } from './websockets';
+import { WebSocketRouter, IWebSocketRouter } from './websockets'
 
 interface Routes {
     router: IRouter,
@@ -11,7 +11,11 @@ export const createRouter = async (handlers: Handler): Promise<Routes> => {
     const router = Router()
     const webSocketRouter = WebSocketRouter()
 
-    router.get('/', handlers.UserHandler.getCurrentUser)
+    router.get('/',  async (req, res) => {
+        res.render('index', { test: 'fsdfsdf' })
+    })
+
+    router.get('/login')
 
     router.get('/api/resumes', handlers.ResumeHandler.getResumes)
     router.post('/api/resumes/:uuid/publish', handlers.ResumeHandler.publishResume)
