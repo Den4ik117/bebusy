@@ -57,7 +57,7 @@ export const NewUserRepository = async (connection: Connection): Promise<UserRep
     const createUser = async (user: Omit<IUser, 'id' | 'constructor'>): Promise<IUser> => {
         await connection.execute(
             'INSERT INTO `users` (uuid, foreign_id, first_name, middle_name, last_name, email, is_bot, data, token, webhook_url, remember_token, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [user.uuid, user.foreign_id, user.foreign_id, user.middle_name, user.last_name, user.email, user.is_bot, user.data, user.token, user.webhook_url, user.remember_token, user.created_at, user.updated_at],
+            [user.uuid || null, user.foreign_id || null, user.foreign_id || null, user.middle_name || null, user.last_name || null, user.email || null, user.is_bot || null, user.data || null, user.token || null, user.webhook_url || null, user.remember_token || null, user.created_at || null, user.updated_at || null],
         )
 
         const [rows] = await connection.execute<IUser[]>(
@@ -70,7 +70,7 @@ export const NewUserRepository = async (connection: Connection): Promise<UserRep
     const updateUser = async (user: Pick<IUser, 'id' | 'first_name' | 'middle_name' | 'last_name' | 'email' | 'data'>): Promise<IUser> => {
         await connection.execute(
             'UPDATE `users` SET first_name = ?, middle_name = ?, last_name = ?, email = ?, data = ? WHERE id = ?',
-            [user.first_name, user.middle_name, user.last_name, user.email, user.data, user.id],
+            [user.first_name || null, user.middle_name || null, user.last_name || null, user.email || null, user.data || null, user.id || null],
         )
 
         const [rows] = await connection.execute<IUser[]>(
