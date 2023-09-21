@@ -1,10 +1,13 @@
 import { NextFunction, Request, Response } from 'express'
 import { Service } from '../services'
+import axios from "axios";
 
 export interface AuthHandler {
     showLoginPage(req: Request, res: Response): Promise<void>
     login(req: Request, res: Response): Promise<void>
     checkAuth(req: Request, res: Response, next: NextFunction): Promise<void>
+    redirect(req: Request, res: Response): Promise<void>
+    callback(req: Request, res: Response): Promise<void>
 }
 
 export const NewAuthHandler = async (service: Service): Promise<AuthHandler> => {
@@ -59,9 +62,46 @@ export const NewAuthHandler = async (service: Service): Promise<AuthHandler> => 
         return next()
     }
 
+    const redirect = async (req: Request, res: Response): Promise<void> => {
+        const params = new URLSearchParams({
+            response_type: 'code',
+            client_id: <string> process.env.HH_CLIENT_ID,
+            redirect_uri: '/oauth/callback',
+        })
+
+        const url = `https://hh.ru/oauth/authorize?${params.toString()}`
+
+        return res.redirect(url)
+    }
+
+    const callback = async (req: Request, res: Response): Promise<void> => {
+        const { code } = req.query
+
+        if (!code) {
+            res.status(403).json({
+                message: 'Нет кода',
+            })
+            return
+        }
+
+        const session = await service.SessionService.callback(<string> code)
+
+        if (!session) {
+            res.status(403).json({
+                message: 'Незвестная ошибка',
+            })
+            return
+        }
+
+        res.cookie('auth-session', session.uuid)
+        res.redirect('/login')
+    }
+
     return {
         showLoginPage,
         login,
         checkAuth,
+        redirect,
+        callback,
     }
 }

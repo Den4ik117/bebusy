@@ -6,6 +6,9 @@ export interface UserRepository {
     getUsersByChatId(chatId: number): Promise<IUser[]>
     getUserByEmail(email: string): Promise<IUser | undefined>
     getUserById(id: number): Promise<IUser | undefined>
+    getUserByForeignId(foreignId: number): Promise<IUser | undefined>
+    createUser(user: Omit<IUser, 'id' | 'constructor'>): Promise<IUser>
+    updateUser(user: Pick<IUser, 'id' | 'first_name' | 'middle_name' | 'last_name' | 'email' | 'data'>): Promise<IUser>
 }
 
 export const NewUserRepository = async (connection: Connection): Promise<UserRepository> => {
@@ -42,10 +45,49 @@ export const NewUserRepository = async (connection: Connection): Promise<UserRep
         return rows[0]
     }
 
+    const getUserByForeignId = async (foreignId: number): Promise<IUser | undefined> => {
+        const [rows] = await connection.execute<IUser[]>(
+            'SELECT * FROM users WHERE foreign_id = ? LIMIT 1',
+            [foreignId],
+        )
+
+        return rows[0]
+    }
+
+    const createUser = async (user: Omit<IUser, 'id' | 'constructor'>): Promise<IUser> => {
+        await connection.execute(
+            'INSERT INTO `users` (uuid, foreign_id, first_name, middle_name, last_name, email, is_bot, data, token, webhook_url, remember_token, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [user.uuid, user.foreign_id, user.foreign_id, user.middle_name, user.last_name, user.email, user.is_bot, user.data, user.token, user.webhook_url, user.remember_token, user.created_at, user.updated_at],
+        )
+
+        const [rows] = await connection.execute<IUser[]>(
+            'SELECT * FROM `users` WHERE id = LAST_INSERT_ID() LIMIT 1',
+        )
+
+        return rows[0]
+    }
+
+    const updateUser = async (user: Pick<IUser, 'id' | 'first_name' | 'middle_name' | 'last_name' | 'email' | 'data'>): Promise<IUser> => {
+        await connection.execute(
+            'UPDATE `users` SET first_name = ?, middle_name = ?, last_name = ?, email = ?, data = ? WHERE id = ?',
+            [user.first_name, user.middle_name, user.last_name, user.email, user.data, user.id],
+        )
+
+        const [rows] = await connection.execute<IUser[]>(
+            'SELECT * FROM `users` WHERE id = ? LIMIT 1',
+            [user.id],
+        )
+
+        return rows[0]
+    }
+
     return {
         getUserByToken,
         getUsersByChatId,
         getUserByEmail,
         getUserById,
+        getUserByForeignId,
+        createUser,
+        updateUser,
     }
 }

@@ -2,13 +2,16 @@ import { RowDataPacket } from 'mysql2'
 
 export interface IUser extends RowDataPacket {
     id: number
+    uuid: string
     foreign_id: string
     first_name: string
     middle_name: string | null
     last_name: string
     email: string | null
     is_bot: 0 | 1
+    token: string | null
     webhook_url: string | null
+    remember_token: string | null
     updated_at: string
     created_at: string
 }
