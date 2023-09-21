@@ -13,7 +13,27 @@ import cors from 'cors'
 (async () => {
     dotenv.config()
 
-    const connection = await createConnection()
+    await new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(true);
+        }, 5000)
+    })
+
+    // let connection
+    // try {
+        const connection = await createConnection()
+    // } catch (e) {
+    //     console.log('ERROROROOROR')
+    //     console.log({
+    //         host: process.env.DB_HOST,
+    //         port: +(process.env.DB_PORT || 3306),
+    //         database: process.env.DB_DATABASE,
+    //         user: process.env.DB_USERNAME,
+    //         password: process.env.DB_PASSWORD,
+    //     })
+    //     console.log(e)
+    // }
+    // @ts-ignore
     const repositories = await createRepositories(connection)
     const services = await createServices(repositories)
     const handlers = await createHandlers(services)
