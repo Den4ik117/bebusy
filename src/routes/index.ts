@@ -15,7 +15,8 @@ export const createRouter = async (handlers: Handler): Promise<Routes> => {
         res.render('index', { test: 'fsdfsdf' })
     })
 
-    router.get('/login')
+    router.get('/login', handlers.AuthHandler.checkAuth, handlers.AuthHandler.showLoginPage)
+    router.post('/login', handlers.AuthHandler.login)
 
     router.get('/api/resumes', handlers.ResumeHandler.getResumes)
     router.post('/api/resumes/:uuid/publish', handlers.ResumeHandler.publishResume)

@@ -4,6 +4,8 @@ import { IUser } from '../models'
 export interface UserRepository {
     getUserByToken(token: string): Promise<IUser | undefined>
     getUsersByChatId(chatId: number): Promise<IUser[]>
+    getUserByEmail(email: string): Promise<IUser | undefined>
+    getUserById(id: number): Promise<IUser | undefined>
 }
 
 export const NewUserRepository = async (connection: Connection): Promise<UserRepository> => {
@@ -22,8 +24,28 @@ export const NewUserRepository = async (connection: Connection): Promise<UserRep
         return rows
     }
 
+    const getUserByEmail = async (email: string): Promise<IUser | undefined> => {
+        const [rows] = await connection.execute<IUser[]>(
+            'SELECT * FROM users WHERE email = ? LIMIT 1',
+            [email],
+        )
+
+        return rows[0]
+    }
+
+    const getUserById = async (id: number): Promise<IUser | undefined> => {
+        const [rows] = await connection.execute<IUser[]>(
+            'SELECT * FROM users WHERE id = ? LIMIT 1',
+            [id],
+        )
+
+        return rows[0]
+    }
+
     return {
         getUserByToken,
         getUsersByChatId,
+        getUserByEmail,
+        getUserById,
     }
 }

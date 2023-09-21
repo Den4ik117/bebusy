@@ -23,8 +23,12 @@ export const MONTHS = [
     { genitive: 'декабря' },
 ]
 
+export const getCurrentDatetimeFromDate = (date: Date): string => {
+    return date.toISOString().slice(0, 19).replace('T', ' ')
+}
+
 export const getCurrentDatetime = (): string => {
-    return (new Date()).toISOString().slice(0, 19).replace('T', ' ')
+    return getCurrentDatetimeFromDate(new Date())
 }
 
 export const getFormattedUpdatedAt = (datetime: string): string => {

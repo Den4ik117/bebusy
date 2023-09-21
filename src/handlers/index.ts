@@ -7,6 +7,7 @@ import { IWebSocketRouter } from '../routes'
 import { NewWebSocketHandler, WebSocketHandler } from './websocket.handler'
 import { NewBotHandler, BotHandler } from './bot.handler'
 import { NewResumeHandler, ResumeHandler } from './resume.handler'
+import { NewAuthHandler, AuthHandler } from './auth.handler'
 import { app } from '../utils'
 
 export interface Handler {
@@ -14,6 +15,7 @@ export interface Handler {
     WebSocketHandler: WebSocketHandler
     BotHandler: BotHandler
     ResumeHandler: ResumeHandler
+    AuthHandler: AuthHandler
 }
 
 export interface ConnectionWebsocketMessage {
@@ -41,6 +43,7 @@ export const createHandlers = async (service: Service): Promise<Handler> => ({
     WebSocketHandler: await NewWebSocketHandler(service),
     BotHandler: await NewBotHandler(service),
     ResumeHandler: await NewResumeHandler(service),
+    AuthHandler: await NewAuthHandler(service),
 })
 
 export const createWebsocketHandlers = async (server: Server, webSocketsRouter: IWebSocketRouter): Promise<IWebSocketServer> => {
