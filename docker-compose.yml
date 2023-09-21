@@ -13,14 +13,14 @@ services:
     container_name: employment_ws_server_app
 
   mysql:
-    image: mysql:latest
+    image: mysql
     restart: always
-    volumes:
-      - ./tmp/mysql:/var/lib/mysql
+#    volumes:
+#      - ./tmp/mysql:/var/lib/mysql
     environment:
       MYSQL_DATABASE: placement
       MYSQL_ROOT_PASSWORD: root
-#    ports:
-#      - "3307:3306"
-    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    ports:
+      - "3307:3306"
+#    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
     container_name: employment_ws_server_mysql

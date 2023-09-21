@@ -17,7 +17,7 @@ create table users
     updated_at     timestamp            null
 ) collate = utf8mb4_unicode_ci;
 
-CREATE TABLE `sessions`
+CREATE TABLE sessions
 (
     uuid       VARCHAR(36) PRIMARY KEY,
     user_id    BIGINT UNSIGNED NOT NULL,
@@ -42,7 +42,6 @@ create table chats
 create index chats_type_index
     on chats (type);
 
--- auto-generated definition
 create table chat_user
 (
     chat_id bigint unsigned not null,
@@ -91,6 +90,21 @@ create index files_fileable_type_fileable_id_index
 
 
 -- auto-generated definition
+create table resumes
+(
+    id           bigint unsigned auto_increment
+        primary key,
+    user_id      bigint unsigned not null,
+    data         json            not null,
+    created_at   timestamp       null,
+    updated_at   timestamp       null,
+    published_at timestamp       null,
+    uuid         char(36)        not null,
+    constraint resumes_user_id_foreign
+        foreign key (user_id) references users (id)
+)
+    collate = utf8mb4_unicode_ci;
+
 create table opinions
 (
     id           bigint unsigned auto_increment
@@ -110,24 +124,7 @@ create table opinions
         foreign key (resume_id) references resumes (id),
     constraint opinions_user_id_foreign
         foreign key (user_id) references users (id)
-)
-    collate = utf8mb4_unicode_ci;
-
--- auto-generated definition
-create table resumes
-(
-    id           bigint unsigned auto_increment
-        primary key,
-    user_id      bigint unsigned not null,
-    data         json            not null,
-    created_at   timestamp       null,
-    updated_at   timestamp       null,
-    published_at timestamp       null,
-    uuid         char(36)        not null,
-    constraint resumes_user_id_foreign
-        foreign key (user_id) references users (id)
-)
-    collate = utf8mb4_unicode_ci;
+) collate = utf8mb4_unicode_ci;
 
 -- auto-generated definition
 create table updates
@@ -141,7 +138,4 @@ create table updates
         foreign key (message_id) references messages (id),
     constraint updates_user_id_foreign
         foreign key (user_id) references users (id)
-)
-    collate = utf8mb4_unicode_ci;
-
--- auto-generated definition
+) collate = utf8mb4_unicode_ci;
