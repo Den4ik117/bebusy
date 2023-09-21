@@ -2,7 +2,7 @@ import { Repository } from '../repositories'
 import { ISession } from '../models'
 import { v4 as generateUuid } from 'uuid'
 import { getCurrentDatetimeFromDate } from '../utils'
-import axios from "axios";
+import axios, {AxiosError} from "axios";
 
 export interface SessionService {
     authenticate(email: string): Promise<Omit<ISession, 'constructor'> | null>
@@ -41,8 +41,16 @@ export const NewSessionService = async (repositories: Repository): Promise<Sessi
 
         const url = `https://hh.ru/oauth/token?${params.toString()}`
 
-        const response = await axios.post(url)
+        let response
+        try {
+            response = await axios.post(url)
+            // @ts-ignore
+        } catch (e: AxiosError) {
+            console.log(e.message, e.toJSON(), e.response?.data)
+            return null
+        }
 
+        // @ts-ignore
         const { access_token, expires_in, refresh_token } = response.data
 
         if (!access_token) {
