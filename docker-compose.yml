@@ -15,8 +15,8 @@ services:
   mysql:
     image: mysql
     restart: always
-#    volumes:
-#      - ./tmp/mysql:/var/lib/mysql
+    volumes:
+      - ./tmp/mysql:/var/lib/mysql
     environment:
       MYSQL_DATABASE: placement
       MYSQL_ROOT_PASSWORD: root
