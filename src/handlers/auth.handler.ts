@@ -66,7 +66,7 @@ export const NewAuthHandler = async (service: Service): Promise<AuthHandler> => 
         const params = new URLSearchParams({
             response_type: 'code',
             client_id: <string> process.env.HH_CLIENT_ID,
-            redirect_uri: '/oauth/callback',
+            redirect_uri: `${process.env.APP_URL}/oauth/callback`,
         })
 
         const url = `https://hh.ru/oauth/authorize?${params.toString()}`
