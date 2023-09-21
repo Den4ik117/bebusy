@@ -1,7 +1,7 @@
 import { Repository } from '../repositories'
 import { ISession } from '../models'
 import { v4 as generateUuid } from 'uuid'
-import { getCurrentDatetimeFromDate } from '../utils'
+import {getCurrentDatetime, getCurrentDatetimeFromDate} from '../utils'
 import axios, {AxiosError} from "axios";
 
 export interface SessionService {
@@ -78,12 +78,15 @@ export const NewSessionService = async (repositories: Repository): Promise<Sessi
 
         if (!user) {
             user = await repositories.UserRepository.createUser({
+                uuid: generateUuid(),
                 foreign_id: me.data.id,
                 first_name: me.data.first_name,
                 middle_name: me.data.middle_name,
                 last_name: me.data.last_name,
                 email: me.data.email,
                 data: JSON.stringify(me.data),
+                created_at: getCurrentDatetime(),
+                updated_at: getCurrentDatetime(),
             })
         } else {
             user = await repositories.UserRepository.updateUser({
