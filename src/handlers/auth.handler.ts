@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { Service } from '../services'
-import axios from "axios";
-import fs from "fs";
-import path from "path";
+import fs from 'fs'
+import path from 'path'
 
 export interface AuthHandler {
     showMainPage(req: Request, res: Response): Promise<void>
@@ -17,25 +16,30 @@ export const NewAuthHandler = async (service: Service): Promise<AuthHandler> => 
     const showMainPage = async (req: Request, res: Response) => {
         const sessionUuid = req.cookies['auth-session']
 
+        let manifest;
+
+        if (process.env.NODE_ENV === 'production') {
+            manifest = fs.readFileSync(`${path.resolve()}/public/manifest.json`)
+            manifest = JSON.parse(manifest.toString())
+        }
+
         if (!sessionUuid) {
-            res.render('index')
+            res.render('index', {
+                manifest: manifest,
+            })
             return
         }
 
         const session = await service.SessionService.getSessionByUuid(sessionUuid)
 
         if (!session) {
-            res.render('index')
+            res.render('index', {
+                manifest: manifest,
+            })
             return
         }
 
         // req.body.user = await service.UserService.getUserById(session.user_id)
-
-        let manifest;
-
-        if (process.env.NODE_END === 'production') {
-            manifest = fs.readFileSync(`${path.resolve()}/public/manifest.json`)
-        }
 
         res.render('auth', {
             manifest: manifest,
