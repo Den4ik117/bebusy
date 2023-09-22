@@ -25,6 +25,7 @@
         "@types/ws": "^8.5.5",
         "@vitejs/plugin-vue": "^4.3.4",
         "autoprefixer": "^10.4.16",
+        "bootstrap-icons": "^1.11.1",
         "nodemon": "^3.0.1",
         "postcss": "^8.4.30",
         "sass": "^1.68.0",

@@ -14,11 +14,13 @@ import path from 'path'
 (async () => {
     dotenv.config()
 
-    await new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve(true);
-        }, 5000)
-    })
+    if (process.env.NODE_ENV === 'production') {
+        await new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(true);
+            }, 5000)
+        })
+    }
 
     // let connection
     // try {
@@ -51,6 +53,8 @@ import path from 'path'
     app.use(cookieParser())
 
     app.use('/', express.static(path.join(path.resolve(), 'public')))
+    app.use('/node_modules', express.static(path.join(path.resolve(), 'node_modules')))
+    app.use('/resources', express.static(path.join(path.resolve(), 'resources')))
 
     app.use('/', router)
 

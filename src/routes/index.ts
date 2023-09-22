@@ -1,8 +1,6 @@
 import { Router, IRouter } from 'express'
 import { Handler } from '../handlers'
 import { WebSocketRouter, IWebSocketRouter } from './websockets'
-import fs from 'fs'
-import path from 'path'
 
 interface Routes {
     router: IRouter,
@@ -13,12 +11,8 @@ export const createRouter = async (handlers: Handler): Promise<Routes> => {
     const router = Router()
     const webSocketRouter = WebSocketRouter()
 
-    router.get('/',  async (req, res) => {
-        const manifest = fs.readFileSync(`${path.resolve()}/public/manifest.json`)
-
-        // res.render('index', { manifest: JSON.parse(manifest.toString()) })
-        res.render('auth', { manifest: JSON.parse(manifest.toString()) })
-    })
+    router.get('/',  handlers.AuthHandler.showMainPage)
+    router.get('/_/:uuid',  handlers.AuthHandler.showMainPage)
 
     router.get('/login', handlers.AuthHandler.checkAuth, handlers.AuthHandler.showLoginPage)
     router.post('/login', handlers.AuthHandler.login)
@@ -28,6 +22,10 @@ export const createRouter = async (handlers: Handler): Promise<Routes> => {
 
     router.get('/api/resumes', handlers.ResumeHandler.getResumes)
     router.post('/api/resumes/:uuid/publish', handlers.ResumeHandler.publishResume)
+
+    router.get('/api/me', handlers.AuthHandler.checkAuth, handlers.UserHandler.getCurrentUser)
+    router.get('/api/token', handlers.AuthHandler.checkAuth, handlers.UserHandler.getToken)
+    router.get('/api/chats', handlers.AuthHandler.checkAuth, handlers.ChatHandler.getMyChats)
 
     router.post('/bots/:token/sendMessage', handlers.BotHandler.sendMessage)
 

@@ -1,8 +1,9 @@
 import { Connection } from 'mysql2/promise'
-import { IMessage } from '../models/message'
+import { IMessage } from '../models'
 
 export interface MessageRepository {
     createMessage(message: Omit<IMessage, 'id'>): Promise<IMessage>
+    getMessagesByChatId(id: number): Promise<IMessage[]>
 }
 
 export const NewMessageRepository = async (connection: Connection): Promise<MessageRepository> => {
@@ -17,7 +18,17 @@ export const NewMessageRepository = async (connection: Connection): Promise<Mess
         return rows[0]
     }
 
+    const getMessagesByChatId = async (id: number): Promise<IMessage[]> => {
+        const [rows] = await connection.execute<IMessage[]>(
+            'SELECT * FROM `messages` WHERE chat_id = ?',
+            [id],
+        )
+
+        return rows
+    }
+
     return {
         createMessage,
+        getMessagesByChatId,
     }
 }

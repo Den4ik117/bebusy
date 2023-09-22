@@ -1,4 +1,5 @@
 import '../css/app.css'
+import '../scss/app.scss'
 
 import { createApp } from 'vue';
 import { store, initStore } from './app/store';

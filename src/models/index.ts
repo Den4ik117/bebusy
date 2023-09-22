@@ -3,6 +3,7 @@ import { Message, IMessage } from './message'
 import { IUpdate } from './update'
 import { IResume } from './resume'
 import { ISession } from './session'
+import { IChat } from './chat'
 
 export {
     User,
@@ -12,4 +13,5 @@ export {
     IUpdate,
     IResume,
     ISession,
+    IChat,
 }
