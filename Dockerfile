@@ -15,7 +15,7 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
+RUN npm run build && vite build
 
 #COPY --chown=node:node . .
 # If you are building your code for production
