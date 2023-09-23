@@ -8,7 +8,7 @@
                 <img class="w-full h-full object-cover" src="https://img.freepik.com/premium-photo/ai-generated-illustration-of-a-cat-in-cyberpunk-style_861875-2817.jpg" alt="Фотография чата">
             </div>
             <div class="flex flex-col gap-1">
-                <div class="font-medium text-sm">{{ activeChat?.real_name || 'Загрузка...' }}</div>
+                <div class="font-medium text-sm">{{ activeChat?.name || 'Загрузка...' }}</div>
                 <time class="text-blue-500 text-xs">Неизвестно когда был в сети</time>
             </div>
 <!--            <router-link class="absolute rounded top-0 bottom-0 left-0 right-0" :to="`/chats/${chat.uuid}`"></router-link>-->

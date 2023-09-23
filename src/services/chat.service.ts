@@ -39,6 +39,16 @@ export const NewChatService = async (repositories: Repository): Promise<ChatServ
             }
 
             chats[i].messages = messages
+
+            if (chats[i].type === 'PRIVATE') {
+                const chatUsers = await repositories.UserRepository.getUsersByChatId(chats[i].id)
+
+                for (let j = 0; j < chatUsers.length; j++) {
+                    if (chatUsers[j].id === id) continue
+
+                    chats[i].name = chatUsers[j].last_name + ' ' + chatUsers[j].first_name
+                }
+            }
         }
 
         return chats

@@ -6,6 +6,7 @@ export interface ResumeRepository {
     getResumeByUserIdAndUuid(userId: number, uuid: string): Promise<IResume | undefined>
     updateResumePublishedAtById(id: number, publishedAt: string): Promise<void>
     getResumeById(id: number): Promise<IResume | undefined>
+    createResume(resume: Pick<IResume, 'uuid' | 'user_id' | 'data' | 'created_at' | 'updated_at'>): Promise<void>
 }
 
 export const NewResumeRepository = async (connection: Connection): Promise<ResumeRepository> => {
@@ -43,10 +44,18 @@ export const NewResumeRepository = async (connection: Connection): Promise<Resum
         return rows[0]
     }
 
+    const createResume = async (resume: Pick<IResume, 'uuid' | 'user_id' | 'data' | 'created_at' | 'updated_at'>): Promise<void> => {
+        await connection.execute(
+            'INSERT INTO `resumes` (uuid, user_id, data, created_at, updated_at) VALUES (?, ?, ?, ?, ?)',
+            [resume.uuid, resume.user_id, JSON.stringify(resume.data), resume.created_at, resume.updated_at],
+        )
+    }
+
     return {
         getResumesByUserId,
         getResumeByUserIdAndUuid,
         updateResumePublishedAtById,
         getResumeById,
+        createResume,
     }
 }

@@ -4,7 +4,7 @@
             <img class="w-full h-full object-cover" src="https://img.freepik.com/premium-photo/ai-generated-illustration-of-a-cat-in-cyberpunk-style_861875-2817.jpg" alt="Фотография чата">
         </div>
         <div class="grid grid-cols-[1fr_min-content] items-center gap-x-2 gap-y-1">
-            <div class="font-medium">{{ chat.real_name }}</div>
+            <div class="font-medium">{{ chat.name }}</div>
             <time class="text-gray-500 text-xs">{{ lastMessage?.created_at }}</time>
             <div class="text-gray-500 text-xs truncate">
                 <span class="text-blue-500">{{ lastMessage?.user?.full_name || 'Система' }}: </span>
@@ -18,7 +18,8 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useStore } from 'vuex';
+import { useStore } from 'vuex'
+import { getShortDate } from '@/utils'
 
 const props = defineProps({
     chat: {
@@ -32,7 +33,13 @@ const store = useStore();
 const lastMessage = computed(() => {
     const lastIndex = props.chat.messages?.length - 1
 
-    return lastIndex ? props.chat.messages[lastIndex] : null
+    const lastMessage = lastIndex ? props.chat.messages[lastIndex] : null
+
+    if (lastMessage) {
+        lastMessage.created_at = getShortDate(lastMessage.created_at)
+    }
+
+    return lastMessage || null
 })
 
 const onChatItemClick = () => {

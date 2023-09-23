@@ -14,9 +14,6 @@ export const createRouter = async (handlers: Handler): Promise<Routes> => {
     router.get('/',  handlers.AuthHandler.showMainPage)
     router.get('/_/:uuid',  handlers.AuthHandler.showMainPage)
 
-    router.get('/login', handlers.AuthHandler.checkAuth, handlers.AuthHandler.showLoginPage)
-    router.post('/login', handlers.AuthHandler.login)
-
     router.get('/oauth/redirect', handlers.AuthHandler.redirect)
     router.get('/oauth/callback', handlers.AuthHandler.callback)
 
@@ -28,6 +25,8 @@ export const createRouter = async (handlers: Handler): Promise<Routes> => {
     router.get('/api/chats', handlers.AuthHandler.checkAuth, handlers.ChatHandler.getMyChats)
 
     router.post('/bots/:token/sendMessage', handlers.BotHandler.sendMessage)
+
+    router.post('/bots/callback', handlers.ResumeBotHandler.receiveUpdate)
 
     webSocketRouter.receive('connection', handlers.WebSocketHandler.onConnection)
     webSocketRouter.receive('message', handlers.WebSocketHandler.onMessage)

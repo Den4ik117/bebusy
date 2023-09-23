@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="/resources/images/favicon.svg">
     <% if (process.env.NODE_ENV === 'production') { %>
         <link rel="stylesheet" href="/<%= manifest['resources/js/app.css'].file %>">
         <script type="module" src="/<%= manifest['resources/js/app.js'].file %>"></script>
@@ -15,7 +16,7 @@
         <script type="module" src="http://localhost:5173/resources/js/app.js"></script>
         <script type="module" src="http://localhost:5173/resources/css/app.css"></script>
     <% } %>
-    <title>Document!!</title>
+    <title><%= process.env.APP_NAME %></title>
 </head>
 <body class="antialiased bg-[#181818] text-white">
 <div class="max-w-md w-full mx-auto h-[100dvh] flex flex-col justify-center items-center">

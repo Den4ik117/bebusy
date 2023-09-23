@@ -1,7 +1,7 @@
 import { User, IUser } from './user'
 import { Message, IMessage } from './message'
 import { IUpdate } from './update'
-import { IResume } from './resume'
+import { IResume, IHHResume } from './resume'
 import { ISession } from './session'
 import { IChat } from './chat'
 
@@ -14,4 +14,5 @@ export {
     IResume,
     ISession,
     IChat,
+    IHHResume,
 }

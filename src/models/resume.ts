@@ -7,6 +7,7 @@ export interface IHHResume {
 
 export interface IResume extends RowDataPacket {
     id: number
+    uuid: string
     user_id: number
     data: IHHResume
     updated_at: string

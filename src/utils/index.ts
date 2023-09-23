@@ -24,6 +24,8 @@ export const MONTHS = [
 ]
 
 export const getCurrentDatetimeFromDate = (date: Date): string => {
+    date = new Date(date.getTime() + (5 * 60 * 60 * 1000))
+
     return date.toISOString().slice(0, 19).replace('T', ' ')
 }
 

@@ -1,5 +1,5 @@
 import { Repository } from '../repositories'
-import { ISession } from '../models'
+import {IHHResume, ISession} from '../models'
 import { v4 as generateUuid } from 'uuid'
 import {getCurrentDatetime, getCurrentDatetimeFromDate} from '../utils'
 import axios, {AxiosError} from "axios";
@@ -88,6 +88,30 @@ export const NewSessionService = async (repositories: Repository): Promise<Sessi
                 created_at: getCurrentDatetime(),
                 updated_at: getCurrentDatetime(),
             })
+
+            const resumes = await axios.get('https://api.hh.ru/resumes/mine', {
+                headers: {
+                    'Authorization': `Bearer ${access_token}`,
+                },
+            })
+
+            const myResumes: Array<{ id: number }> = resumes.data?.items || []
+
+            for (let i = 0; i < myResumes.length; i++) {
+                const resume = await axios.get<IHHResume>(`https://api.hh.ru/resumes/${myResumes[i].id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${access_token}`,
+                    },
+                })
+
+                await repositories.ResumeRepository.createResume({
+                    uuid: generateUuid(),
+                    user_id: user.id,
+                    data: resume.data,
+                    updated_at: getCurrentDatetime(),
+                    created_at: getCurrentDatetime(),
+                })
+            }
         } else {
             user = await repositories.UserRepository.updateUser({
                 id: user.id,
@@ -107,15 +131,6 @@ export const NewSessionService = async (repositories: Repository): Promise<Sessi
             user_id: user.id,
             expires_at: getCurrentDatetimeFromDate(tomorrow)
         })
-
-        // Cache::put("access_token_{$user->uuid}", $data['access_token'], $data['expires_in']);
-        // Cache::forever("refresh_token_{$user->uuid}", $data['refresh_token']);
-        //
-        // Auth::login($user, true);
-        //
-        // $request->session()->regenerate();
-        //
-        // return to_route('index')->with('success', 'Успешная авторизация');
     }
 
     return {
