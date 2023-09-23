@@ -83,6 +83,8 @@ export const NewUserRepository = async (connection: Connection): Promise<UserRep
     }
 
     const getUsersByIds = async (ids: number[]): Promise<IUser[]> => {
+        if (ids.length === 0) return []
+
         const [rows] = await connection.execute<IUser[]>(
             `SELECT * FROM \`users\` WHERE id IN (${ids.join(',')})`,
         )

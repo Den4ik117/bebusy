@@ -20,27 +20,29 @@ export const NewChatService = async (repositories: Repository): Promise<ChatServ
                 id && !userIds.includes(id) && userIds.push(id)
             }
 
-            const users = await repositories.UserRepository.getUsersByIds(userIds)
+            if (userIds.length > 0) {
+                const users = await repositories.UserRepository.getUsersByIds(userIds)
 
-            const usersObj: {
-                [key: number]: IUser
-            } = {}
+                const usersObj: {
+                    [key: number]: IUser
+                } = {}
 
-            for (let j = 0; j < users.length; j++) {
-                usersObj[users[j].id] = users[j]
-            }
-
-            for (let j = 0; j < messages.length; j++) {
-                const userId = messages[j].user_id
-                const resumeId = messages[j].resume_id
-
-                if (resumeId) {
-                    messages[j].resume = await repositories.ResumeRepository.getResumeById(resumeId)
+                for (let j = 0; j < users.length; j++) {
+                    usersObj[users[j].id] = users[j]
                 }
 
-                if (!userId) continue
+                for (let j = 0; j < messages.length; j++) {
+                    const userId = messages[j].user_id
+                    const resumeId = messages[j].resume_id
 
-                messages[j].user = usersObj[userId]
+                    if (resumeId) {
+                        messages[j].resume = await repositories.ResumeRepository.getResumeById(resumeId)
+                    }
+
+                    if (!userId) continue
+
+                    messages[j].user = usersObj[userId]
+                }
             }
 
             chats[i].messages = messages
