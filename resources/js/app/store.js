@@ -142,7 +142,7 @@ export const initStore = async () => {
 
     let wsURL = import.meta.env.VITE_APP_URL || ''
 
-    wsURL = wsURL.replace('https', 'ws').replace('http', 'ws')
+    wsURL = wsURL.replace('https', 'wss').replace('http', 'ws')
 
     socket = new WebSocket(wsURL);
 
