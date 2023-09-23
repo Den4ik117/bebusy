@@ -16,7 +16,10 @@
             <div
                 class="rounded-md p-2 text-sm whitespace-pre-wrap"
                 :class="{ 'bg-[#212121]': !isMe, 'bg-indigo-600': isMe }"
-            >{{ message.text }}</div>
+            >
+                <ResumeMessage v-if="message.resume"/>
+                <span v-else>{{ message.text }}</span>
+            </div>
         </div>
     </template>
 </template>
@@ -24,6 +27,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import ResumeMessage from '@/components/resume-message'
 
 const store = useStore();
 

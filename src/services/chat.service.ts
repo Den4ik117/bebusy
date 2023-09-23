@@ -32,6 +32,11 @@ export const NewChatService = async (repositories: Repository): Promise<ChatServ
 
             for (let j = 0; j < messages.length; j++) {
                 const userId = messages[j].user_id
+                const resumeId = messages[j].resume_id
+
+                if (resumeId) {
+                    messages[j].resume = await repositories.ResumeRepository.getResumeById(resumeId)
+                }
 
                 if (!userId) continue
 

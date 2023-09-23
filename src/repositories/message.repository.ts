@@ -9,8 +9,8 @@ export interface MessageRepository {
 export const NewMessageRepository = async (connection: Connection): Promise<MessageRepository> => {
     const createMessage = async (message: Omit<IMessage, 'id'>): Promise<IMessage> => {
         await connection.execute(
-            'INSERT INTO `messages` (text, user_id, chat_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?)',
-            [message.text, message.user_id, message.chat_id, message.created_at, message.updated_at],
+            'INSERT INTO `messages` (text, user_id, chat_id, resume_id, actions, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [message.text, message.user_id, message.chat_id, message.resume_id || null, message.actions ? JSON.stringify(message.actions) : null, message.created_at, message.updated_at],
         )
 
         const [rows] = await connection.execute<IMessage[]>('SELECT * FROM `messages` WHERE `id` = LAST_INSERT_ID() LIMIT 1')

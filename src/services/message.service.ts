@@ -1,22 +1,38 @@
 import { Repository } from '../repositories'
-import { IMessage, IUser } from '../models'
+import {IAction, IMessage, IUser} from '../models'
 import { app, getCurrentDatetime } from '../utils'
 import axios from 'axios'
 import {CustomWebSocket} from "../handlers";
 
 export interface MessageService {
-    createMessage(message: Pick<IMessage, 'text' | 'chat_id' | 'user_id'>, user: IUser): Promise<IMessage>
+    createMessage(message: CreateIMessage, user: IUser): Promise<IMessage>
+}
+
+interface CreateIMessage {
+    text: string
+    chat_id: number
+    user_id: number
+    actions?: IAction[][]
+    resume_id?: number
 }
 
 export const NewMessageService = async (repositories: Repository): Promise<MessageService> => {
-    const createMessage = async (message: Pick<IMessage, "text" | "chat_id" | "user_id">, user: IUser): Promise<IMessage> => {
+    const createMessage = async (message: CreateIMessage, user: IUser): Promise<IMessage> => {
         const createdMessage  = await repositories.MessageRepository.createMessage({
             text: message.text,
             user_id: message.user_id,
             chat_id: message.chat_id,
+            resume_id: message.resume_id,
+            actions: message.actions,
             updated_at: getCurrentDatetime(),
             created_at: getCurrentDatetime(),
         })
+
+        const resumeId = createdMessage.resume_id
+
+        if (resumeId) {
+            createdMessage.resume = await repositories.ResumeRepository.getResumeById(resumeId)
+        }
 
         createdMessage.user = user
 

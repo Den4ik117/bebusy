@@ -33,7 +33,7 @@ export const NewWebSocketHandler = async (services: Service): Promise<WebSocketH
         const createdMessage = await services.MessageService.createMessage({
             text: message.text,
             chat_id: message.chat_id,
-            user_id: ws.user.id
+            user_id: ws.user.id,
         }, ws.user)
 
         // const response = {

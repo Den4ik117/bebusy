@@ -1,8 +1,16 @@
 import { Request, Response } from 'express'
 import { Service } from '../services'
+import { IAction } from '../models'
 
 export interface BotHandler {
     sendMessage(req: Request, res: Response): void
+}
+
+interface MessageParams {
+    chat_id?: number
+    text?: string
+    actions?: IAction[][]
+    resume_id?: number
 }
 
 export const NewBotHandler = async (service: Service): Promise<BotHandler> => {
@@ -19,7 +27,7 @@ export const NewBotHandler = async (service: Service): Promise<BotHandler> => {
             message: 'Пользователь с таким токеном не найден',
         })
 
-        const { chat_id, text }: { chat_id?: number, text?: string } = req.body
+        const { chat_id, text, actions, resume_id }: MessageParams = req.body
 
         if (!chat_id || !text) return res.status(403).json({
             message: 'Заполнены не все данные',
@@ -29,6 +37,8 @@ export const NewBotHandler = async (service: Service): Promise<BotHandler> => {
             text: text,
             chat_id: chat_id,
             user_id: user.id,
+            actions: actions,
+            resume_id: resume_id,
         }, user)
 
         res.json({

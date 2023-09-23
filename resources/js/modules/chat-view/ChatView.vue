@@ -34,6 +34,24 @@
                 >
                     <i class="bi bi-send-fill"></i>
                 </button>
+                <div
+                    v-show="actions.length > 0"
+                    class="col-span-full flex flex-col gap-2"
+                >
+                    <div
+                        v-for="action in actions"
+                        :key="action"
+                        class="flex gap-2"
+                    >
+                        <button
+                            v-for="text in action"
+                            :key="text.text"
+                            class="w-full rounded bg-indigo-500 hover:bg-indigo-600 text-white font-medium px-2 py-1 text-xs"
+                            type="button"
+                            @click="() => onActionClick(text.text)"
+                        >{{ text.text }}</button>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
@@ -42,7 +60,6 @@
 <script setup>
 import { reactive, computed, onMounted, watch, ref } from 'vue';
 import { useStore } from 'vuex';
-import { request } from '@/api';
 import MessageItem from '@/components/message-item';
 
 const store = useStore();
@@ -62,6 +79,10 @@ const form = reactive({
 const messageBox = ref(null);
 
 const activeChat = computed(() => store.getters.activeChat);
+
+const lastMessage = computed(() => activeChat.value?.messages?.at(-1))
+
+const actions = computed(() => lastMessage.value?.actions || [])
 
 const showAvatar = (index) => {
     const currentMessage = activeChat.value?.messages?.[index];
@@ -110,6 +131,12 @@ const onSubmitForm = () => {
     //     console.log('error');
     // });
 };
+
+const onActionClick = (text) => {
+    form.message = text
+
+    onSubmitForm()
+}
 
 const onTextareaKeydown = (event) => {
     if (!(event instanceof KeyboardEvent)) return;

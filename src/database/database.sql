@@ -50,9 +50,21 @@ create table chat_user
         foreign key (chat_id) references chats (id),
     constraint chat_user_user_id_foreign
         foreign key (user_id) references users (id)
-)
-    collate = utf8mb4_unicode_ci;
+) collate = utf8mb4_unicode_ci;
 
+create table resumes
+(
+    id           bigint unsigned auto_increment
+        primary key,
+    user_id      bigint unsigned not null,
+    data         json            not null,
+    created_at   timestamp       null,
+    updated_at   timestamp       null,
+    published_at timestamp       null,
+    uuid         char(36)        not null,
+    constraint resumes_user_id_foreign
+        foreign key (user_id) references users (id)
+) collate = utf8mb4_unicode_ci;
 
 -- auto-generated definition
 create table messages
@@ -62,12 +74,16 @@ create table messages
     text       varchar(1024)   not null,
     user_id    bigint unsigned null,
     chat_id    bigint unsigned not null,
+    resume_id  bigint unsigned null,
+    actions    json            null,
     created_at timestamp       null,
     updated_at timestamp       null,
     constraint messages_chat_id_foreign
         foreign key (chat_id) references chats (id),
     constraint messages_user_id_foreign
-        foreign key (user_id) references users (id)
+        foreign key (user_id) references users (id),
+    constraint messages_resume_id_foreign
+        foreign key (resume_id) references resumes (id)
 )
     collate = utf8mb4_unicode_ci;
 
@@ -88,22 +104,6 @@ create table files
 create index files_fileable_type_fileable_id_index
     on files (fileable_type, fileable_id);
 
-
--- auto-generated definition
-create table resumes
-(
-    id           bigint unsigned auto_increment
-        primary key,
-    user_id      bigint unsigned not null,
-    data         json            not null,
-    created_at   timestamp       null,
-    updated_at   timestamp       null,
-    published_at timestamp       null,
-    uuid         char(36)        not null,
-    constraint resumes_user_id_foreign
-        foreign key (user_id) references users (id)
-)
-    collate = utf8mb4_unicode_ci;
 
 create table opinions
 (
