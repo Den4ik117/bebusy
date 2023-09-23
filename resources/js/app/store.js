@@ -89,7 +89,7 @@ export const store = createStore({
         },
         publishResume: (context, { uuid }) => {
             request(
-                `http://127.0.0.1:5000/api/resumes/${uuid}/publish?token=${store.state.token}`,
+                `/api/resumes/${uuid}/publish?token=${store.state.token}`,
                 'POST',
                 undefined,
                 undefined,
@@ -133,14 +133,14 @@ export const initStore = async () => {
         });
     });
 
-    await request(`http://127.0.0.1:5000/api/resumes?token=${store.state.token}`, 'GET', undefined, undefined, data => {
+    await request(`/api/resumes?token=${store.state.token}`, 'GET', undefined, undefined, data => {
         store.commit({
             type: 'setResumes',
             value: data.data,
         })
     })
 
-    socket = new WebSocket('ws://127.0.0.1:5000');
+    socket = new WebSocket(`ws://${process.env.APP_URL}`);
 
     socket.onopen = () => {
         const message = {

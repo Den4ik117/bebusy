@@ -1,5 +1,3 @@
-const API_URL = import.meta.env.VITE_API_URL || '127.0.0.1:8000';
-
 const meta = document.querySelector('meta[name="csrf-token"]');
 
 export const request = async (url, method = 'GET', data = {}, bearer = '', onSuccess = undefined, onError = undefined) => {
