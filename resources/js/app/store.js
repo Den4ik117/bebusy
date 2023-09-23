@@ -140,7 +140,11 @@ export const initStore = async () => {
         })
     })
 
-    socket = new WebSocket(`ws://${process.env.APP_URL}`);
+    let wsURL = import.meta.env.VITE_APP_URL || ''
+
+    wsURL = wsURL.replace('https', 'ws').replace('http', 'ws')
+
+    socket = new WebSocket(wsURL);
 
     socket.onopen = () => {
         const message = {
