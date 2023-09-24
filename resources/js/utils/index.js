@@ -17,3 +17,10 @@ export const getShortDate = (stringDate) => {
 
     return `${getZ(date.getDate())}.${getZ(date.getMonth())}.${getZ(date.getFullYear())}`
 }
+
+export const getCookie = (name) => {
+    let matches = document.cookie.match(new RegExp(
+        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+}

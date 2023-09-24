@@ -1,18 +1,18 @@
 import { createStore } from 'vuex';
 import { request } from '@/api';
+import { getCookie } from '@/utils'
 
 let socket;
 
 export const store = createStore({
     state() {
         const hash = window.location.pathname.replace('/_/', '').replace('/', '');
-        const token = window.localStorage.getItem('token');
 
         return {
             hash: hash,
             chats: [],
             me: null,
-            token: token,
+            token: getCookie('auth-session'),
             message: '',
             resumes: [],
         };
@@ -51,11 +51,11 @@ export const store = createStore({
         setMe: (state, { value = null }) => {
             state.me = value;
         },
-        setToken: (state, { value = null }) => {
-            state.token = value;
-
-            window.localStorage.setItem('token', value);
-        },
+        // setToken: (state, { value = null }) => {
+        //     state.token = value;
+        //
+        //     window.localStorage.setItem('token', value);
+        // },
         setMessage: (state, { value = '' }) => {
             state.message = value;
         },
@@ -126,14 +126,14 @@ export const initStore = async () => {
         });
     });
 
-    !store.state.token && await request('/api/token', 'GET', undefined, undefined, (data) => {
-        store.commit({
-            type: 'setToken',
-            value: data.data,
-        });
-    });
+    // !store.state.token && await request('/api/token', 'GET', undefined, undefined, (data) => {
+    //     store.commit({
+    //         type: 'setToken',
+    //         value: data.data,
+    //     });
+    // });
 
-    await request(`/api/resumes?token=${store.state.token}`, 'GET', undefined, undefined, data => {
+    await request(`/api/resumes`, 'GET', undefined, undefined, data => {
         store.commit({
             type: 'setResumes',
             value: data.data,
@@ -144,46 +144,54 @@ export const initStore = async () => {
 
     wsURL = wsURL.replace('https', 'wss').replace('http', 'ws')
 
-    socket = new WebSocket(wsURL);
+    const createWebSocketConnection = () => {
+        console.log('Пытаюсь установить WebSocket соединение')
 
-    socket.onopen = () => {
-        const message = {
-            id: Date.now(),
-            event: 'connection',
-            token: store.state.token,
+        socket = new WebSocket(wsURL)
+
+        socket.onopen = () => {
+            const message = {
+                id: Date.now(),
+                event: 'connection',
+                token: store.state.token,
+            };
+
+            socket.send(JSON.stringify(message))
+
+            console.log('WebSocket подключение установлено');
         };
 
-        // console.log(store.state.token);
+        socket.onmessage = (event) => {
+            const message = JSON.parse(event.data);
 
-        socket.send(JSON.stringify(message))
+            switch (message.event) {
+                case 'message':
+                    // form.message = '';
 
-        console.log('подюключение уставновленоо');
-    };
+                    store.commit({
+                        type: 'pushMessages',
+                        messages: [message.data],
+                        callback: () => {},
+                    });
 
-    socket.onmessage = (event) => {
-        const message = JSON.parse(event.data);
+                    break;
+            }
 
-        switch (message.event) {
-            case 'message':
-                // form.message = '';
+            console.log('Пришло сообщение:', message);
+        };
 
-                store.commit({
-                    type: 'pushMessages',
-                    messages: [message.data],
-                    callback: () => {},
-                });
+        socket.onclose = () => {
+            console.log('WebSocket соединение закрыто')
 
-                break;
-        }
+            setTimeout(() => createWebSocketConnection(), 2000)
+        };
 
-        console.log('Пришло сообщение:', message);
-    };
+        socket.onerror = (event) => {
+            console.log(`Не удалось устновить WebSocket соединение: ${event}. Делаю ещё одну попытку`)
 
-    socket.onclose = () => {
-        console.log('closed ws')
-    };
+            setTimeout(() => createWebSocketConnection(), 2000)
+        };
+    }
 
-    socket.onerror = () => {
-        console.log('error')
-    };
+    createWebSocketConnection()
 };

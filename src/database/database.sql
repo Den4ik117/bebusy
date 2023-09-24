@@ -19,11 +19,14 @@ create table users
 
 CREATE TABLE sessions
 (
-    uuid       VARCHAR(36) PRIMARY KEY,
-    user_id    BIGINT UNSIGNED NOT NULL,
-    expires_at TIMESTAMP       NULL,
-    updated_at TIMESTAMP       NULL,
-    created_at TIMESTAMP       NULL,
+    uuid             VARCHAR(36) PRIMARY KEY,
+    user_id          BIGINT UNSIGNED NOT NULL,
+    hh_access_token  VARCHAR(255)    NULL,
+    hh_expires_at    TIMESTAMP       NULL,
+    hh_refresh_token VARCHAR(255)    NULL,
+    expires_at       TIMESTAMP       NOT NULL,
+    updated_at       TIMESTAMP       NULL,
+    created_at       TIMESTAMP       NULL,
     constraint sessions_user_id_foreign foreign key (user_id) references users (id) on delete restrict
 ) collate = utf8mb4_unicode_ci;
 

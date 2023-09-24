@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { Service } from '../services'
+import { IUser } from '../models'
 
 export interface ResumeHandler {
     getResumes(req: Request, res: Response): void
@@ -8,17 +9,18 @@ export interface ResumeHandler {
 
 export const NewResumeHandler = async (service: Service): Promise<ResumeHandler> => {
     const getResumes = async (req: Request, res: Response) => {
-        const token = req.query.token
-
-        if (!token) return res.status(400).json({
-            message: 'Не указан токен',
-        })
-
-        const user = await service.UserService.getUserByToken(token as string)
-
-        if (!user) return res.status(404).json({
-            message: 'Пользователь с таким токеном не найден',
-        })
+        const { user }: { user: IUser } = req.body
+        // const token = req.query.token
+        //
+        // if (!token) return res.status(400).json({
+        //     message: 'Не указан токен',
+        // })
+        //
+        // const user = await service.UserService.getUserByToken(token as string)
+        //
+        // if (!user) return res.status(404).json({
+        //     message: 'Пользователь с таким токеном не найден',
+        // })
 
         const resumes = await service.ResumeService.getResumesByUserId(user.id)
 
@@ -27,17 +29,19 @@ export const NewResumeHandler = async (service: Service): Promise<ResumeHandler>
         })
     }
     const publishResume = async (req: Request, res: Response) => {
-        const token = req.query.token
+        const { user }: { user: IUser } = req.body
 
-        if (!token) return res.status(400).json({
-            message: 'Не указан токен',
-        })
-
-        const user = await service.UserService.getUserByToken(token as string)
-
-        if (!user) return res.status(404).json({
-            message: 'Пользователь с таким токеном не найден',
-        })
+        // const token = req.query.token
+        //
+        // if (!token) return res.status(400).json({
+        //     message: 'Не указан токен',
+        // })
+        //
+        // const user = await service.UserService.getUserByToken(token as string)
+        //
+        // if (!user) return res.status(404).json({
+        //     message: 'Пользователь с таким токеном не найден',
+        // })
 
         const { uuid } = req.params
 

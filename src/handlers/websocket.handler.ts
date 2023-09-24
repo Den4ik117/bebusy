@@ -10,7 +10,17 @@ export const NewWebSocketHandler = async (services: Service): Promise<WebSocketH
     const onConnection = async (ws: CustomWebSocket, message: WebsocketMessage): Promise<void> => {
         if (message.event !== 'connection') return
 
-        const user = await services.UserService.getUserByToken(message.token)
+        const session = await services.SessionService.getSessionByUuid(message.token)
+
+        if (!session) {
+            ws.send(JSON.stringify({
+                error: 'Сессия истекла',
+            }))
+
+            return
+        }
+
+        const user = await services.UserService.getUserById(session.user_id)
 
         if (!user) {
             ws.send(JSON.stringify({
@@ -30,7 +40,7 @@ export const NewWebSocketHandler = async (services: Service): Promise<WebSocketH
     const onMessage = async (ws: CustomWebSocket, message: WebsocketMessage): Promise<void> => {
         if (message.event !== 'message' || !ws.user) return
 
-        const createdMessage = await services.MessageService.createMessage({
+        await services.MessageService.createMessage({
             text: message.text,
             chat_id: message.chat_id,
             user_id: ws.user.id,

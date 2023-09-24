@@ -5,11 +5,10 @@ import path from 'path'
 
 export interface AuthHandler {
     showMainPage(req: Request, res: Response): Promise<void>
-    showLoginPage(req: Request, res: Response): Promise<void>
-    login(req: Request, res: Response): Promise<void>
     checkAuth(req: Request, res: Response, next: NextFunction): Promise<void>
     redirect(req: Request, res: Response): Promise<void>
     callback(req: Request, res: Response): Promise<void>
+    logout(req: Request, res: Response): Promise<void>
 }
 
 export const NewAuthHandler = async (service: Service): Promise<AuthHandler> => {
@@ -46,33 +45,6 @@ export const NewAuthHandler = async (service: Service): Promise<AuthHandler> => 
         })
     }
 
-    const showLoginPage = async (req: Request, res: Response) => {
-        res.render('login')
-    }
-
-    const login = async (req: Request, res: Response) => {
-        const { login } = req.body
-
-        if (!login) {
-            res.status(403).json({
-                message: 'Не заполнены данные: login',
-            })
-            return
-        }
-
-        const session = await service.SessionService.authenticate(login)
-
-        if (!session) {
-            res.status(403).json({
-                message: 'Не удалось авторизоваться',
-            })
-            return
-        }
-
-        res.cookie('auth-session', session.uuid)
-        res.redirect('/login')
-    }
-
     const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
         const sessionUuid = req.cookies['auth-session']
 
@@ -98,6 +70,18 @@ export const NewAuthHandler = async (service: Service): Promise<AuthHandler> => 
     }
 
     const redirect = async (req: Request, res: Response): Promise<void> => {
+        if (process.env.NODE_ENV === 'development') {
+            const session = await service.SessionService.getDevelopmentSession()
+
+            if (session) {
+                res.cookie('auth-session', session.uuid, {
+                    expires: new Date(session.expires_at),
+                })
+                res.redirect('/')
+                return
+            }
+        }
+
         const params = new URLSearchParams({
             response_type: 'code',
             client_id: <string> process.env.HH_CLIENT_ID,
@@ -128,16 +112,24 @@ export const NewAuthHandler = async (service: Service): Promise<AuthHandler> => 
             return
         }
 
-        res.cookie('auth-session', session.uuid)
-        res.redirect('/login')
+        res.cookie('auth-session', session.uuid, {
+            expires: new Date(session.expires_at),
+        })
+        res.redirect('/')
+    }
+
+    const logout = async (req: Request, res: Response): Promise<void> => {
+        res.cookie('auth-session', '', {
+            expires: new Date(),
+        })
+        res.redirect('/')
     }
 
     return {
         showMainPage,
-        showLoginPage,
-        login,
         checkAuth,
         redirect,
         callback,
+        logout,
     }
 }

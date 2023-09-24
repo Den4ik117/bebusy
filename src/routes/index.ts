@@ -16,9 +16,10 @@ export const createRouter = async (handlers: Handler): Promise<Routes> => {
 
     router.get('/oauth/redirect', handlers.AuthHandler.redirect)
     router.get('/oauth/callback', handlers.AuthHandler.callback)
+    router.get('/logout', handlers.AuthHandler.checkAuth, handlers.AuthHandler.logout)
 
-    router.get('/api/resumes', handlers.ResumeHandler.getResumes)
-    router.post('/api/resumes/:uuid/publish', handlers.ResumeHandler.publishResume)
+    router.get('/api/resumes', handlers.AuthHandler.checkAuth, handlers.ResumeHandler.getResumes)
+    router.post('/api/resumes/:uuid/publish', handlers.AuthHandler.checkAuth, handlers.ResumeHandler.publishResume)
 
     router.get('/api/me', handlers.AuthHandler.checkAuth, handlers.UserHandler.getCurrentUser)
     router.get('/api/token', handlers.AuthHandler.checkAuth, handlers.UserHandler.getToken)

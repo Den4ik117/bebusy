@@ -1,36 +1,21 @@
 import { Repository } from '../repositories'
-import {IHHResume, ISession} from '../models'
+import { IHHResume, ISession } from '../models'
 import { v4 as generateUuid } from 'uuid'
-import {getCurrentDatetime, getCurrentDatetimeFromDate} from '../utils'
-import axios, {AxiosError} from "axios";
+import { getCurrentDatetime, getCurrentDatetimeFromDate } from '../utils'
+import axios, { AxiosError } from 'axios'
 
 export interface SessionService {
-    authenticate(email: string): Promise<Omit<ISession, 'constructor'> | null>
     getSessionByUuid(uuid: string): Promise<ISession | undefined>
-    callback(code: string): Promise<Omit<ISession, 'constructor'> | null | undefined>
+    callback(code: string): Promise<ISession | null | undefined>
+    getDevelopmentSession(): Promise<ISession | undefined>
 }
 
 export const NewSessionService = async (repositories: Repository): Promise<SessionService> => {
-    const authenticate = async (email: string): Promise<Omit<ISession, 'constructor'> | null> => {
-        const user = await repositories.UserRepository.getUserByEmail(email)
-
-        if (!user) return null
-
-        const today = new Date()
-        const tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000))
-
-        return await repositories.SessionRepository.createSession({
-            uuid: generateUuid(),
-            user_id: user.id,
-            expires_at: getCurrentDatetimeFromDate(tomorrow)
-        })
-    }
-
     const getSessionByUuid = async (uuid: string): Promise<ISession | undefined> => {
         return await repositories.SessionRepository.getSessionByUuid(uuid)
     }
 
-    const callback = async (code: string): Promise<Omit<ISession, 'constructor'> | null | undefined> => {
+    const callback = async (code: string): Promise<ISession | null | undefined> => {
         const params = new URLSearchParams({
             client_id: <string> process.env.HH_CLIENT_ID,
             client_secret: <string> process.env.HH_CLIENT_SECRET,
@@ -112,6 +97,23 @@ export const NewSessionService = async (repositories: Repository): Promise<Sessi
                     created_at: getCurrentDatetime(),
                 })
             }
+
+            const chat = await repositories.ChatRepository.createChat({
+                uuid: generateUuid(),
+                name: user.last_name + ' ' + user.first_name,
+                type: 'PRIVATE',
+                created_at: getCurrentDatetime(),
+                updated_at: getCurrentDatetime(),
+            }, [2, user.id])
+
+            await repositories.MessageRepository.createMessage({
+                text: 'Чат создан',
+                user_id: null,
+                chat_id: chat.id,
+                resume_id: null,
+                updated_at: getCurrentDatetime(),
+                created_at: getCurrentDatetime(),
+            })
         } else {
             user = await repositories.UserRepository.updateUser({
                 id: user.id,
@@ -129,13 +131,27 @@ export const NewSessionService = async (repositories: Repository): Promise<Sessi
         return await repositories.SessionRepository.createSession({
             uuid: generateUuid(),
             user_id: user.id,
+            hh_access_token: access_token,
+            hh_expires_at: getCurrentDatetimeFromDate(new Date(Date.now() + expires_in)),
+            hh_refresh_token: refresh_token,
+            expires_at: getCurrentDatetimeFromDate(tomorrow)
+        })
+    }
+
+    const getDevelopmentSession = async (): Promise<ISession | undefined> => {
+        const today = new Date()
+        const tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000))
+
+        return await repositories.SessionRepository.createSession({
+            uuid: generateUuid(),
+            user_id: 1,
             expires_at: getCurrentDatetimeFromDate(tomorrow)
         })
     }
 
     return {
-        authenticate,
         getSessionByUuid,
         callback,
+        getDevelopmentSession,
     }
 }
