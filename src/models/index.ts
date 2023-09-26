@@ -4,6 +4,7 @@ import { IUpdate } from './update'
 import { IResume, IHHResume } from './resume'
 import { ISession } from './session'
 import { IChat, ChatType } from './chat'
+import { INodeChat } from './node-chat'
 
 export {
     User,
@@ -16,4 +17,5 @@ export {
     IChat,
     ChatType,
     IHHResume,
+    INodeChat,
 }

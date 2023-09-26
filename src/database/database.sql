@@ -142,3 +142,13 @@ create table updates
     constraint updates_user_id_foreign
         foreign key (user_id) references users (id)
 ) collate = utf8mb4_unicode_ci;
+
+create table node_chat
+(
+    chat_id bigint unsigned not null,
+    user_id bigint unsigned not null,
+    node_id bigint unsigned not null,
+    constraint node_chat_chat_id_foreign foreign key (chat_id) references chats (id) on delete restrict,
+    constraint node_chat_user_id_foreign foreign key (user_id) references users (id) on delete restrict,
+    unique index node_chat_chat_user_index (chat_id, user_id)
+) collate = utf8mb4_unicode_ci;

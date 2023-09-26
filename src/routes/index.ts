@@ -1,6 +1,7 @@
 import { Router, IRouter } from 'express'
 import { Handler } from '../handlers'
 import { WebSocketRouter, IWebSocketRouter } from './websockets'
+import { ResumeBotRouter } from './nodes'
 
 interface Routes {
     router: IRouter,
@@ -10,6 +11,7 @@ interface Routes {
 export const createRouter = async (handlers: Handler): Promise<Routes> => {
     const router = Router()
     const webSocketRouter = WebSocketRouter()
+    const resumeBotHandler = ResumeBotRouter(handlers)
 
     router.get('/',  handlers.AuthHandler.showMainPage)
     router.get('/_/:uuid',  handlers.AuthHandler.showMainPage)
@@ -22,12 +24,13 @@ export const createRouter = async (handlers: Handler): Promise<Routes> => {
     router.post('/api/resumes/:uuid/publish', handlers.AuthHandler.checkAuth, handlers.ResumeHandler.publishResume)
 
     router.get('/api/me', handlers.AuthHandler.checkAuth, handlers.UserHandler.getCurrentUser)
-    router.get('/api/token', handlers.AuthHandler.checkAuth, handlers.UserHandler.getToken)
+    // router.get('/api/token', handlers.AuthHandler.checkAuth, handlers.UserHandler.getToken)
     router.get('/api/chats', handlers.AuthHandler.checkAuth, handlers.ChatHandler.getMyChats)
 
     router.post('/bots/:token/sendMessage', handlers.BotHandler.sendMessage)
 
-    router.post('/bots/callback', handlers.ResumeBotHandler.receiveUpdate)
+    // router.post('/bots/callback', handlers.ResumeBotHandler.receiveUpdate)
+    router.post('/bots/callback', resumeBotHandler)
 
     webSocketRouter.receive('connection', handlers.WebSocketHandler.onConnection)
     webSocketRouter.receive('message', handlers.WebSocketHandler.onMessage)

@@ -5,6 +5,7 @@ import { NewUpdateRepository, UpdateRepository } from './update.repository'
 import { NewResumeRepository, ResumeRepository } from './resume.repository'
 import { NewSessionRepository, SessionRepository } from './session.repository'
 import { NewChatRepository, ChatRepository } from './chat.repository'
+import { NewNodeChatRepository, NodeChatRepository } from './node-chat.repository'
 
 export interface Repository {
     UserRepository: UserRepository
@@ -13,6 +14,7 @@ export interface Repository {
     ResumeRepository: ResumeRepository
     SessionRepository: SessionRepository
     ChatRepository: ChatRepository
+    NodeChatRepository: NodeChatRepository
 }
 
 export const createRepositories = async (connection: Connection): Promise<Repository> => ({
@@ -22,4 +24,5 @@ export const createRepositories = async (connection: Connection): Promise<Reposi
     ResumeRepository: await NewResumeRepository(connection),
     SessionRepository: await NewSessionRepository(connection),
     ChatRepository: await NewChatRepository(connection),
+    NodeChatRepository: await NewNodeChatRepository(connection),
 })

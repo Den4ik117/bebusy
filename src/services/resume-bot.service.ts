@@ -1,5 +1,5 @@
 import {Repository} from '../repositories'
-import {IAction, IUpdate} from '../models'
+import {IAction, INodeChat, IUpdate} from '../models'
 import axios from 'axios'
 
 type BotRequestConfig = {
@@ -19,6 +19,9 @@ const botRequest = (config: BotRequestConfig) => axios.post(
 
 export interface ResumeBotService {
     processUpdate(update: IUpdate): Promise<void>
+    getOrCreateNodeChatByChatIdAndUserId(chatId: number, userId: number): Promise<INodeChat>
+    sendMessage(chatId: number, text: string): void
+    updateNodeIdByChatIdAndUserId(chatId: number, userId: number, nodeId: number): Promise<void>
 }
 
 export const NewResumeBotService = async (repositories: Repository): Promise<ResumeBotService> => {
@@ -73,7 +76,42 @@ export const NewResumeBotService = async (repositories: Repository): Promise<Res
         }
     }
 
+    const getOrCreateNodeChatByChatIdAndUserId = async (chatId: number, userId: number): Promise<INodeChat> => {
+        let nodeChat = await repositories.NodeChatRepository.getNodeChatByChatIdAndUserId(chatId, userId)
+
+        if (!nodeChat) {
+            nodeChat = <INodeChat> await repositories.NodeChatRepository.createNodeChat({
+                chat_id: chatId,
+                user_id: userId,
+                node_id: 1,
+            })
+        }
+
+        return nodeChat
+    }
+
+    const sendMessage = async (chatId: number, text: string) => {
+        await botRequest({
+            method: 'sendMessage',
+            data: {
+                chat_id: chatId,
+                text: text,
+            },
+        })
+    }
+
+    const updateNodeIdByChatIdAndUserId = async (chatId: number, userId: number, nodeId: number): Promise<void> => {
+        await repositories.NodeChatRepository.updateNodeChat({
+            chat_id: chatId,
+            user_id: userId,
+            node_id: nodeId,
+        })
+    }
+
     return {
         processUpdate,
+        getOrCreateNodeChatByChatIdAndUserId,
+        sendMessage,
+        updateNodeIdByChatIdAndUserId,
     }
 }
