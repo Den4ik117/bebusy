@@ -3,8 +3,8 @@ import { Service } from '../services'
 
 export interface INode {
     id: number
-    middleware(req: BotRequest, res: BotResponse): BotResponse
-    handler(req: BotRequest, res: BotResponse): BotResponse
+    middleware(req: BotRequest, res: BotResponse): BotResponse | Promise<BotResponse>
+    handler(req: BotRequest, res: BotResponse): BotResponse | Promise<BotResponse>
 }
 
 export class BotRequest {
@@ -23,9 +23,10 @@ export class BotResponse {
     private readonly texts: string[]
     private readonly _actions: string[]
     private readonly services: Service
-    private readonly nodeChat: INodeChat
+    public readonly nodeChat: INodeChat
     private readonly nodes: INode[]
     private nextNodeId: number
+    private resumeId: number
 
     constructor(services: Service, nodeChat: INodeChat, nodes: INode[]) {
         this.texts = []
@@ -34,6 +35,7 @@ export class BotResponse {
         this.nodeChat = nodeChat
         this.nodes = nodes
         this.nextNodeId = 0
+        this.resumeId = 0
     }
 
     public text(text: string): this {
@@ -63,6 +65,12 @@ export class BotResponse {
         return this
     }
 
+    public resume(id: number): this {
+        this.resumeId = id
+
+        return this
+    }
+
     public run(): INode | undefined {
         if (this.nextNodeId !== 0) {
             this.services.ResumeBotService.updateNodeIdByChatIdAndUserId(
@@ -80,12 +88,24 @@ export class BotResponse {
         }
 
         for (let i = 0; i < this.texts.length; i++) {
+            const resumeId = this.resumeId !== 0 && i === this.text.length - 1 ? this.resumeId : undefined
+
             this.services.ResumeBotService.sendMessage(
                 this.nodeChat.chat_id,
                 this.texts[i],
                 actions.length > 0 ? actions : undefined,
+                resumeId,
             )
         }
+
+        // if (this.resumeId !== 0) {
+        //     this.services.ResumeBotService.sendMessage(
+        //         this.nodeChat.chat_id,
+        //         'Резюме',
+        //         actions.length > 0 ? actions : undefined,
+        //         this.resumeId,
+        //     )
+        // }
 
         return undefined
     }

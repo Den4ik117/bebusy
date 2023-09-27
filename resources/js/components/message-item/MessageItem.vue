@@ -17,7 +17,7 @@
                 class="rounded-md p-2 text-sm whitespace-pre-wrap relative"
                 :class="{ 'bg-[#212121] rounded-bl-none ml-[9px]': !isMe, 'bg-indigo-600 rounded-br-none mr-[9px]': isMe }"
             >
-                <ResumeMessage v-if="message.resume"/>
+                <ResumeMessage v-if="message.resume" :resume="message.resume"/>
                 <span v-else>{{ message.text }}</span>
 
                 <svg v-if="isMe" width="9" height="20" class="absolute -right-[9px] -bottom-[3px] fill-indigo-600">

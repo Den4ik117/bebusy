@@ -5,6 +5,7 @@ import { IResume, IHHResume } from './resume'
 import { ISession } from './session'
 import { IChat, ChatType } from './chat'
 import { INodeChat } from './node-chat'
+import { IOpinion } from './opinion'
 
 export {
     User,
@@ -18,4 +19,5 @@ export {
     ChatType,
     IHHResume,
     INodeChat,
+    IOpinion,
 }

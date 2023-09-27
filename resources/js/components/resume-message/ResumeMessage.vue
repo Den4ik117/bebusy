@@ -1,86 +1,97 @@
 <template>
     <div class="w-[90px] float-right">
-        <img class="w-full h-auto" src="https://img.hhcdn.ru/photo/702377879.jpeg?t=1695058534&h=DvPhumQAilUwp4V3OV37dg" alt="image">
+        <img class="w-full h-auto" :src="data.photo.medium" alt="Аватар резюме">
     </div>
-    <p class="text-base font-medium">Загвоздин Денис Сергеевич</p>
-    <p class="text-xs mt-4">Мужчина, 20 лет, родился 3 сентября 2003</p>
+    <p class="text-base font-medium">{{ `${data.last_name} ${data.first_name} ${data.middle_name}` }}</p>
+    <p class="text-xs mt-4">{{ data.gender.name }}, {{ getAge(data.birth_date) }}, родился {{ getHumanDate(data.birth_date) }}</p>
     <p class="text-gray-500 text-xs mt-4 uppercase"><small>Контакты</small></p>
     <p class="text-xs flex flex-col mt-2">
-        <span><i class="bi bi-check2 text-green-400"></i> +7 (908) 067-52-95</span>
-        <span class="text-gray-500 uppercase"><small>Телефон подтверждён</small></span>
-        <span><a class="text-indigo-500 hover:text-indigo-600" href="mailto:my@deniszagvozdin.ru">my@deniszagvozdin.ru</a> — предпочитаемый способ связи</span>
-        <span><a class="text-indigo-500 hover:text-indigo-600" href="https://deniszagvozdin.ru/" target="_blank">https://deniszagvozdin.ru/</a></span>
+        <template v-for="contact in data.contact">
+            <template v-if="contact.type.id === 'cell'">
+                <span><i class="bi bi-check2 text-green-400"></i> {{ contact.value.formatted }}{{ contact.preferred ? ' — предпочитаемый способ связи' : '' }}</span>
+                <span v-if="contact.verified" class="text-gray-500 uppercase"><small>Телефон подтверждён</small></span>
+            </template>
+
+            <template v-if="contact.type.id === 'email'">
+                <span><a class="text-indigo-500 hover:text-indigo-600" :href="`mailto:${contact.value}`">{{ contact.value }}</a>{{ contact.preferred ? ' — предпочитаемый способ связи' : '' }}</span>
+            </template>
+        </template>
+
+        <template v-for="site in data.site">
+            <span><a class="text-indigo-500 hover:text-indigo-600" :href="site.url" target="_blank">{{ site.url }}</a></span>
+        </template>
     </p>
-    <p class="text-xs mt-4">Екатеринбург, м. Площадь 1905 года, не готов к переезду, не готов к командировкам</p>
-    <p class="text-sm font-medium mt-6">Full-Stack веб-разработчик (PHP, JS)</p>
-    <p class="text-sm mt-4">65 000 ₽ на руки</p>
+    <p class="text-xs mt-4">{{ data.area.name }}, м. {{ data.metro?.name }}, {{ data.relocation?.type?.name }}, {{ data.business_trip_readiness?.name }}</p>
+    <p class="text-sm font-medium mt-6">{{ data.title }}</p>
+    <p class="text-sm mt-4">{{ data.salary.amount }} ₽ на руки</p>
     <p class="text-xs mt-4">Специализации:</p>
     <ul class="flex flex-col text-xs mt-1 list-disc list-inside">
-        <li>Программист, разработчик</li>
+        <li
+            v-for="role in data.professional_roles"
+        >{{ role.name }}</li>
     </ul>
-    <p class="text-xs mt-4">Занятость: полная занятость</p>
-    <p class="text-xs mt-1">График работы: полный день, гибкий график</p>
-    <p class="text-sm text-gray-500 mt-6">Опыт работы 4 года 2 месяца</p>
-    <p class="text-xs mt-4">Август 2019 — по настоящее время</p>
-    <p class="text-xs text-gray-500 mt-1">4 года 2 месяца</p>
-    <p class="text-xs font-semibold mt-1">Индивидуальное предпринимательство / частная практика / фриланс</p>
-    <p class="text-xs mt-1">Екатеринбург, yandex.ru/uslugi/profile/DenisZ-556276</p>
-    <p class="text-xs font-semibold mt-4">Фрилансер (самозанятость)</p>
-    <p class="text-xs mt-1">За время деятельности в одиночку выполнил 3 крупных коммерческих проекта:<br><br>1) «НИЦ СГЦ» ―
-        компания, занимающаяся проектно-изыскательной работой. Результат работы ― сайт для специалистов,
-        которые делают осмотр на объекте. Я научился:<br>✦ создавать структуру для большого приложения;<br>✦
-        генерировать отчёты в формате DOCX и PDF;<br>✦ делить код на небольшие Vue-компоненты;<br>✦
-        организовывать аутентификацию (роли и разрешения).<br><br>2) Аналог сайта banki.ru ―
-        высоконагруженный ресурс, нацеленный преимущественно иностранцам упростить взаимодействие с
-        налоговой инспекцией. Новые знания:<br>✦ оптимизация SQL запросов;<br>✦ полнотекстовой поиск;<br>✦
-        написание тестов.<br><br>3) «ГИФА инжиниринг» ― горизонтальное бурение скважин. Проект свежий,
-        поэтому остаётся только наблюдать, какие дивиденды он принесёт компании. Достижения:<br>✦ soft
-        skills: чтобы уложиться в сроки, потребовался определённый уровень самоорганизации ― график работы,
-        отслеживание прогресса, регулярные созвоны;<br>✦ в вопросах SEO-оптимизации кода была необходимость
-        убедить клиента, что современные поисковые роботы умеют обрабатывать асинхронные веб-сайты;<br>✦
-        изучил skrollr ― библиотека с анимацией при скроллинге;<br>✦ создание REST API.<br><br>На собеседовании
-        всё готов показать и рассказать более подробнее.
-    </p>
+    <p class="text-xs mt-4">Занятость: {{ data.employment.name }}</p>
+    <p class="text-xs mt-1">График работы: {{ data.schedules.map(schedule => schedule.name.toLowerCase()).join(', ') }}</p>
+    <p class="text-sm text-gray-500 mt-6">Опыт работы {{ getHumanExperience(data.total_experience.months) }}</p>
+    <template v-for="experience in data.experience">
+        <p class="text-xs mt-4">{{ experience.start }} — {{ experience.end || 'по настоящее время' }}</p>
+<!--        <p class="text-xs text-gray-500 mt-1">{{ data.total_experience.months }}</p>-->
+        <p class="text-xs font-semibold mt-1">{{ experience.company }}</p>
+        <p class="text-xs mt-1">{{ experience.area.name }}, {{ experience.company_url }}</p>
+        <p class="text-xs font-semibold mt-4">{{ experience.position }}</p>
+        <p class="text-xs mt-1" v-html="experience.description.replaceAll('\n', '<br>')"></p>
+    </template>
     <p class="text-sm text-gray-500 mt-6">Ключевые навыки</p>
     <ul class="text-xs flex flex-wrap gap-2 mt-4">
-        <li class="bg-gray-800 px-2 py-1 rounded-full">Исполнительность</li>
-        <li class="bg-gray-800 px-2 py-1 rounded-full">Клиентоориентированность</li>
-        <li class="bg-gray-800 px-2 py-1 rounded-full">Семантическая верстка</li>
-        <li class="bg-gray-800 px-2 py-1 rounded-full">HTML</li>
-        <li class="bg-gray-800 px-2 py-1 rounded-full">CSS</li>
-        <li class="bg-gray-800 px-2 py-1 rounded-full">JavaScript</li>
+        <li
+            v-for="skill in data.skill_set"
+            :key="skill"
+            class="bg-gray-800 px-2 py-1 rounded-full"
+        >{{ skill }}</li>
     </ul>
     <p class="text-sm text-gray-500 mt-6">Опыт вождения</p>
-    <p class="text-xs mt-4">Права категории B</p>
+    <template v-for="license in data.driver_license_types">
+        <p class="text-xs mt-4">Права категории {{ license.id }}</p>
+    </template>
     <p class="text-sm text-gray-500 mt-6">Обо мне</p>
-    <p class="text-xs mt-4">Я студент второго курса. Поступил на программиста, чтобы с имеющимися знаниями было проще учиться и
-        была возможность параллельно работать.<br><br>Я занимаюсь волейболом. На университетских тренировках
-        часто группе не хватает лидера, который грамотно распределил бы участников по командам и следил за
-        порядком. В силу опыта (лучший в команде) в игре волейбол мне нравится эту ответственность брать на
-        себя.<br><br>Мне нравится быть руководителем. Но у меня нет навыка разработки в команде и 3 года
-        коммерческого опыта ― мало, чтобы брать на себя такую ответственность. Хочу к 27 годам стать
-        тимлидом. Поэтому сейчас я готов полностью отдаваться работе, впитывать новые знания, набираться
-        опытом, учиться новым технологиям и применять уже имеющиеся знания.<br><br>Не имею вредных привычек,
-        веду блог на своём сайте, помогаю студентам с математикой и программированием, с сентября увлёкся
-        Golang'ом.<br><br>Технологии, опыт работы с ними и оценка:<br>﹡ PHP: 3 года (4/5)<br>﹡ JavaScript (ES5): 3
-        года (4/5)<br>﹡ Laravel: 2 года (5/5)<br>﹡ VueJS 3: 1,5 года (4/5)<br>﹡ HTML + CSS + БЭМ: 2 года (5/5)<br>﹡
-        MySQL: 3 года (3/5)<br>﹡ Docker: менее года (1/5)<br>﹡ Git: 1 год (2/5)<br>﹡ REST API: 1 год (3/5)
-    </p>
-    <p class="text-sm text-gray-500 mt-6">Неоконченное высшее образование</p>
-    <p class="text-xs mt-4 flex flex-col">
-        <span>2025</span>
-        <span class="font-bold">Уральский федеральный университет имени первого Президента России Б.Н. Ельцина, Екатеринбург</span>
-        <span>Институт радиоэлектроники и информационных технологий-РТФ, Информатика и вычислительная техника</span>
-    </p>
+    <p class="text-xs mt-4" v-html="data.skills.replaceAll('\n', '<br>')"></p>
+    <p class="text-sm text-gray-500 mt-6">{{ data.education.level.name || 'Какое-то' }} образование</p>
+    <template v-for="primary in data.education.primary">
+        <p class="text-xs mt-4 flex flex-col">
+            <span>{{ primary.year }}</span>
+            <span class="font-bold">{{ primary.name }}</span>
+            <span>{{ primary.organization }}, {{ primary.result }}</span>
+        </p>
+    </template>
     <p class="text-sm text-gray-500 mt-6">Знания языков</p>
     <ul class="text-xs mt-4 flex flex-col gap-2">
-        <li class="bg-gray-800 px-2 py-1 rounded-full self-start">Русский — Родной</li>
-        <li class="bg-gray-800 px-2 py-1 rounded-full self-start">Английский — B1 — Средний</li>
+        <li
+            v-for="language in data.language"
+            class="bg-gray-800 px-2 py-1 rounded-full self-start"
+        >{{ language.name }} — {{ language.level.name }}</li>
     </ul>
     <p class="text-sm text-gray-500 mt-6">Гражданство, время в пути до работы</p>
     <p class="text-xs mt-4 flex flex-col">
-        <span>Гражданство: Россия</span>
-        <span>Разрешение на работу: Россия</span>
-        <span>Желательное время в пути до работы: не имеет значения</span>
+        <span>Гражданство: {{ data.citizenship.map(c => c.name).join(', ') }}</span>
+        <span>Разрешение на работу: {{ data.work_ticket.map(w => w.name).join(', ') }}</span>
+        <span>Желательное время в пути до работы: {{ data.travel_time.name }}</span>
     </p>
 </template>
+
+<script setup>
+import { onMounted } from 'vue'
+import {getAge, getHumanDate, getHumanExperience} from '@/utils'
+
+const props = defineProps({
+    resume: {
+        type: Object,
+        required: true,
+    },
+})
+
+const data = props.resume.data
+
+// onMounted(() => {
+//     console.log(props.resume.data);
+// })
+</script>

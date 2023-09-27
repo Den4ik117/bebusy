@@ -1,6 +1,7 @@
 import {Repository} from '../repositories'
-import {IAction, INodeChat, IUpdate} from '../models'
+import {IAction, INodeChat, IOpinion, IResume, IUpdate} from '../models'
 import axios from 'axios'
+import {getCurrentDatetime, getRandomInteger} from '../utils'
 
 type BotRequestConfig = {
     method: 'sendMessage',
@@ -20,8 +21,17 @@ const botRequest = (config: BotRequestConfig) => axios.post(
 export interface ResumeBotService {
     processUpdate(update: IUpdate): Promise<void>
     getOrCreateNodeChatByChatIdAndUserId(chatId: number, userId: number): Promise<INodeChat>
-    sendMessage(chatId: number, text: string, actions?: IAction[][]): void
+    sendMessage(chatId: number, text: string, actions?: IAction[][], resumeId?: number): void
     updateNodeIdByChatIdAndUserId(chatId: number, userId: number, nodeId: number): Promise<void>
+    getRandomResume(userId: number): Promise<IResume | undefined>
+    applyResumeOpinion(resumeId: number, userId: number): Promise<IOpinion | undefined>
+    getUncompletedOpinion(userId: number): Promise<IOpinion | undefined>
+    updateOptionPhoto(opinionId: number, photo: number): Promise<IOpinion | undefined>
+    updateOptionReadable(opinionId: number, readable: number): Promise<IOpinion | undefined>
+    updateOptionCapacity(opinionId: number, capacity: number): Promise<IOpinion | undefined>
+    updateOptionExperience(opinionId: number, experience: number): Promise<IOpinion | undefined>
+    updateOptionTotal(opinionId: number, total: number): Promise<IOpinion | undefined>
+    updateOptionCommentAndCompletedAt(opinionId: number, comment: string): Promise<IOpinion | undefined>
 }
 
 export const NewResumeBotService = async (repositories: Repository): Promise<ResumeBotService> => {
@@ -90,13 +100,14 @@ export const NewResumeBotService = async (repositories: Repository): Promise<Res
         return nodeChat
     }
 
-    const sendMessage = async (chatId: number, text: string, actions?: IAction[][]) => {
+    const sendMessage = async (chatId: number, text: string, actions?: IAction[][], resumeId?: number) => {
         await botRequest({
             method: 'sendMessage',
             data: {
                 chat_id: chatId,
                 text,
                 actions,
+                resume_id: resumeId,
             },
         })
     }
@@ -109,10 +120,74 @@ export const NewResumeBotService = async (repositories: Repository): Promise<Res
         })
     }
 
+    const getRandomResume = async (userId: number): Promise<IResume | undefined> => {
+        const opinions = await repositories.OpinionRepository.getOpinionsByUserId(userId)
+
+        const resumeIds = opinions.map(opinion => opinion.resume_id)
+
+        const resumes = await repositories.ResumeRepository.getAvailableResumesExcludeIds(resumeIds)
+
+        if (resumes.length === 0) return undefined
+
+        const index = getRandomInteger(0, resumes.length - 1)
+
+        return resumes[index]
+    }
+
+    const applyResumeOpinion = async (resumeId: number, userId: number): Promise<IOpinion | undefined> => {
+        return await repositories.OpinionRepository.createOpinion({
+            resume_id: resumeId,
+            user_id: userId,
+            updated_at: getCurrentDatetime(),
+            created_at: getCurrentDatetime(),
+        })
+    }
+
+    const getUncompletedOpinion = async (userId: number): Promise<IOpinion | undefined> => {
+        return await repositories.OpinionRepository.getUncompletedOpinion(userId)
+    }
+
+    const updateOptionPhoto = async (opinionId: number, photo: number): Promise<IOpinion | undefined> => {
+        return await repositories.OpinionRepository.updateOptionPhoto(opinionId, photo)
+    }
+
+    const updateOptionReadable = async (opinionId: number, readable: number): Promise<IOpinion | undefined> => {
+        return await repositories.OpinionRepository.updateOptionReadable(opinionId, readable)
+    }
+
+    const updateOptionCapacity = async (opinionId: number, capacity: number): Promise<IOpinion | undefined> => {
+        return await repositories.OpinionRepository.updateOptionCapacity(opinionId, capacity)
+    }
+
+    const updateOptionExperience = async (opinionId: number, experience: number): Promise<IOpinion | undefined> => {
+        return await repositories.OpinionRepository.updateOptionExperience(opinionId, experience)
+    }
+
+    const updateOptionTotal = async (opinionId: number, total: number): Promise<IOpinion | undefined> => {
+        return await repositories.OpinionRepository.updateOptionTotal(opinionId, total)
+    }
+
+    const updateOptionCommentAndCompletedAt = async (opinionId: number, comment: string): Promise<IOpinion | undefined> => {
+        return await repositories.OpinionRepository.updateOptionCommentAndCompletedAt(
+            opinionId,
+            getCurrentDatetime(),
+            comment,
+        )
+    }
+
     return {
         processUpdate,
         getOrCreateNodeChatByChatIdAndUserId,
         sendMessage,
         updateNodeIdByChatIdAndUserId,
+        getRandomResume,
+        applyResumeOpinion,
+        getUncompletedOpinion,
+        updateOptionPhoto,
+        updateOptionReadable,
+        updateOptionCapacity,
+        updateOptionExperience,
+        updateOptionTotal,
+        updateOptionCommentAndCompletedAt,
     }
 }

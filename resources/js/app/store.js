@@ -14,7 +14,7 @@ export const store = createStore({
             me: null,
             token: getCookie('auth-session'),
             message: '',
-            resumes: [],
+            // resumes: [],
         };
     },
     getters: {
@@ -59,16 +59,16 @@ export const store = createStore({
         setMessage: (state, { value = '' }) => {
             state.message = value;
         },
-        setResumes: (state, { value = [] }) => {
-            state.resumes = value;
-        },
-        setResume: (state, { value }) => {
-            const index = state.resumes.findIndex(resume => resume.id === value.id)
-
-            if (!state.resumes[index]) return
-
-            state.resumes[index] = value
-        },
+        // setResumes: (state, { value = [] }) => {
+        //     state.resumes = value;
+        // },
+        // setResume: (state, { value }) => {
+        //     const index = state.resumes.findIndex(resume => resume.id === value.id)
+        //
+        //     if (!state.resumes[index]) return
+        //
+        //     state.resumes[index] = value
+        // },
     },
     actions: {
         sendMessage: (context) => {
@@ -87,20 +87,20 @@ export const store = createStore({
                 value: '',
             })
         },
-        publishResume: (context, { uuid }) => {
-            request(
-                `/api/resumes/${uuid}/publish?token=${store.state.token}`,
-                'POST',
-                undefined,
-                undefined,
-                (data) => {
-                    context.commit({
-                        type: 'setResume',
-                        value: data.data,
-                    })
-                }
-            )
-        }
+        // publishResume: (context, { uuid }) => {
+        //     request(
+        //         `/api/resumes/${uuid}/publish?token=${store.state.token}`,
+        //         'POST',
+        //         undefined,
+        //         undefined,
+        //         (data) => {
+        //             context.commit({
+        //                 type: 'setResume',
+        //                 value: data.data,
+        //             })
+        //         }
+        //     )
+        // }
     },
 });
 
@@ -133,12 +133,12 @@ export const initStore = async () => {
     //     });
     // });
 
-    await request(`/api/resumes`, 'GET', undefined, undefined, data => {
-        store.commit({
-            type: 'setResumes',
-            value: data.data,
-        })
-    })
+    // await request(`/api/resumes`, 'GET', undefined, undefined, data => {
+    //     store.commit({
+    //         type: 'setResumes',
+    //         value: data.data,
+    //     })
+    // })
 
     let wsURL = import.meta.env.VITE_APP_URL || ''
 
@@ -183,13 +183,13 @@ export const initStore = async () => {
         socket.onclose = () => {
             console.log('WebSocket соединение закрыто')
 
-            setTimeout(() => createWebSocketConnection(), 2000)
+            // setTimeout(() => createWebSocketConnection(), 2000)
         };
 
         socket.onerror = (event) => {
             console.log(`Не удалось устновить WebSocket соединение: ${event}. Делаю ещё одну попытку`)
 
-            setTimeout(() => createWebSocketConnection(), 2000)
+            // setTimeout(() => createWebSocketConnection(), 2000)
         };
     }
 

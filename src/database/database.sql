@@ -110,8 +110,7 @@ create index files_fileable_type_fileable_id_index
 
 create table opinions
 (
-    id           bigint unsigned auto_increment
-        primary key,
+    id           bigint unsigned auto_increment primary key,
     resume_id    bigint unsigned   not null,
     user_id      bigint unsigned   not null,
     photo        smallint unsigned null,

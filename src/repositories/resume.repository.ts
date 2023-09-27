@@ -7,6 +7,7 @@ export interface ResumeRepository {
     updateResumePublishedAtById(id: number, publishedAt: string): Promise<void>
     getResumeById(id: number): Promise<IResume | undefined>
     createResume(resume: Pick<IResume, 'uuid' | 'user_id' | 'data' | 'created_at' | 'updated_at'>): Promise<void>
+    getAvailableResumesExcludeIds(resumeIds: number[]): Promise<IResume[]>
 }
 
 export const NewResumeRepository = async (connection: Connection): Promise<ResumeRepository> => {
@@ -51,11 +52,22 @@ export const NewResumeRepository = async (connection: Connection): Promise<Resum
         )
     }
 
+    const getAvailableResumesExcludeIds = async (resumeIds: number[]): Promise<IResume[]> => {
+        const query = resumeIds.length > 0
+            ? `SELECT * FROM \`resumes\` WHERE published_at IS NOT NULL AND id NOT IN (${resumeIds.join(',')})`
+            : 'SELECT * FROM `resumes` WHERE published_at IS NOT NULL'
+
+        const [rows] = await connection.execute<IResume[]>(query)
+
+        return rows
+    }
+
     return {
         getResumesByUserId,
         getResumeByUserIdAndUuid,
         updateResumePublishedAtById,
         getResumeById,
         createResume,
+        getAvailableResumesExcludeIds,
     }
 }
