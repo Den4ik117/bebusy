@@ -20,7 +20,7 @@ const botRequest = (config: BotRequestConfig) => axios.post(
 export interface ResumeBotService {
     processUpdate(update: IUpdate): Promise<void>
     getOrCreateNodeChatByChatIdAndUserId(chatId: number, userId: number): Promise<INodeChat>
-    sendMessage(chatId: number, text: string): void
+    sendMessage(chatId: number, text: string, actions?: IAction[][]): void
     updateNodeIdByChatIdAndUserId(chatId: number, userId: number, nodeId: number): Promise<void>
 }
 
@@ -90,12 +90,13 @@ export const NewResumeBotService = async (repositories: Repository): Promise<Res
         return nodeChat
     }
 
-    const sendMessage = async (chatId: number, text: string) => {
+    const sendMessage = async (chatId: number, text: string, actions?: IAction[][]) => {
         await botRequest({
             method: 'sendMessage',
             data: {
                 chat_id: chatId,
-                text: text,
+                text,
+                actions,
             },
         })
     }

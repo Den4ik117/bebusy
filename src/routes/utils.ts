@@ -1,4 +1,4 @@
-import {INodeChat, IUpdate} from '../models'
+import {IAction, INodeChat, IUpdate} from '../models'
 import { Service } from '../services'
 
 export interface INode {
@@ -10,15 +10,18 @@ export interface INode {
 export class BotRequest {
     public readonly update: IUpdate
     public readonly node: INode
+    public readonly message: string
 
     constructor(update: IUpdate, node: INode) {
         this.update = update
         this.node = node
+        this.message = update.message?.text || ''
     }
 }
 
 export class BotResponse {
     private readonly texts: string[]
+    private readonly _actions: string[]
     private readonly services: Service
     private readonly nodeChat: INodeChat
     private readonly nodes: INode[]
@@ -26,6 +29,7 @@ export class BotResponse {
 
     constructor(services: Service, nodeChat: INodeChat, nodes: INode[]) {
         this.texts = []
+        this._actions = []
         this.services = services
         this.nodeChat = nodeChat
         this.nodes = nodes
@@ -48,6 +52,17 @@ export class BotResponse {
         return this
     }
 
+    public actions(action: string|string[]): this {
+        if (typeof action === 'object') {
+            this._actions.push(...action)
+            return this
+        }
+
+        this._actions.push(action)
+
+        return this
+    }
+
     public run(): INode | undefined {
         if (this.nextNodeId !== 0) {
             this.services.ResumeBotService.updateNodeIdByChatIdAndUserId(
@@ -58,10 +73,17 @@ export class BotResponse {
             return this.nodes.find(node => node.id === this.nextNodeId)
         }
 
+        const actions: IAction[][] = []
+
+        for (let i = 0; i < this._actions.length; i++) {
+            actions.push([{ text: this._actions[i] }])
+        }
+
         for (let i = 0; i < this.texts.length; i++) {
             this.services.ResumeBotService.sendMessage(
                 this.nodeChat.chat_id,
                 this.texts[i],
+                actions.length > 0 ? actions : undefined,
             )
         }
 
