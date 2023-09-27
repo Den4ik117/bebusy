@@ -8,7 +8,7 @@
         >
         <div class="absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-25"></div>
         <div class="absolute top-0 left-0 right-0 bottom-0 grid grid-rows-[1fr_min-content]">
-            <div ref="messageBox" class="flex flex-col gap-2 max-h-full p-2 overflow-y-auto">
+            <div ref="messageBox" class="flex flex-col gap-2 max-h-full p-2 overflow-x-hidden overflow-y-auto">
                 <template v-if="activeChat && activeChat.messages">
                     <MessageItem
                         v-for="(message, index) in activeChat.messages"
