@@ -1,6 +1,7 @@
 import { Handler } from '../handlers'
 import { Request, Response } from 'express'
-import {BotRequest, BotResponse, INode} from './utils'
+import { INode } from './utils'
+import { logger } from '../utils'
 
 const scale = [
     '1. Очень плохо',
@@ -158,6 +159,14 @@ export const ResumeBotRouter = (handlers: Handler) => {
     ]
 
     return async (req: Request, res: Response) => {
-        await handlers.ResumeBotHandler.handleUpdate(req, res, nodes)
+        try {
+            await handlers.ResumeBotHandler.handleUpdate(req, res, nodes)
+        } catch (e) {
+            if (e instanceof Error) {
+                logger.error(`При обработке сообщения произошла ошибка: ${e.message}`)
+            } else {
+                logger.info('При обработке сообщения произошла неизвестная ошибка')
+            }
+        }
     }
 }

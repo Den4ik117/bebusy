@@ -3,6 +3,7 @@ import { Service } from '../services'
 import { IUpdate } from '../models'
 import {BotRequest, BotResponse, INode} from '../routes/utils';
 import {stat} from 'fs';
+import {logger} from '../utils';
 
 export interface ResumeBotHandler {
     receiveUpdate(req: Request, res: Response): Promise<void>
@@ -101,24 +102,35 @@ export const NewResumeBotHandler = async (service: Service): Promise<ResumeBotHa
         const botRequest = new BotRequest(update, node)
         let botResponse = new BotResponse(service, nodeChat, nodes)
 
-        let response = node.middleware(botRequest, botResponse)
+        try {
+            let response = node.middleware(botRequest, botResponse)
 
-        if (response instanceof Promise) {
-            response = await response
-        }
-
-        const nextNode = response.run()
-
-        if (nextNode) {
-            botResponse = new BotResponse(service, nodeChat, nodes)
-
-            let result = nextNode.handler(botRequest, botResponse)
-
-            if (result instanceof Promise) {
-                result = await result
+            if (response instanceof Promise) {
+                response = await response
             }
 
-            result.run()
+            const nextNode = response.run()
+
+            if (nextNode) {
+                botResponse = new BotResponse(service, nodeChat, nodes)
+
+                let result = nextNode.handler(botRequest, botResponse)
+
+                if (result instanceof Promise) {
+                    result = await result
+                }
+
+                result.run()
+            }
+        } catch (e) {
+            if (e instanceof Error) {
+                logger.error(`Ошибка: ${e.message}. Вход: ${JSON.stringify(BotRequest)}. Выход: ${JSON.stringify(BotResponse)}`)
+            } else {
+                logger.error(`Ошибка. Вход: ${JSON.stringify(BotRequest)}. Выход: ${JSON.stringify(BotResponse)}`)
+            }
+
+            res.status(500).end()
+            return
         }
 
         res.status(204).end()

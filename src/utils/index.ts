@@ -1,4 +1,5 @@
 import { Server } from 'ws'
+import { createLogger, format, transports } from 'winston'
 
 export interface IApplication {
     websocket: Server | null
@@ -44,3 +45,18 @@ export const getRandomInteger = (min: number, max: number) => {
     max = Math.floor(max)
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
+
+export const logger = createLogger({
+    level: 'info',
+    format: format.combine(
+        format.timestamp({
+            format: 'DD.MM.YYYY HH:mm:ss',
+        }),
+        format.printf(({ level, message, timestamp }) => {
+            return `[${timestamp}] ${level.toUpperCase()}: ${message}`
+        }),
+    ),
+    transports: [
+        new transports.File({ filename: 'logs/express.log' }),
+    ],
+})

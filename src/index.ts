@@ -10,33 +10,20 @@ import { createRouter } from './routes'
 import { createHandlers, createWebsocketHandlers } from './handlers'
 import cors from 'cors'
 import path from 'path'
+import { logger } from './utils'
 
 (async () => {
     dotenv.config()
 
-    if (process.env.NODE_ENV === 'production') {
-        await new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve(true);
-            }, 5000)
-        })
-    }
-
-    // let connection
-    // try {
-        const connection = await createConnection()
-    // } catch (e) {
-    //     console.log('ERROROROOROR')
-    //     console.log({
-    //         host: process.env.DB_HOST,
-    //         port: +(process.env.DB_PORT || 3306),
-    //         database: process.env.DB_DATABASE,
-    //         user: process.env.DB_USERNAME,
-    //         password: process.env.DB_PASSWORD,
+    // if (process.env.NODE_ENV === 'production') {
+    //     await new Promise((resolve, reject) => {
+    //         setTimeout(() => {
+    //             resolve(true);
+    //         }, 5000)
     //     })
-    //     console.log(e)
     // }
-    // @ts-ignore
+
+    const connection = await createConnection()
     const repositories = await createRepositories(connection)
     const services = await createServices(repositories)
     const handlers = await createHandlers(services)
@@ -44,7 +31,12 @@ import path from 'path'
 
     const app = express()
 
-    app.set('view engine', 'ejs');
+    app.set('view engine', 'ejs')
+
+    app.use((req, res, next) => {
+        logger.info(`${req.method} ${req.url}`)
+        next()
+    })
 
     app.use(cors())
 
