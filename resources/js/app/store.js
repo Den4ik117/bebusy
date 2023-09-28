@@ -183,13 +183,13 @@ export const initStore = async () => {
         socket.onclose = () => {
             console.log('WebSocket соединение закрыто')
 
-            // setTimeout(() => createWebSocketConnection(), 2000)
+            setTimeout(() => createWebSocketConnection(), 2000)
         };
 
         socket.onerror = (event) => {
             console.log(`Не удалось устновить WebSocket соединение: ${event}. Делаю ещё одну попытку`)
 
-            // setTimeout(() => createWebSocketConnection(), 2000)
+            setTimeout(() => createWebSocketConnection(), 2000)
         };
     }
 
