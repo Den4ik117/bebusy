@@ -114,9 +114,7 @@ export const ResumeBotRouter = (handlers: Handler) => {
 
                 return res.text('Неизвестная команда').actions(menuButtons)
             },
-            handler: (req, res) => {
-                return res.text('Меню\n\nРезюме: 0\nОпубликовано резюме: 0\nОткликов: 0').actions(menuButtons)
-            },
+            handler: handlers.ResumeBotHandler.handleMenu,
         },
         {
             id: 11,
@@ -127,33 +125,17 @@ export const ResumeBotRouter = (handlers: Handler) => {
 
                 return res.text('Неизвестная команда').actions(resumeActionButtons)
             },
-            handler: (req, res) => {
-                return res
-                    .text('Ваши резюме:\n\n' + resumes.join('\n'))
-                    .actions(resumeActionButtons)
-            },
+            handler: handlers.ResumeBotHandler.handleYourResumes,
         },
         {
             id: 12,
-            middleware: (req, res) => {
-                if (resumes.includes(req.message)) return res.next(11)
-
-                return res.text('Неизвестная команда').actions(resumes)
-            },
-            handler: (req, res) => {
-                return res.text('Выберите, какое резюме опубликовать').actions(resumes)
-            },
+            middleware: handlers.ResumeBotHandler.handlePublishResume,
+            handler: handlers.ResumeBotHandler.chooseResumeForPublishing,
         },
         {
             id: 13,
-            middleware: (req, res) => {
-                if (resumes.includes(req.message)) return res.next(14)
-
-                return res.text('Неизвестная команда').actions(resumes)
-            },
-            handler: (req, res) => {
-                return res.text('Выберите, по какому резюме посмотреть статистику').actions(resumes)
-            },
+            middleware: handlers.ResumeBotHandler.handleStatsOfResume,
+            handler: handlers.ResumeBotHandler.chooseResumeForViewStats,
         },
         {
             id: 14,
@@ -162,9 +144,7 @@ export const ResumeBotRouter = (handlers: Handler) => {
 
                 return res.text('Неизвестная команда').actions('Назад')
             },
-            handler: (req, res) => {
-                return res.text(`Информация по резюме с названием «${req.message}»`).actions('Назад')
-            },
+            handler: handlers.ResumeBotHandler.viewResumeStats,
         },
         // {
         //     id: 10,

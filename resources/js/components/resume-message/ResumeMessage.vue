@@ -79,8 +79,7 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import {getAge, getHumanDate, getHumanExperience} from '@/utils'
+import { getAge, getHumanDate, getHumanExperience } from '@/utils'
 
 const props = defineProps({
     resume: {
@@ -90,8 +89,4 @@ const props = defineProps({
 })
 
 const data = props.resume.data
-
-// onMounted(() => {
-//     console.log(props.resume.data);
-// })
 </script>

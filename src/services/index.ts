@@ -5,6 +5,7 @@ import { NewResumeService, ResumeService } from './resume.service'
 import { NewSessionService, SessionService } from './auth.service'
 import { NewChatService, ChatService } from './chat.service'
 import { NewResumeBotService, ResumeBotService } from './resume-bot.service'
+import { NewOpinionService, OpinionService } from './opinion.service'
 
 export interface Service {
     UserService: UserService
@@ -13,6 +14,7 @@ export interface Service {
     SessionService: SessionService
     ChatService: ChatService
     ResumeBotService: ResumeBotService
+    OpinionService: OpinionService
 }
 
 export const createServices = async (repositories: Repository): Promise<Service> => ({
@@ -22,4 +24,5 @@ export const createServices = async (repositories: Repository): Promise<Service>
     SessionService: await NewSessionService(repositories),
     ChatService: await NewChatService(repositories),
     ResumeBotService: await NewResumeBotService(repositories),
+    OpinionService: await NewOpinionService(repositories),
 })

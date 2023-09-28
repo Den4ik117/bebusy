@@ -15,6 +15,8 @@ export interface OpinionRepository {
     updateOptionExperience(opinionId: number, experience: number): Promise<IOpinion | undefined>
     updateOptionTotal(opinionId: number, total: number): Promise<IOpinion | undefined>
     updateOptionCommentAndCompletedAt(opinionId: number, completedAt: string, comment: string): Promise<IOpinion | undefined>
+    getOpinionsByResumeIds(resumeIds: number[]): Promise<IOpinion[]>
+    getOpinionsByResumeId(resumeId: number): Promise<IOpinion[]>
 }
 
 export const NewOpinionRepository = async (connection: Connection): Promise<OpinionRepository> => {
@@ -147,6 +149,25 @@ export const NewOpinionRepository = async (connection: Connection): Promise<Opin
         return rows[0]
     }
 
+    const getOpinionsByResumeIds = async (resumeIds: number[]): Promise<IOpinion[]> => {
+        if (resumeIds.length === 0) return []
+
+        const [rows] = await connection.execute<IOpinion[]>(
+            `SELECT * FROM opinions WHERE resume_id IN (${resumeIds.join(',')})`
+        )
+
+        return rows
+    }
+
+    const getOpinionsByResumeId = async (resumeId: number): Promise<IOpinion[]> => {
+        const [rows] = await connection.execute<IOpinion[]>(
+            `SELECT * FROM opinions WHERE resume_id = ?`,
+            [resumeId],
+        )
+
+        return rows
+    }
+
     return {
         getOpinionsByUserId,
         createOpinion,
@@ -158,5 +179,7 @@ export const NewOpinionRepository = async (connection: Connection): Promise<Opin
         updateOptionExperience,
         updateOptionTotal,
         updateOptionCommentAndCompletedAt,
+        getOpinionsByResumeIds,
+        getOpinionsByResumeId,
     }
 }

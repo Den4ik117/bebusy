@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { Service } from '../services'
 import { IUpdate } from '../models'
 import {BotRequest, BotResponse, INode} from '../routes/utils';
+import {stat} from 'fs';
 
 export interface ResumeBotHandler {
     receiveUpdate(req: Request, res: Response): Promise<void>
@@ -15,6 +16,13 @@ export interface ResumeBotHandler {
     handleExperienceOpinion(req: BotRequest, res: BotResponse): Promise<BotResponse>
     handleTotalOpinion(req: BotRequest, res: BotResponse): Promise<BotResponse>
     handleCommentOpinion(req: BotRequest, res: BotResponse): Promise<BotResponse>
+    handleMenu(req: BotRequest, res: BotResponse): Promise<BotResponse>
+    handleYourResumes(req: BotRequest, res: BotResponse): Promise<BotResponse>
+    chooseResumeForPublishing(req: BotRequest, res: BotResponse): Promise<BotResponse>
+    handlePublishResume(req: BotRequest, res: BotResponse): Promise<BotResponse>
+    chooseResumeForViewStats(req: BotRequest, res: BotResponse): Promise<BotResponse>
+    handleStatsOfResume(req: BotRequest, res: BotResponse): Promise<BotResponse>
+    viewResumeStats(req: BotRequest, res: BotResponse): Promise<BotResponse>
 }
 
 const scale = [
@@ -32,6 +40,17 @@ const scaleValue: Record<string, number> = {
     [scale[3]]: 4,
     [scale[4]]: 5,
 }
+
+const resumeActionButtons = [
+    'Опубликовать резюме для оценок',
+    'Статистика по резюме',
+    'Назад',
+]
+
+const menuButtons = [
+    'Мои резюме',
+    'Оценить ещё одно резюме',
+]
 
 export const NewResumeBotHandler = async (service: Service): Promise<ResumeBotHandler> => {
     const receiveUpdate = async (req: Request, res: Response) => {
@@ -110,11 +129,11 @@ export const NewResumeBotHandler = async (service: Service): Promise<ResumeBotHa
     }
 
     const sendResume = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
-        const resume = await service.ResumeBotService.getRandomResume(req.update.user_id)
+        const resume = await service.ResumeBotService.getRandomResume(req.update.message?.user_id || 0)
 
         if (!resume) return res.text('Доступных для оценки резюме пока что нет').next(10)
 
-        await service.ResumeBotService.applyResumeOpinion(resume.id, req.update.user_id)
+        await service.ResumeBotService.applyResumeOpinion(resume.id, req.update.message?.user_id || 0)
 
         return res
             .text('Чтобы твоё резюме попало в выдачу, необходимо оценить резюме трех других участников приложения.\nРезюме присылаю ниже.')
@@ -132,7 +151,7 @@ export const NewResumeBotHandler = async (service: Service): Promise<ResumeBotHa
 
     const handlePhotoOpinion = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
         if (scale.includes(req.message)) {
-            const opinion = await service.ResumeBotService.getUncompletedOpinion(req.update.user_id)
+            const opinion = await service.ResumeBotService.getUncompletedOpinion(req.update.message?.user_id || 0)
 
             if (!opinion) return res.next(10)
 
@@ -146,7 +165,7 @@ export const NewResumeBotHandler = async (service: Service): Promise<ResumeBotHa
 
     const handleReadableOpinion = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
         if (scale.includes(req.message)) {
-            const opinion = await service.ResumeBotService.getUncompletedOpinion(req.update.user_id)
+            const opinion = await service.ResumeBotService.getUncompletedOpinion(req.update.message?.user_id || 0)
 
             if (!opinion) return res.next(10)
 
@@ -160,7 +179,7 @@ export const NewResumeBotHandler = async (service: Service): Promise<ResumeBotHa
 
     const handleCapacityOpinion = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
         if (scale.includes(req.message)) {
-            const opinion = await service.ResumeBotService.getUncompletedOpinion(req.update.user_id)
+            const opinion = await service.ResumeBotService.getUncompletedOpinion(req.update.message?.user_id || 0)
 
             if (!opinion) return res.next(10)
 
@@ -174,7 +193,7 @@ export const NewResumeBotHandler = async (service: Service): Promise<ResumeBotHa
 
     const handleExperienceOpinion = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
         if (scale.includes(req.message)) {
-            const opinion = await service.ResumeBotService.getUncompletedOpinion(req.update.user_id)
+            const opinion = await service.ResumeBotService.getUncompletedOpinion(req.update.message?.user_id || 0)
 
             if (!opinion) return res.next(10)
 
@@ -188,7 +207,7 @@ export const NewResumeBotHandler = async (service: Service): Promise<ResumeBotHa
 
     const handleTotalOpinion = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
         if (scale.includes(req.message)) {
-            const opinion = await service.ResumeBotService.getUncompletedOpinion(req.update.user_id)
+            const opinion = await service.ResumeBotService.getUncompletedOpinion(req.update.message?.user_id || 0)
 
             if (!opinion) return res.next(10)
 
@@ -201,7 +220,7 @@ export const NewResumeBotHandler = async (service: Service): Promise<ResumeBotHa
     }
 
     const handleCommentOpinion = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
-        const opinion = await service.ResumeBotService.getUncompletedOpinion(req.update.user_id)
+        const opinion = await service.ResumeBotService.getUncompletedOpinion(req.update.message?.user_id || 0)
 
         if (!opinion) return res.next(10)
 
@@ -210,10 +229,123 @@ export const NewResumeBotHandler = async (service: Service): Promise<ResumeBotHa
         return res.next(9)
     }
 
-    // const sendMessage = (req: BotRequest, res: BotResponse): BotResponse => {
-    //     return res.text('привет мир')
-    // }
-    //
+    const handleMenu = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
+        const resumes = await service.ResumeService.getResumesByUserId(req.update.message?.user_id || 0)
+        const publishedResumes = await service.ResumeService.getPublishedResumesByUserId(req.update.message?.user_id || 0)
+        const resumeIds = resumes.map(resume => resume.id)
+        const opinions = await service.OpinionService.getOpinionsByResumeIds(resumeIds)
+        const yourOpinions = await service.OpinionService.getOpinionsByUserId(req.update.message?.user_id || 0)
+
+        const stats = {
+            resumes: resumes.length,
+            publishedResumes: publishedResumes.length,
+            opinions: opinions.length,
+            yourOpinions: yourOpinions.length,
+        }
+
+        return res.text(`Меню
+
+Резюме: ${stats.resumes}
+Опубликовано резюме: ${stats.publishedResumes}
+Откликов на ваши резюме: ${stats.opinions}
+Ваши отклики: ${stats.yourOpinions}`).actions(menuButtons)
+    }
+
+    const handleYourResumes = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
+        const resumes = await service.ResumeService.getResumesByUserId(req.update.message?.user_id || 0)
+
+        const text = resumes.map(resume => {
+            return `${resume.data.title} ${resume.published_at ? '(опубликовано)' : '(не опубликовано)'}`
+        }).join('\n')
+
+        return res
+            .text('Ваши резюме:\n\n' + text)
+            .actions(resumeActionButtons)
+    }
+
+    const chooseResumeForPublishing = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
+        const resumes = await service.ResumeService.getResumesByUserId(req.update.message?.user_id || 0)
+
+        const actions = resumes.filter(resume => !resume.published_at).map((resume, index) => {
+            return `${index + 1}. ${resume.data.title}`
+        })
+
+        if (actions.length === 0) return res.text('Нет доступных для публикации резюме').actions('Назад')
+
+        return res.text('Выберите, какое резюме опубликовать').actions(actions)
+    }
+
+    const handlePublishResume = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
+        if (req.message === 'Назад') return res.next(10)
+
+        const resumes = await service.ResumeService.getPublishedResumesByUserId(req.update.message?.user_id || 0)
+        const unpublishedResumes = resumes.filter(resume => !resume.published_at)
+
+        const [_, title] = req.message.split('. ')
+
+        const resume = unpublishedResumes.find(resume => resume.data.title === title)
+
+        if (!resume) {
+            const actions = unpublishedResumes.map((resume, index) => {
+                return `${index + 1}. ${resume.data.title}`
+            })
+            return res.text('Неизвестная команда').actions(actions)
+        }
+
+        await service.ResumeService.publishResume(resume.id)
+
+        return res.next(11)
+    }
+
+    const chooseResumeForViewStats = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
+        const resumes = await service.ResumeService.getResumesByUserId(req.update.message?.user_id || 0)
+
+        const actions = resumes.map((resume, index) => `${index + 1}. ${resume.data.title}`)
+
+        return res.text('Выберите, по какому резюме посмотреть статистику').actions(actions)
+    }
+
+    const handleStatsOfResume = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
+        if (req.message === 'Назад') {
+            return res.next(10)
+        }
+
+        const resumes = await service.ResumeService.getResumesByUserId(req.update.message?.user_id || 0)
+
+        const [_, title] = req.message.split('. ')
+
+        const resume = resumes.find(resume => resume.data.title === title)
+
+        if (!resume) {
+            const actions = resumes.map((resume, index) => `${index + 1}. ${resume.data.title}`)
+
+            return res.text('Неизвестная команда').actions(actions)
+        }
+
+        const opinions = await service.OpinionService.getOpinionsByResumeId(resume.id)
+
+        const text = opinions.map(opinion => {
+            return [
+                `Мнение №${opinion.id}`,
+                '',
+                `Фото: ${opinion.photo}`,
+                `Читабельность: ${opinion.readable}`,
+                `Наводненность: ${opinion.capacity}`,
+                `Опыт: ${opinion.experience}`,
+                `Общая оценка: ${opinion.total}`,
+                `Комментарий: ${opinion.comment}`,
+            ].join('\n')
+        }).join('\n\n')
+
+        // if (resumes.includes(req.message)) return res.next(14)
+
+        return res.text(text).actions('Назад')
+    }
+
+    const viewResumeStats = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
+        return res.text(`Информация по резюме с названием «${req.message}»`).actions('Назад')
+    }
+
     // const sendMessage = (req: BotRequest, res: BotResponse): BotResponse => {
     //     return res.text('привет мир')
     // }
@@ -234,5 +366,12 @@ export const NewResumeBotHandler = async (service: Service): Promise<ResumeBotHa
         handleExperienceOpinion,
         handleTotalOpinion,
         handleCommentOpinion,
+        handleMenu,
+        handleYourResumes,
+        chooseResumeForPublishing,
+        handlePublishResume,
+        chooseResumeForViewStats,
+        handleStatsOfResume,
+        viewResumeStats,
     }
 }
