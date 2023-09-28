@@ -114,6 +114,12 @@ export const NewSessionService = async (repositories: Repository): Promise<Sessi
                 updated_at: getCurrentDatetime(),
                 created_at: getCurrentDatetime(),
             })
+
+            await repositories.NodeChatRepository.createNodeChat({
+                chat_id: chat.id,
+                user_id: user.id,
+                node_id: 1,
+            })
         } else {
             user = await repositories.UserRepository.updateUser({
                 id: user.id,

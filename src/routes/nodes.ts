@@ -1,6 +1,6 @@
 import { Handler } from '../handlers'
 import { Request, Response } from 'express'
-import { INode } from './utils'
+import {BotRequest, BotResponse, INode} from './utils'
 import { logger } from '../utils'
 
 const scale = [
@@ -119,13 +119,7 @@ export const ResumeBotRouter = (handlers: Handler) => {
         },
         {
             id: 11,
-            middleware: (req, res) => {
-                if (req.message === resumeActionButtons[0]) return res.next(12)
-                else if (req.message === resumeActionButtons[1]) return res.next(13)
-                else if (req.message === resumeActionButtons[2]) return res.next(10)
-
-                return res.text('Неизвестная команда').actions(resumeActionButtons)
-            },
+            middleware: handlers.ResumeBotHandler.middlewareYourResumes,
             handler: handlers.ResumeBotHandler.handleYourResumes,
         },
         {
@@ -146,6 +140,12 @@ export const ResumeBotRouter = (handlers: Handler) => {
                 return res.text('Неизвестная команда').actions('Назад')
             },
             handler: handlers.ResumeBotHandler.viewResumeStats,
+        },
+        {
+            id: 15,
+            name: 'Скрыть резюме от публикации',
+            middleware: handlers.ResumeBotHandler.unpublishResumeMiddleware,
+            handler: handlers.ResumeBotHandler.unpublishResumeHandler
         },
         // {
         //     id: 10,

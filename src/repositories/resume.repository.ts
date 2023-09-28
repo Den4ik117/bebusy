@@ -4,7 +4,7 @@ import { IResume } from '../models'
 export interface ResumeRepository {
     getResumesByUserId(userId: number): Promise<IResume[]>
     getResumeByUserIdAndUuid(userId: number, uuid: string): Promise<IResume | undefined>
-    updateResumePublishedAtById(id: number, publishedAt: string): Promise<void>
+    updateResumePublishedAtById(id: number, publishedAt: string | null): Promise<void>
     getResumeById(id: number): Promise<IResume | undefined>
     createResume(resume: Pick<IResume, 'uuid' | 'user_id' | 'data' | 'created_at' | 'updated_at'>): Promise<void>
     getAvailableResumesExcludeIds(resumeIds: number[]): Promise<IResume[]>
@@ -30,7 +30,7 @@ export const NewResumeRepository = async (connection: Connection): Promise<Resum
         return rows[0]
     }
 
-    const updateResumePublishedAtById = async (id: number, publishedAt: string): Promise<void> => {
+    const updateResumePublishedAtById = async (id: number, publishedAt: string | null): Promise<void> => {
         await connection.execute(
             'UPDATE `resumes` SET published_at = ? WHERE id = ?',
             [publishedAt, id],

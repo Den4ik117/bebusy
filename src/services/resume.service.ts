@@ -7,6 +7,7 @@ export interface ResumeService {
     updateResumePublishedAtByUserIdAndUuid(userId: number, uuid: string): Promise<IResume | null>
     getPublishedResumesByUserId(userId: number): Promise<IResume[]>
     publishResume(resumeId: number): Promise<void>
+    unpublishResume(resumeId: number): Promise<void>
 }
 
 export const NewResumeService = async (repositories: Repository): Promise<ResumeService> => {
@@ -44,10 +45,15 @@ export const NewResumeService = async (repositories: Repository): Promise<Resume
         return await repositories.ResumeRepository.updateResumePublishedAtById(resumeId, getCurrentDatetime())
     }
 
+    const unpublishResume = async (resumeId: number): Promise<void> => {
+        return await repositories.ResumeRepository.updateResumePublishedAtById(resumeId, null)
+    }
+
     return {
         getResumesByUserId,
         updateResumePublishedAtByUserIdAndUuid,
         getPublishedResumesByUserId,
         publishResume,
+        unpublishResume,
     }
 }

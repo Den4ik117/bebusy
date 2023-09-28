@@ -3,6 +3,7 @@ import { Service } from '../services'
 
 export interface INode {
     id: number
+    name?: string
     middleware(req: BotRequest, res: BotResponse): BotResponse | Promise<BotResponse>
     handler(req: BotRequest, res: BotResponse): BotResponse | Promise<BotResponse>
 }

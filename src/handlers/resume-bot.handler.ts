@@ -18,12 +18,15 @@ export interface ResumeBotHandler {
     handleTotalOpinion(req: BotRequest, res: BotResponse): Promise<BotResponse>
     handleCommentOpinion(req: BotRequest, res: BotResponse): Promise<BotResponse>
     handleMenu(req: BotRequest, res: BotResponse): Promise<BotResponse>
+    middlewareYourResumes(req: BotRequest, res: BotResponse): Promise<BotResponse>
     handleYourResumes(req: BotRequest, res: BotResponse): Promise<BotResponse>
     chooseResumeForPublishing(req: BotRequest, res: BotResponse): Promise<BotResponse>
     handlePublishResume(req: BotRequest, res: BotResponse): Promise<BotResponse>
     chooseResumeForViewStats(req: BotRequest, res: BotResponse): Promise<BotResponse>
     handleStatsOfResume(req: BotRequest, res: BotResponse): Promise<BotResponse>
     viewResumeStats(req: BotRequest, res: BotResponse): Promise<BotResponse>
+    unpublishResumeHandler(req: BotRequest, res: BotResponse): Promise<BotResponse>
+    unpublishResumeMiddleware(req: BotRequest, res: BotResponse): Promise<BotResponse>
 }
 
 const scale = [
@@ -45,6 +48,7 @@ const scaleValue: Record<string, number> = {
 const resumeActionButtons = [
     'Опубликовать резюме для оценок',
     'Статистика по резюме',
+    'Скрыть резюме из выдачи',
     'Назад',
 ]
 
@@ -263,6 +267,15 @@ export const NewResumeBotHandler = async (service: Service): Promise<ResumeBotHa
 Ваши отклики: ${stats.yourOpinions}`).actions(menuButtons)
     }
 
+    const middlewareYourResumes = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
+        if (req.message === resumeActionButtons[0]) return res.next(12)
+        else if (req.message === resumeActionButtons[1]) return res.next(13)
+        else if (req.message === resumeActionButtons[2]) return res.next(15)
+        else if (req.message === resumeActionButtons[3]) return res.next(10)
+
+        return res.text('Неизвестная команда').actions(resumeActionButtons)
+    }
+
     const handleYourResumes = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
         const resumes = await service.ResumeService.getResumesByUserId(req.update.message?.user_id || 0)
 
@@ -290,7 +303,7 @@ export const NewResumeBotHandler = async (service: Service): Promise<ResumeBotHa
     const handlePublishResume = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
         if (req.message === 'Назад') return res.next(10)
 
-        const resumes = await service.ResumeService.getPublishedResumesByUserId(req.update.message?.user_id || 0)
+        const resumes = await service.ResumeService.getResumesByUserId(req.update.message?.user_id || 0)
         const unpublishedResumes = resumes.filter(resume => !resume.published_at)
 
         const [_, title] = req.message.split('. ')
@@ -362,6 +375,40 @@ export const NewResumeBotHandler = async (service: Service): Promise<ResumeBotHa
         return res.text(`Информация по резюме с названием «${req.message}»`).actions('Назад')
     }
 
+    const unpublishResumeHandler = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
+        const resumes = await service.ResumeService.getResumesByUserId(req.update.message?.user_id || 0)
+
+        const actions = resumes.filter(resume => resume.published_at).map((resume, index) => {
+            return `${index + 1}. ${resume.data.title}`
+        })
+
+        if (actions.length === 0) return res.text('Нет доступных для снятия резюме').actions('Назад')
+
+        return res.text('Выберите, какое резюме убрать из выдачи').actions(actions)
+    }
+
+    const unpublishResumeMiddleware = async (req: BotRequest, res: BotResponse): Promise<BotResponse> => {
+        if (req.message === 'Назад') return res.next(10)
+
+        const resumes = await service.ResumeService.getPublishedResumesByUserId(req.update.message?.user_id || 0)
+        const publishedResumes = resumes.filter(resume => resume.published_at)
+
+        const [_, title] = req.message.split('. ')
+
+        const resume = publishedResumes.find(resume => resume.data.title === title)
+
+        if (!resume) {
+            const actions = publishedResumes.map((resume, index) => {
+                return `${index + 1}. ${resume.data.title}`
+            })
+            return res.text('Неизвестная команда').actions(actions)
+        }
+
+        await service.ResumeService.unpublishResume(resume.id)
+
+        return res.next(11)
+    }
+
     // const sendMessage = (req: BotRequest, res: BotResponse): BotResponse => {
     //     return res.text('привет мир')
     // }
@@ -383,11 +430,14 @@ export const NewResumeBotHandler = async (service: Service): Promise<ResumeBotHa
         handleTotalOpinion,
         handleCommentOpinion,
         handleMenu,
+        middlewareYourResumes,
         handleYourResumes,
         chooseResumeForPublishing,
         handlePublishResume,
         chooseResumeForViewStats,
         handleStatsOfResume,
         viewResumeStats,
+        unpublishResumeHandler,
+        unpublishResumeMiddleware,
     }
 }
