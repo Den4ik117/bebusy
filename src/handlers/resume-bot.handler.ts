@@ -324,6 +324,10 @@ export const NewResumeBotHandler = async (service: Service): Promise<ResumeBotHa
 
         const opinions = await service.OpinionService.getOpinionsByResumeId(resume.id)
 
+        if (opinions.length === 0) {
+            return res.text('По этому резюме нет оценок').actions('Назад')
+        }
+
         const text = opinions.map(opinion => {
             return [
                 `Мнение №${opinion.id}`,
