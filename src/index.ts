@@ -14,7 +14,6 @@ import { logger } from './utils'
 
 (async () => {
     dotenv.config()
-
     // if (process.env.NODE_ENV === 'production') {
     //     await new Promise((resolve, reject) => {
     //         setTimeout(() => {

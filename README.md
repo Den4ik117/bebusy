@@ -20,7 +20,7 @@ Backend и Frontend написаны на одном языке ― JavaScript.
 docker compose up
 ```
 
-Авторизация происходит через [hh.ru](https://dev.hh.ru/) с применение протокола [OAuth 2.0](https://oauth.net/2/)
+Авторизация происходит через [hh.ru](https://dev.hh.ru/) с применение протокола [OAuth 2.0](https://oauth.net/2/).
 
 Чат написан с применением технолгии [WebSockets](https://developer.mozilla.org/ru/docs/Web/API/WebSockets_API) на фреймворке [VueJS](https://vuejs.org/) и [Vite](https://vitejs.dev/) в качестве инструмента сборки скриптов и стилей.
 
