@@ -64,8 +64,6 @@ import MessageItem from '@/components/message-item';
 
 const store = useStore();
 
-let socket;
-
 const form = reactive({
     message: computed({
         get: () => store.state.message,
@@ -104,32 +102,7 @@ watch(() => activeChat.value?.messages.length, () => {
 });
 
 const onSubmitForm = () => {
-
     store.dispatch('sendMessage');
-
-    // return;
-    //
-    // const message = {
-    //     id: Date.now(),
-    //     event: 'message',
-    //     text: form.message,
-    //     chat_id: store.getters.activeChat.id,
-    //     user_id: store.state.me.id,
-    // };
-    //
-    // socket.send(JSON.stringify(message));
-
-    // request(`/api/chats/${store.state.hash}/messages`, 'POST', form, undefined, (data) => {
-    //     form.message = '';
-    //
-    //     store.commit({
-    //         type: 'pushMessages',
-    //         messages: [data.data],
-    //         callback: scrollToBottom,
-    //     });
-    // }, () => {
-    //     console.log('error');
-    // });
 };
 
 const onActionClick = (text) => {
