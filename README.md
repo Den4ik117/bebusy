@@ -22,7 +22,7 @@ docker compose up
 
 Авторизация происходит через [hh.ru](https://dev.hh.ru/) с применение протокола [OAuth 2.0](https://oauth.net/2/).
 
-Чат написан с применением технолгии [WebSockets](https://developer.mozilla.org/ru/docs/Web/API/WebSockets_API) на фреймворке [VueJS](https://vuejs.org/) и [Vite](https://vitejs.dev/) в качестве инструмента сборки скриптов и стилей.
+Чат написан с применением технологии [WebSockets](https://developer.mozilla.org/ru/docs/Web/API/WebSockets_API) на фреймворке [VueJS](https://vuejs.org/) и [Vite](https://vitejs.dev/) в качестве инструмента сборки скриптов и стилей.
 
 Для простоты внедрения изменений код серверной части написан с использованием [чистой архитектуры](https://habr.com/ru/articles/269589/) на языке [TypeScript](https://www.typescriptlang.org/).
 
