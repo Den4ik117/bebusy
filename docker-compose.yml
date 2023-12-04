@@ -11,7 +11,6 @@ services:
 #    depends_on:
 #      - mysql
 #    container_name: employment_ws_server_app
-
   mysql:
     image: mysql
     restart: always
@@ -19,8 +18,10 @@ services:
       - ./tmp/mysql:/var/lib/mysql
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     ports:
       - "3307:3306"
 #    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
-    container_name: employment_ws_server_mysql
+    container_name: bebusy-mysql

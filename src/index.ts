@@ -3,7 +3,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
-import { createConnection } from './database'
+import { createConnection, createSequelizeConnection } from './database'
 import { createRepositories } from './repositories'
 import { createServices } from './services'
 import { createRouter } from './routes'
@@ -15,15 +15,8 @@ import { logger } from './utils'
 (async () => {
     dotenv.config()
 
-    // if (process.env.NODE_ENV === 'production') {
-    //     await new Promise((resolve, reject) => {
-    //         setTimeout(() => {
-    //             resolve(true);
-    //         }, 5000)
-    //     })
-    // }
-
     const connection = await createConnection()
+    const sequelize = await createSequelizeConnection()
     const repositories = await createRepositories(connection)
     const services = await createServices(repositories)
     const handlers = await createHandlers(services)

@@ -14,6 +14,7 @@ export const store = createStore({
             me: null,
             token: getCookie('auth-session'),
             message: '',
+            page: '',
             // resumes: [],
         };
     },
@@ -59,6 +60,9 @@ export const store = createStore({
         setMessage: (state, { value = '' }) => {
             state.message = value;
         },
+        setPage: (state, { value = '' }) => {
+            state.page = value
+        }
         // setResumes: (state, { value = [] }) => {
         //     state.resumes = value;
         // },

@@ -36,22 +36,42 @@
                                     <button
                                         class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"
                                         type="button"
-                                        @click="setVisibleSettings"
+                                        @click="setPage('settings')"
                                     >
                                         <i class="bi bi-gear flex items-center justify-start"></i>
                                         <span class="text-sm">Настройки</span>
                                     </button>
                                 </li>
-<!--                                <li>-->
-<!--                                    <button-->
-<!--                                        class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"-->
-<!--                                        type="button"-->
-<!--                                        @click="setVisibleMyResumes"-->
-<!--                                    >-->
-<!--                                        <i class="bi bi-file-earmark-fill flex items-center justify-start"></i>-->
-<!--                                        <span class="text-sm">Мои резюме</span>-->
-<!--                                    </button>-->
-<!--                                </li>-->
+                                <li>
+                                    <button
+                                        class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"
+                                        type="button"
+                                        @click="setPage('mentoring')"
+                                    >
+                                        <i class="bi bi-journal-bookmark-fill flex items-center justify-start"></i>
+                                        <span class="text-sm">Менторство</span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button
+                                        class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"
+                                        type="button"
+                                        @click="setPage('code-review')"
+                                    >
+                                        <i class="bi bi-box-arrow-left flex items-center justify-start"></i>
+                                        <span class="text-sm">Код-ревью</span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button
+                                        class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"
+                                        type="button"
+                                        @click="setPage('interviews')"
+                                    >
+                                        <i class="bi bi-clipboard2-check-fill flex items-center justify-start"></i>
+                                        <span class="text-sm">Собеседования</span>
+                                    </button>
+                                </li>
                                 <li>
                                     <a
                                         class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"
@@ -65,51 +85,11 @@
                         </div>
                         <div class="p-4 flex flex-col gap-1 text-xs text-gray-500">
                             <span class="font-medium">Соцсеть для соискателей работы</span>
-                            <p>Версия {{ '1.0.0' }} — <a class="hover:underline" href="#" @click.prevent="setVisibleAbout">О программе</a></p>
+                            <p>Версия {{ version }} — <button class="hover:underline" @click="setPage('about')">О программе</button></p>
                         </div>
                     </div>
                 </div>
             </transition>
-
-            <Modal v-model:visible="visibleSettings">
-                <div class="flex flex-col">
-                    <span>Настроек нет.</span>
-                    <span>Нет, ну а что выхотели?</span>
-                </div>
-            </Modal>
-
-            <Modal v-model:visible="visibleAbout">
-                <div class="flex flex-col text-sm">
-                    <span class="font-medium text-center mb-4">Социальная сеть для соискателей</span>
-                    <span>Разработчик: Денис Загвоздин</span>
-                </div>
-            </Modal>
-
-<!--            <Modal v-model:visible="visibleMyResumes">-->
-<!--                <div class="flex flex-col gap-4">-->
-<!--                    <h3 class="text-base font-medium text-center">Мои резюме</h3>-->
-<!--                    <ul class="flex flex-col gap-4">-->
-<!--                        <li-->
-<!--                            class="border rounded-md border-slate-700 p-4 flex flex-col gap-2"-->
-<!--                            v-for="resume in resumes"-->
-<!--                            :key="resume.id"-->
-<!--                        >-->
-<!--                            <h4 class="text-sm">-->
-<!--                                <a class="text-indigo-400 hover:text-indigo-600 font-medium" href="">{{ resume.data.title }}</a>-->
-<!--                            </h4>-->
-<!--                            <time class="text-xs" :datetime="resume.data.updated_at">Обновлено {{ resume.data.formatted_updated_at }} </time>-->
-<!--                            <div class="flex flex-wrap gap-4">-->
-<!--                                <button-->
-<!--                                    class="bg-indigo-500 hover:bg-indigo-600 disabled:opacity-50 disabled:hover:bg-indigo-500 px-2 py-1 text-xs rounded"-->
-<!--                                    type="button"-->
-<!--                                    :disabled="resume.published_at"-->
-<!--                                    @click="() => publishResume(resume.uuid)"-->
-<!--                                >{{ resume.published_at ? 'Опубликовано' : 'Опубликовать' }}</button>-->
-<!--                            </div>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </div>-->
-<!--            </Modal>-->
         </template>
     </div>
 </template>
@@ -117,39 +97,24 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
-// import { version } from '../../../../package.json';
-import Modal from '@/components/modal'
 
 const store = useStore();
 
 const visible = ref(false);
-// const visibleMyResumes = ref(false)
-const visibleSettings = ref(false)
-const visibleAbout = ref(false)
-
-const setVisibleSettings = () => {
-    visibleSettings.value = true
-    visible.value = false
-}
-
-const setVisibleAbout = () => {
-    visibleAbout.value = true
-    visible.value = false
-}
+const version = import.meta.env.VITE_APP_VERSION
 
 const me = computed(() => store.state.me);
-// const resumes = computed(() => store.state.resumes)
 
 const onFormSubmit = () => {
     console.log('submit')
 };
 
-// const publishResume = (uuid) => {
-//     store.dispatch({
-//         type: 'publishResume',
-//         uuid: uuid,
-//     })
-// }
+const setPage = (page) => {
+    store.commit({
+        type: 'setPage',
+        value: page,
+    })
+}
 </script>
 
 <style lang="postcss">
