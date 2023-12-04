@@ -1,5 +1,6 @@
 import { Connection } from 'mysql2/promise'
 import { ISession, IUser } from '../models'
+import {getCurrentDatetime} from "../utils";
 
 interface CreateSession {
     uuid: string
@@ -27,8 +28,8 @@ export const NewSessionRepository = async (connection: Connection): Promise<Sess
 
     const createSession = async (session: CreateSession): Promise<ISession | undefined> => {
         await connection.execute(
-            'INSERT INTO `sessions` (uuid, user_id, hh_access_token, hh_expires_at, hh_refresh_token, expires_at) VALUES (?, ?, ?, ?, ?, ?)',
-            [session.uuid, session.user_id, session.hh_access_token || null, session.expires_at || null, session.hh_access_token || null, session.expires_at],
+            'INSERT INTO `sessions` (uuid, user_id, hh_access_token, hh_expires_at, hh_refresh_token, expires_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [session.uuid, session.user_id, session.hh_access_token || null, session.expires_at || null, session.hh_access_token || null, session.expires_at, getCurrentDatetime(), getCurrentDatetime()],
         )
 
         return getSessionByUuid(session.uuid)

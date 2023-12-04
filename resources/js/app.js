@@ -3,9 +3,9 @@ import '../scss/app.scss'
 
 import { createApp } from 'vue';
 import { store, initStore } from './app/store';
-import App from './app/App.vue';
+import HomePage from "@/pages/HomePage.vue";
 
-const app = createApp(App);
+const app = createApp(HomePage);
 
 app.use(store);
 
