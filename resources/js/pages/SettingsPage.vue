@@ -1,13 +1,10 @@
 <template>
-    <div class="absolute top-0 left-0 bottom-0 right-0 bg-[#212121] z-40">
-        <div class="grid grid-rows-[min-content_1fr] h-[100dvh]">
-            <SimpleHeader>Настройки</SimpleHeader>
-
-            <h1>settings</h1>
-        </div>
-    </div>
+    <SimplePageLayout title="Настройки">
+        <p class="text-center text-xs">Раздел настроек в разработке...</p>
+    </SimplePageLayout>
 </template>
 
 <script setup>
 import SimpleHeader from "@/components/SimpleHeader.vue";
+import SimplePageLayout from "@/components/SimplePageLayout.vue";
 </script>

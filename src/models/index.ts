@@ -79,7 +79,7 @@ export class Message extends Model<InferAttributes<Message>, InferCreationAttrib
     declare text: string
 
     @Attribute(DataTypes.BIGINT.UNSIGNED)
-    declare userId: number
+    declare userId: number | null
 
     @Attribute(DataTypes.BIGINT.UNSIGNED)
     declare chatId: number
@@ -284,6 +284,74 @@ export class Opinion extends Model<InferAttributes<Opinion>, InferCreationAttrib
 
     @Attribute(DataTypes.DATE(6))
     declare completedAt: string | null
+}
+
+@Table({
+    underscored: true,
+    tableName: 'directions',
+})
+export class Direction extends Model<InferAttributes<Direction>, InferCreationAttributes<Direction>> {
+    @Attribute(DataTypes.BIGINT.UNSIGNED)
+    @PrimaryKey
+    @AutoIncrement
+    declare id: CreationOptional<number>
+
+    @Attribute(DataTypes.STRING)
+    @NotNull
+    declare name: string
+}
+
+export enum RequestStatus {
+    New = 'new',
+    Active = 'active',
+    Inactive = 'inactive',
+}
+
+@Table({
+    underscored: true,
+    tableName: 'requests',
+})
+export class Request extends Model<InferAttributes<Request>, InferCreationAttributes<Request>> {
+    @Attribute(DataTypes.BIGINT.UNSIGNED)
+    @PrimaryKey
+    @AutoIncrement
+    declare id: CreationOptional<number>
+
+    @Attribute(DataTypes.STRING)
+    @NotNull
+    declare full_name: number
+
+    @Attribute(DataTypes.DATE)
+    @NotNull
+    declare birthdate: number
+
+    @Attribute(DataTypes.STRING(1024))
+    @NotNull
+    declare about: number
+
+    @Attribute(DataTypes.STRING)
+    @Default(RequestStatus.New)
+    @NotNull
+    declare status: RequestStatus
+
+    @Attribute(DataTypes.BOOLEAN)
+    @Default(false)
+    @NotNull
+    declare isMentor: boolean
+
+    @Attribute(DataTypes.BIGINT.UNSIGNED)
+    @NotNull
+    declare directionId: number
+
+    @Attribute(DataTypes.BIGINT.UNSIGNED)
+    @NotNull
+    declare userId: number
+
+    @BelongsTo(() => Direction, 'directionId')
+    declare direction?: NonAttribute<Direction>
+
+    @BelongsTo(() => User, 'userId')
+    declare user?: NonAttribute<User>
 }
 
 export {

@@ -1,7 +1,20 @@
 import { createConnection as createMySqlConnection, Connection, createPool } from 'mysql2/promise'
 import { Sequelize } from '@sequelize/core'
 import { v4 as generateUuid } from 'uuid'
-import {Chat, ChatType, ChatUser, Message, NodeChat, Opinion, Resume, Session, Update, User} from "../models";
+import {
+    Chat,
+    ChatType,
+    ChatUser,
+    Direction,
+    Message,
+    NodeChat,
+    Opinion, Request,
+    Resume,
+    Session,
+    Update,
+    User
+} from "../models";
+import {runSeeders} from "./seeders";
 
 export const createConnection = async (): Promise<Connection> => {
     return createPool({
@@ -32,6 +45,8 @@ export const createSequelizeConnection = async (): Promise<Sequelize> => {
             ChatUser,
             NodeChat,
             Opinion,
+            Direction,
+            Request,
         ],
     })
 
@@ -42,9 +57,9 @@ export const createSequelizeConnection = async (): Promise<Sequelize> => {
         console.error('Unable to connect to the database:', error);
     }
 
-    await connection.sync()
+    await connection.sync({ alter: true })
     // await connection.sync({ force: true })
-    //
+    // //
     // const user = await User.create({
     //     id: 1,
     //     is_bot: false,
@@ -81,18 +96,13 @@ export const createSequelizeConnection = async (): Promise<Sequelize> => {
     //     chatId: 1,
     //     userId: 2,
     // })
+    //
+    // await Message.create({
+    //     text: 'Чат создан',
+    //     chatId: 1,
+    // })
 
-    // const message = await Message.create({
-    //     text: 'fsdfsdf',
-    //     userId: user.id,
-    // })
-    //
-    // const msg = await Message.findByPk(message.id, {
-    //     include: User,
-    // })
-    //
-    // console.log(user, user.id, message)
-    // console.log(msg.user)
+    await runSeeders()
 
     return connection
 }

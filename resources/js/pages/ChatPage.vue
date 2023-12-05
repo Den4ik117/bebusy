@@ -9,6 +9,6 @@
 </template>
 
 <script setup>
-import ChatHeader from '@/modules/chat-header';
-import ChatView from '@/modules/chat-view';
+import ChatHeader from '@/components/ChatHeader.vue';
+import ChatView from '@/components/ChatView.vue';
 </script>

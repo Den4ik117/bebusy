@@ -33,13 +33,21 @@
         <transition name="page-animation">
             <AboutPage v-if="currentPage === 'about'"/>
         </transition>
+
+        <transition name="page-animation-down">
+            <FindMentorPage v-if="currentPage === 'find-mentor'"/>
+        </transition>
+
+        <transition name="page-animation-down">
+            <BecomeMentorPage v-if="currentPage === 'become-mentor'"/>
+        </transition>
     </div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
-import Header from '@/modules/header';
+import Header from '@/components/Header.vue';
 import ChatItem from '@/components/chat-item';
 import ChatPage from '@/pages/ChatPage.vue';
 import MentoringPage from "@/pages/MentoringPage.vue";
@@ -47,6 +55,8 @@ import SettingsPage from "@/pages/SettingsPage.vue";
 import CodeReviewPage from "@/pages/CodeReviewPage.vue";
 import InterviewsPage from "@/pages/InterviewsPage.vue";
 import AboutPage from "@/pages/AboutPage.vue";
+import FindMentorPage from "@/pages/FindMentorPage.vue";
+import BecomeMentorPage from "@/pages/BecomeMentorPage.vue";
 
 const store = useStore();
 
@@ -61,9 +71,17 @@ const chats = computed(() => store.state.chats);
 .page-animation-leave-active {
     transition: transform 0.2s;
 }
-
 .page-animation-enter-from,
 .page-animation-leave-to {
     transform: translateX(100%);
+}
+
+.page-animation-down-enter-active,
+.page-animation-down-leave-active {
+    transition: transform 0.2s;
+}
+.page-animation-down-enter-from,
+.page-animation-down-leave-to {
+    transform: translateY(100%);
 }
 </style>

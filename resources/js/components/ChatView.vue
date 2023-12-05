@@ -2,7 +2,7 @@
     <div class="relative">
         <img
             class="absolute top-0 left-0 right-0 bottom-0 object-cover w-full h-full"
-            src="../../../images/Background-1.jpg"
+            src="../../images/Background-1.jpg"
             alt="Задний фон чата"
             loading="lazy"
         >

@@ -8,6 +8,8 @@
         <h2 class="text-sm font-medium absolute left-1/2 -translate-x-1/2">
             <slot></slot>
         </h2>
+
+        <slot name="right"></slot>
     </div>
 </template>
 

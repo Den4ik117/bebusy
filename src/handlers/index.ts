@@ -10,6 +10,8 @@ import { NewResumeHandler, ResumeHandler } from './resume.handler'
 import { NewAuthHandler, AuthHandler } from './auth.handler'
 import { NewChatHandler, ChatHandler } from './chat.handler'
 import { NewResumeBotHandler, ResumeBotHandler } from './resume-bot.handler'
+import { NewDirectionHandler, DirectionHandler } from './direction.handler'
+import { NewRequestHandler, RequestHandler } from './request.handler'
 import { app } from '../utils'
 
 export interface Handler {
@@ -20,6 +22,8 @@ export interface Handler {
     AuthHandler: AuthHandler
     ChatHandler: ChatHandler
     ResumeBotHandler: ResumeBotHandler
+    DirectionHandler: DirectionHandler
+    RequestHandler: RequestHandler
 }
 
 export interface CustomWebSocket extends WebSocket {
@@ -45,6 +49,8 @@ export const createHandlers = async (service: Service): Promise<Handler> => ({
     AuthHandler: await NewAuthHandler(service),
     ChatHandler: await NewChatHandler(service),
     ResumeBotHandler: await NewResumeBotHandler(service),
+    DirectionHandler: await NewDirectionHandler(service),
+    RequestHandler: await NewRequestHandler(service),
 })
 
 export const createWebsocketHandlers = async (server: Server, webSocketsRouter: IWebSocketRouter): Promise<IWebSocketServer> => {
