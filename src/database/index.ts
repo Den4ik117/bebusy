@@ -57,8 +57,8 @@ export const createSequelizeConnection = async (): Promise<Sequelize> => {
         console.error('Unable to connect to the database:', error);
     }
 
-    await connection.sync({ alter: true })
-    // await connection.sync({ force: true })
+    // await connection.sync({ alter: true })
+    await connection.sync({ force: true })
     // //
     // const user = await User.create({
     //     id: 1,
