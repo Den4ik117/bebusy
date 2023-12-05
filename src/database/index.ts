@@ -59,48 +59,48 @@ export const createSequelizeConnection = async (): Promise<Sequelize> => {
 
     // await connection.sync({ alter: true })
     await connection.sync({ force: true })
-    // //
-    // const user = await User.create({
-    //     id: 1,
-    //     is_bot: false,
-    //     foreign_id: '108339345',
-    //     lastName: 'Zagvozdin',
-    //     firstName: 'Denis',
-    //     uuid: generateUuid(),
-    // })
-    //
-    // await User.create({
-    //     id: 2,
-    //     is_bot: true,
-    //     foreign_id: '',
-    //     lastName: 'Помощь в',
-    //     firstName: 'трудоустройстве',
-    //     token: '1S1DO1SQ6SDR3UEIPSGN2QQ205',
-    //     webhookUrl: 'http://127.0.0.1:5000/bots/callback',
-    //     uuid: generateUuid(),
-    // })
-    //
-    // await Chat.create({
-    //     id: 1,
-    //     uuid: generateUuid(),
-    //     name: 'Zagvozdin Denis',
-    //     type: 'PRIVATE',
-    // })
-    //
-    // await ChatUser.create({
-    //     chatId: 1,
-    //     userId: 1,
-    // })
-    //
-    // await ChatUser.create({
-    //     chatId: 1,
-    //     userId: 2,
-    // })
-    //
-    // await Message.create({
-    //     text: 'Чат создан',
-    //     chatId: 1,
-    // })
+
+    const user = await User.create({
+        id: 1,
+        is_bot: false,
+        foreign_id: '108339345',
+        lastName: 'Zagvozdin',
+        firstName: 'Denis',
+        uuid: generateUuid(),
+    })
+
+    await User.create({
+        id: 2,
+        is_bot: true,
+        foreign_id: '',
+        lastName: 'Помощь в',
+        firstName: 'трудоустройстве',
+        token: process.env.RESUME_BOT_TOKEN,
+        webhookUrl: 'http://127.0.0.1:5000/bots/callback',
+        uuid: generateUuid(),
+    })
+
+    await Chat.create({
+        id: 1,
+        uuid: generateUuid(),
+        name: 'Zagvozdin Denis',
+        type: 'PRIVATE',
+    })
+
+    await ChatUser.create({
+        chatId: 1,
+        userId: 1,
+    })
+
+    await ChatUser.create({
+        chatId: 1,
+        userId: 2,
+    })
+
+    await Message.create({
+        text: 'Чат создан',
+        chatId: 1,
+    })
 
     await runSeeders()
 
