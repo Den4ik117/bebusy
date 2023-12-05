@@ -58,7 +58,7 @@ export const createSequelizeConnection = async (): Promise<Sequelize> => {
     }
 
     // await connection.sync({ alter: true })
-    await connection.sync({ force: true })
+    // await connection.sync({ force: true })
 
     const user = await User.create({
         id: 1,
