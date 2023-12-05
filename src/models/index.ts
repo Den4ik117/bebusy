@@ -55,6 +55,9 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
     @Default(0)
     declare is_bot: boolean
 
+    @Attribute(DataTypes.JSON)
+    declare data: string | null
+
     @Attribute(DataTypes.STRING)
     declare token: string | null
 
