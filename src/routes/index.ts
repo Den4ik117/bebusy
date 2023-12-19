@@ -26,10 +26,13 @@ export const createRouter = async (handlers: Handler): Promise<Routes> => {
     router.get('/api/me', handlers.AuthHandler.checkAuth, handlers.UserHandler.getCurrentUser)
     // router.get('/api/token', handlers.AuthHandler.checkAuth, handlers.UserHandler.getToken)
     router.get('/api/chats', handlers.AuthHandler.checkAuth, handlers.ChatHandler.getMyChats)
+    router.post('/api/chats', handlers.AuthHandler.checkAuth, handlers.ChatHandler.getOrCreateChat)
 
     router.get('/api/directions', handlers.AuthHandler.checkAuth, handlers.DirectionHandler.getDirections)
 
     router.post('/api/requests', handlers.AuthHandler.checkAuth, handlers.RequestHandler.createRequest)
+
+    router.get('/api/mentors', handlers.AuthHandler.checkAuth, handlers.MentorHandler.getActiveMentors)
 
     router.post('/bots/:token/sendMessage', handlers.BotHandler.sendMessage)
 

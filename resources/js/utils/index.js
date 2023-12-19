@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export const SHORT_NAME_OF_WEEKS = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб']
 export const NAME_OF_MONTHS = [
     'января',
@@ -73,4 +75,15 @@ export const getHumanExperience = (months) => {
     const m = months % 12
 
     return `${y} ${plural(PLUR_YEARS, y)} ${m} ${plural(PLUR_MONTHS, m)}`
+}
+
+export const goToChat = (user) => {
+    const data = {
+        user_id: user.id,
+    }
+
+    axios.post('/api/chats', data)
+        .then(response => {
+            location.reload()
+        })
 }

@@ -5,7 +5,7 @@ import {
     Chat,
     ChatType,
     ChatUser,
-    Direction,
+    Direction, File, Mentor,
     Message,
     NodeChat,
     Opinion, Request,
@@ -36,6 +36,7 @@ export const createSequelizeConnection = async (): Promise<Sequelize> => {
         username: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
         models: [
+            File,
             User,
             Message,
             Update,
@@ -47,6 +48,7 @@ export const createSequelizeConnection = async (): Promise<Sequelize> => {
             Opinion,
             Direction,
             Request,
+            Mentor,
         ],
     })
 
@@ -57,29 +59,11 @@ export const createSequelizeConnection = async (): Promise<Sequelize> => {
         console.error('Unable to connect to the database:', error);
     }
 
-    // await connection.sync({ alter: true })
+    await connection.sync({ alter: true })
     // await connection.sync({ force: true })
 
-    // const user = await User.create({
-    //     id: 1,
-    //     is_bot: false,
-    //     foreign_id: '108339345',
-    //     lastName: 'Zagvozdin',
-    //     firstName: 'Denis',
-    //     uuid: generateUuid(),
-    // })
-    //
-    // await User.create({
-    //     id: 2,
-    //     is_bot: true,
-    //     foreign_id: '',
-    //     lastName: 'Помощь в',
-    //     firstName: 'трудоустройстве',
-    //     token: process.env.RESUME_BOT_TOKEN,
-    //     webhookUrl: 'http://127.0.0.1:5000/bots/callback',
-    //     uuid: generateUuid(),
-    // })
-    //
+
+
     // await Chat.create({
     //     id: 1,
     //     uuid: generateUuid(),

@@ -9,30 +9,17 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import {onMounted, ref} from "vue";
 import AppMentorCard from "@/components/AppMentorCard.vue";
+import axios from "axios";
 
-const mentors = ref([
-    {
-        id: 1,
-        name: 'Загвоздин Денис',
-        image: 'https://img.freepik.com/free-photo/portrait-of-white-man-isolated_53876-40306.jpg?size=626&ext=jpg&ga=GA1.1.1826414947.1699920000&semt=ais',
-        position: 'Senior Full-Stack Developer',
-        description: 'Я твой будущий наставник. Я senior fullstack разработчик. Работаю в Goodle 7 лет, был наставником 7324 человек.',
-    },
-    {
-        id: 2,
-        name: 'Андрюшин Петр',
-        image: 'https://img.freepik.com/free-photo/portrait-of-white-man-isolated_53876-40306.jpg?size=626&ext=jpg&ga=GA1.1.1826414947.1699920000&semt=ais',
-        position: 'Senior Full-Stack Developer',
-        description: 'Я твой будущий наставник. Я senior fullstack разработчик. Работаю в Goodle 7 лет, был наставником 7324 человек.',
-    },
-    {
-        id: 3,
-        name: 'Костюшкин Даниил',
-        image: 'https://img.freepik.com/free-photo/portrait-of-white-man-isolated_53876-40306.jpg?size=626&ext=jpg&ga=GA1.1.1826414947.1699920000&semt=ais',
-        position: 'Senior Full-Stack Developer',
-        description: 'Я твой будущий наставник. Я senior fullstack разработчик. Работаю в Goodle 7 лет, был наставником 7324 человек.',
-    },
-])
+const mentors = ref([])
+
+const fetchMentors = async () => {
+    axios.get('/api/mentors').then(response => mentors.value = response.data.data)
+}
+
+onMounted(() => {
+    fetchMentors()
+})
 </script>

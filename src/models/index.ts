@@ -16,7 +16,26 @@ import {
     Sequelize
 } from "@sequelize/core";
 import {RowDataPacket} from "mysql2";
-const { Attribute, AutoIncrement, PrimaryKey, NotNull, Table, Default, BelongsTo } = require('@sequelize/core/decorators-legacy')
+const { Attribute, AutoIncrement, PrimaryKey, NotNull, Table, Default, BelongsTo, BelongsToMany } = require('@sequelize/core/decorators-legacy')
+
+@Table({
+    underscored: true,
+    tableName: 'files',
+})
+export class File extends Model<InferAttributes<File>, InferCreationAttributes<File>> {
+    @Attribute(DataTypes.BIGINT.UNSIGNED)
+    @PrimaryKey
+    @AutoIncrement
+    declare id: CreationOptional<number>
+
+    @Attribute(DataTypes.STRING(36))
+    @NotNull
+    declare uuid: string
+
+    @Attribute(DataTypes.STRING)
+    @NotNull
+    declare content: string
+}
 
 @Table({
     underscored: true,
@@ -66,6 +85,19 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
 
     @Attribute(DataTypes.STRING)
     declare rememberToken: string | null
+
+    @Attribute(DataTypes.BIGINT.UNSIGNED)
+    declare avatarId: number | null
+
+    @BelongsTo(() => File, 'avatarId')
+    declare avatar?: NonAttribute<File>
+
+    @BelongsToMany(() => Chat, {
+        through: () => ChatUser,
+        // foreignKey: 'user_dd',
+        // otherKey: 'chat_id',
+    })
+    declare chats?: NonAttribute<Chat[]>;
 }
 
 @Table({
@@ -215,11 +247,11 @@ export class ChatUser extends Model<InferAttributes<ChatUser>, InferCreationAttr
     @NotNull
     declare userId: number
 
-    @BelongsTo(() => Chat, 'chatId')
-    declare chat?: NonAttribute<Chat>
-
-    @BelongsTo(() => User, 'userId')
-    declare user?: NonAttribute<User>
+    // @BelongsTo(() => Chat, 'chatId')
+    // declare chat?: NonAttribute<Chat>
+    //
+    // @BelongsTo(() => User, 'userId')
+    // declare user?: NonAttribute<User>
 }
 
 @Table({
@@ -352,6 +384,37 @@ export class Request extends Model<InferAttributes<Request>, InferCreationAttrib
 
     @BelongsTo(() => Direction, 'directionId')
     declare direction?: NonAttribute<Direction>
+
+    @BelongsTo(() => User, 'userId')
+    declare user?: NonAttribute<User>
+}
+
+@Table({
+    underscored: true,
+    tableName: 'mentors',
+})
+export class Mentor extends Model<InferAttributes<Mentor>, InferCreationAttributes<Mentor>> {
+    @Attribute(DataTypes.BIGINT.UNSIGNED)
+    @PrimaryKey
+    @AutoIncrement
+    declare id: CreationOptional<number>
+
+    @Attribute(DataTypes.STRING)
+    @NotNull
+    declare grade: string
+
+    @Attribute(DataTypes.STRING)
+    @NotNull
+    declare description: string
+
+    @Attribute(DataTypes.BOOLEAN)
+    @NotNull
+    @Default(true)
+    declare isActive: boolean
+
+    @Attribute(DataTypes.BIGINT.UNSIGNED)
+    @NotNull
+    declare userId: number
 
     @BelongsTo(() => User, 'userId')
     declare user?: NonAttribute<User>
