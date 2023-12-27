@@ -153,6 +153,12 @@ const upsertUsers = async (): Promise<void> => {
     for (const user of users) {
         let userModel = await User.findByPk(user.id)
 
+        userModel && await userModel.update({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            image_url: user.image_url,
+        })
+
         !userModel && await User.create(user)
     }
 }
