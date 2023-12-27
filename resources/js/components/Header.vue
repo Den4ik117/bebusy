@@ -1,5 +1,5 @@
 <template>
-    <div class="grid grid-cols-[min-content_1fr] items-center px-4 pt-4 gap-2">
+    <div class="grid grid-cols-[min-content_1fr_min-content] items-center px-4 pt-4 gap-2">
         <button
             class="p-2 h-10 w-10 flex items-center justify-center rounded-full text-gray-500 hover:text-gray-300 active:bg-gray-50 active:bg-opacity-10 text-xl"
             type="button"
@@ -8,8 +8,20 @@
             <i class="bi bi-list"></i>
         </button>
         <form @submit.prevent="onFormSubmit">
-            <input class="bg-slate-800# bg-[#181818] rounded-full h-10 text-sm px-4 w-full placeholder-gray-500 focus:placeholder-gray-600" type="search" placeholder="Поиск">
+            <input
+                class="bg-slate-800# bg-[#181818] rounded-full h-10 text-sm px-4 w-full placeholder-gray-500 focus:placeholder-gray-600"
+                type="search"
+                placeholder="Поиск"
+                v-model="search"
+            >
         </form>
+        <button
+            class="p-2 h-10 w-10 flex items-center justify-center rounded-full text-gray-500 hover:text-gray-300 active:bg-gray-50 active:bg-opacity-10 text-xl"
+            type="button"
+            @click="setPage('create-chats')"
+        >
+            <i class="bi bi-plus-lg"></i>
+        </button>
         <template v-if="me">
             <transition name="overlay">
                 <div
@@ -32,16 +44,16 @@
                         </div>
                         <div class="flex flex-col">
                             <ul class="border-t border-[#0F0F0F] py-2 flex flex-col">
-                                <li>
-                                    <button
-                                        class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"
-                                        type="button"
-                                        @click="setPage('settings')"
-                                    >
-                                        <i class="bi bi-gear flex items-center justify-start"></i>
-                                        <span class="text-sm">Настройки</span>
-                                    </button>
-                                </li>
+<!--                                <li>-->
+<!--                                    <button-->
+<!--                                        class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"-->
+<!--                                        type="button"-->
+<!--                                        @click="setPage('settings')"-->
+<!--                                    >-->
+<!--                                        <i class="bi bi-gear flex items-center justify-start"></i>-->
+<!--                                        <span class="text-sm">Настройки</span>-->
+<!--                                    </button>-->
+<!--                                </li>-->
                                 <li>
                                     <button
                                         class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"
@@ -95,7 +107,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import {ref, computed, watch} from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
@@ -106,8 +118,15 @@ const version = import.meta.env.VITE_APP_VERSION
 const me = computed(() => store.state.me);
 
 const onFormSubmit = () => {
-    console.log('submit')
 };
+
+const search = computed({
+    get: () => store.state.search,
+    set: value => store.commit({
+        type: 'setSearch',
+        value: value,
+    })
+})
 
 const setPage = (page) => {
     store.commit({

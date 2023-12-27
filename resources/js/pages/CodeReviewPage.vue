@@ -26,7 +26,7 @@
                         <button
                             class="w-full grid grid-cols-[min-content_1fr_min-content] items-center gap-2 p-2 hover:bg-[#282828]"
                             type="button"
-                            @click="setPage('find-mentor')"
+                            @click="setPage('request-code-review')"
                         >
                             <span class="bg-orange-500 rounded-md flex items-center justify-center w-8 h-8">
                                 <i class="bi bi-pencil-square text-xl"></i>
@@ -35,23 +35,36 @@
                             <i class="bi bi-chevron-right text-xs"></i>
                         </button>
                     </li>
-<!--                    <li>-->
-<!--                        <span class="block ml-auto h-px w-[calc(100%-48px)] bg-[#313131]"></span>-->
-<!--                    </li>-->
-<!--                    <li>-->
-<!--                        <button-->
-<!--                            class="w-full grid grid-cols-[min-content_1fr_min-content] items-center gap-2 p-2 hover:bg-[#282828]"-->
-<!--                            type="button"-->
-<!--                            @click="setPage('become-mentor')"-->
-<!--                        >-->
-<!--                            <span class="bg-green-500 rounded-xl flex items-center justify-center w-8 h-8">-->
-<!--                                <i class="bi bi-person-plus-fill text-xl"></i>-->
-<!--                            </span>-->
-<!--                            <span class="text-xs text-left">Хочу быть наставником</span>-->
-<!--                            <i class="bi bi-chevron-right text-xs"></i>-->
-<!--                        </button>-->
-<!--                    </li>-->
                 </ul>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <h3 class="uppercase text-xs text-gray-500">Почему это так важно</h3>
+                <div class="rounded bg-[#2c2c2c] text-sm p-2 flex flex-col gap-4">
+                    <span>
+                        Проведение код-ревью в разработке программного обеспечения имеет фундаментальное значение.
+                        Во-первых, это позволяет выявлять и устранять ошибки и недочеты в коде до его интеграции, повышая тем самым качество программного продукта.
+                        Во-вторых, код-ревью способствует обмену знаний и опыта между членами команды, поддерживая профессиональный рост.
+                        Третье, этот процесс гарантирует соблюдение стандартов кодирования и использование лучших практик разработки.
+                        <br>
+                        <br>
+                        Кроме того, через код-ревью выявляются и устраняются потенциальные уязвимости в безопасности, что способствует повышению надежности программного продукта. Наконец, код-ревью помогает сократить время разработки, предотвращая возможные задержки и переработки на более поздних этапах проекта.
+                    </span>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <h3 class="uppercase text-xs text-gray-500">Проведение код-ревью</h3>
+                <div class="rounded bg-[#2c2c2c] text-sm flex flex-col gap-4">
+                    <iframe
+                        class="w-full h-64 rounded"
+                        src="https://www.youtube.com/embed/xiEee5tldRQ?si=LahYVNCxncfRIXxX"
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen
+                    ></iframe>
+                </div>
             </div>
         </div>
     </SimplePageLayout>

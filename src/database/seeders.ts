@@ -125,6 +125,7 @@ const upsertUsers = async (): Promise<void> => {
             token: null,
             webhookUrl: null,
             uuid: generateUuid(),
+            image_url: 'https://i.postimg.cc/4YKK9qnm/b7iy-ZD08kq8.jpg',
         },
         {
             id: 2,
@@ -145,6 +146,7 @@ const upsertUsers = async (): Promise<void> => {
             token: null,
             webhookUrl: null,
             uuid: generateUuid(),
+            image_url: 'https://i.postimg.cc/2bY3g5GZ/9-An-Ld-WR0-Pf8.jpg',
         }
     ] as Array<CreationAttributes<User>>
 

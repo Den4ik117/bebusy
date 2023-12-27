@@ -41,7 +41,7 @@
                         <button
                             class="w-full grid grid-cols-[min-content_1fr_min-content] items-center gap-2 p-2 hover:bg-[#282828]"
                             type="button"
-                            @click="setPage('find-mentor')"
+                            @click="setPage('individual-interviews')"
                         >
                             <span class="bg-orange-500 rounded-md flex items-center justify-center w-8 h-8">
                                 <i class="bi bi-person-fill text-xl"></i>
@@ -57,7 +57,7 @@
                         <button
                             class="w-full grid grid-cols-[min-content_1fr_min-content] items-center gap-2 p-2 hover:bg-[#282828]"
                             type="button"
-                            @click="setPage('become-mentor')"
+                            @click="setPage('group-interviews')"
                         >
                             <span class="bg-green-500 rounded-xl flex items-center justify-center w-8 h-8">
                                 <i class="bi bi-people-fill text-xl"></i>
@@ -67,6 +67,56 @@
                         </button>
                     </li>
                 </ul>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <h3 class="uppercase text-xs text-gray-500">Почему это так важно</h3>
+                <div class="rounded bg-[#2c2c2c] text-sm p-2 flex flex-col gap-4">
+                    <span>
+                        Пробные тестовые собеседования в IT предоставляют кандидатам возможность оценить свой уровень подготовки, разработать эффективные стратегии ответов и освоить стрессовые ситуации, эмулируя атмосферу реального интервью.
+                        <br>
+                        <br>
+                        Полученная обратная связь после тестирования позволяет корректировать ошибки и улучшать подготовку, а также фокусироваться на решении специфических задач, что повышает шансы на успешное прохождение интервью.
+                        <br>
+                        <br>
+                        Этот опыт помогает кандидатам формировать уверенность в себе и повышать свою конкурентоспособность на динамичном рынке труда в области информационных технологий.
+                    </span>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <h3 class="uppercase text-xs text-gray-500">Примеры собеседований</h3>
+                <div class="rounded bg-[#2c2c2c] text-sm p-2 flex flex-col gap-4">
+                    <a
+                        class="bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% h-24 rounded px-6 flex items-center justify-center text-center"
+                        href="https://youtu.be/gt-Glqr-1DM?si=sPFGLEAKMaxbJqu2"
+                        target="_blank"
+                    >
+                        <span class="text-xs font-semibold">
+                            Собеседование frontend Junior+ разработчика (CSS, HTML, JS, React, Typescript, Redux)
+                        </span>
+                    </a>
+
+                    <a
+                        class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-24 rounded px-6 flex items-center justify-center text-center"
+                        href="https://youtu.be/6-UOa1wXHIg?si=Th7t0RIlIWOKfcgm"
+                        target="_blank"
+                    >
+                        <span class="text-xs font-semibold">
+                            Собеседование frontend Junior разработчика (CSS, HTML, JS, React, Typescript)
+                        </span>
+                    </a>
+
+                    <a
+                        class="bg-gradient-to-r from-green-400 via-purple-500 to-blue-500 to-90% h-24 rounded px-6 flex items-center justify-center text-center"
+                        href="https://youtu.be/cRqBsepPgoI?si=_YQfktCxCfFxLozv"
+                        target="_blank"
+                    >
+                        <span class="text-xs font-semibold">
+                            Собеседование frontend Junior+ разработчика (CSS, HTML, JS, React, Typescript, Redux)
+                        </span>
+                    </a>
+                </div>
             </div>
         </div>
     </SimplePageLayout>

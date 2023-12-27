@@ -34,6 +34,8 @@ export const createRouter = async (handlers: Handler): Promise<Routes> => {
 
     router.get('/api/mentors', handlers.AuthHandler.checkAuth, handlers.MentorHandler.getActiveMentors)
 
+    router.get('/api/users', handlers.AuthHandler.checkAuth, handlers.UserHandler.getUsers)
+
     router.post('/bots/:token/sendMessage', handlers.BotHandler.sendMessage)
 
     // router.post('/bots/callback', handlers.ResumeBotHandler.receiveUpdate)

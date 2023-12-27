@@ -1,9 +1,11 @@
 import { Request, Response } from 'express'
 import { Service } from '../services'
+import {User} from "../models";
 
 export interface UserHandler {
     getCurrentUser(req: Request, res: Response): Promise<void>
     getToken(req: Request, res: Response): Promise<void>
+    getUsers(req: Request, res: Response): Promise<void>
 }
 
 export const NewUserHandler = async (service: Service): Promise<UserHandler> => {
@@ -23,6 +25,7 @@ export const NewUserHandler = async (service: Service): Promise<UserHandler> => 
             data: user,
         })
     }
+
     const getToken = async (req: Request, res: Response) => {
         const { id: userId } = req.body.user
 
@@ -40,8 +43,17 @@ export const NewUserHandler = async (service: Service): Promise<UserHandler> => 
         })
     }
 
+    const getUsers = async (req: Request, res: Response) => {
+        const users = await User.findAll()
+
+        res.json({
+            data: users,
+        })
+    }
+
     return {
         getCurrentUser,
         getToken,
+        getUsers,
     }
 }

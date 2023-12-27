@@ -41,6 +41,22 @@
         <transition name="page-animation-down">
             <BecomeMentorPage v-if="currentPage === 'become-mentor'"/>
         </transition>
+
+        <transition name="page-animation-down">
+            <RequestCodeReviewPage v-if="currentPage === 'request-code-review'"/>
+        </transition>
+
+        <transition name="page-animation-down">
+            <IndividualInterviewPage v-if="currentPage === 'individual-interviews'"/>
+        </transition>
+
+        <transition name="page-animation-down">
+            <GroupInterviewPage v-if="currentPage === 'group-interviews'"/>
+        </transition>
+
+        <transition name="page-animation-down">
+            <CreateChatsPage v-if="currentPage === 'create-chats'"/>
+        </transition>
     </div>
 </template>
 
@@ -57,13 +73,17 @@ import InterviewsPage from "@/pages/InterviewsPage.vue";
 import AboutPage from "@/pages/AboutPage.vue";
 import FindMentorPage from "@/pages/FindMentorPage.vue";
 import BecomeMentorPage from "@/pages/BecomeMentorPage.vue";
+import RequestCodeReviewPage from "@/pages/RequestCodeReviewPage.vue";
+import IndividualInterviewPage from "@/pages/IndividualInterviewPage.vue";
+import GroupInterviewPage from "@/pages/GroupInterviewPage.vue";
+import CreateChatsPage from "@/pages/CreateChatsPage.vue";
 
 const store = useStore();
 
 const isOpenChat = computed(() => !!store.state.hash);
 const currentPage = computed(() => store.state.page);
 
-const chats = computed(() => store.state.chats);
+const chats = computed(() => store.getters.computedChats);
 </script>
 
 <style>

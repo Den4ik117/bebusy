@@ -27,18 +27,7 @@ export const NewChatHandler = async (service: Service): Promise<ChatHandler> => 
     }
 
     const getOrCreateChat = async (req: Request, res: Response): Promise<void> => {
-        const { user: currentUser, user_id } = req.body
-
-        const user = await User.findByPk(user_id, {
-            include: [Chat],
-        })
-
-        if (!user) {
-            res.json({
-                data: null,
-            })
-            return
-        }
+        const { user: currentUser, user_id, name = '', is_group = false, user_ids = [] } = req.body
 
         // if (user.chats && user.chats.some(chat => {
         //     if ('ChatUser' in chat && typeof chat.ChatUser === 'object' && chat.ChatUser !== null && 'userId' in chat.ChatUser) {
@@ -51,6 +40,40 @@ export const NewChatHandler = async (service: Service): Promise<ChatHandler> => 
         //     })
         //     return
         // }
+
+        if (is_group) {
+            const chat = await Chat.create({
+                uuid: v4(),
+                name: name,
+                type: 'GROUP',
+            })
+
+            for (const userId of user_ids) {
+                await ChatUser.sequelize.queryRaw(`INSERT INTO chat_user (chat_id, user_id) VALUES (${chat.id}, ${userId})`)
+            }
+
+            await Message.create({
+                text: 'Чат создан',
+                chatId: chat.id,
+            })
+
+            res.json({
+                data: chat,
+            })
+            return
+        }
+
+        const user = await User.findByPk(user_id, {
+            include: [Chat],
+        })
+
+        if (!user) {
+            res.json({
+                data: null,
+                message: 'User not found',
+            })
+            return
+        }
 
         try {
             const chat = await Chat.create({

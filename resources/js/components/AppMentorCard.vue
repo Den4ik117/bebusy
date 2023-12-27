@@ -2,9 +2,9 @@
     <div class="rounded-md relative">
         <div class="grid grid-cols-[120px_1fr] items-center gap-4">
             <img
-                class="h-auto rounded-md"
-                :src="mentor.image || 'https://img.freepik.com/free-photo/portrait-of-white-man-isolated_53876-40306.jpg?size=626&ext=jpg&ga=GA1.1.1826414947.1699920000&semt=ais'"
-                :alt="mentor.image || 'https://img.freepik.com/free-photo/portrait-of-white-man-isolated_53876-40306.jpg?size=626&ext=jpg&ga=GA1.1.1826414947.1699920000&semt=ais'"
+                class="h-[120px] w-full object-cover rounded-md"
+                :src="mentor.user.image_url"
+                :alt="`Фотография ментора «${mentor.user.lastName} ${mentor.user.firstName}»`"
                 loading="lazy"
             >
             <div class="flex flex-col gap-0.5 text-xs">

@@ -89,6 +89,9 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
     @Attribute(DataTypes.BIGINT.UNSIGNED)
     declare avatarId: number | null
 
+    @Attribute(DataTypes.STRING)
+    declare image_url: string | null
+
     @BelongsTo(() => File, 'avatarId')
     declare avatar?: NonAttribute<File>
 

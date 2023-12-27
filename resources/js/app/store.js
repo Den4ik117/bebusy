@@ -15,12 +15,20 @@ export const store = createStore({
             token: getCookie('auth-session'),
             message: '',
             page: '',
+            search: '',
             // resumes: [],
         };
     },
     getters: {
         activeChat: (state) => {
             return state.chats.find(chat => chat.uuid === state.hash);
+        },
+        computedChats: (state) => {
+            if (state.search) {
+                return state.chats.filter(chat => chat.name.toLowerCase().indexOf(state.search.toLowerCase()) > -1);
+            }
+
+            return state.chats
         },
     },
     mutations: {
@@ -62,17 +70,10 @@ export const store = createStore({
         },
         setPage: (state, { value = '' }) => {
             state.page = value
-        }
-        // setResumes: (state, { value = [] }) => {
-        //     state.resumes = value;
-        // },
-        // setResume: (state, { value }) => {
-        //     const index = state.resumes.findIndex(resume => resume.id === value.id)
-        //
-        //     if (!state.resumes[index]) return
-        //
-        //     state.resumes[index] = value
-        // },
+        },
+        setSearch: (state, { value = '' }) => {
+            state.search = value
+        },
     },
     actions: {
         sendMessage: (context) => {
@@ -91,20 +92,6 @@ export const store = createStore({
                 value: '',
             })
         },
-        // publishResume: (context, { uuid }) => {
-        //     request(
-        //         `/api/resumes/${uuid}/publish?token=${store.state.token}`,
-        //         'POST',
-        //         undefined,
-        //         undefined,
-        //         (data) => {
-        //             context.commit({
-        //                 type: 'setResume',
-        //                 value: data.data,
-        //             })
-        //         }
-        //     )
-        // }
     },
 });
 
