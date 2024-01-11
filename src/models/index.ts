@@ -101,6 +101,11 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
         // otherKey: 'chat_id',
     })
     declare chats?: NonAttribute<Chat[]>;
+
+    @Attribute(DataTypes.VIRTUAL(DataTypes.STRING))
+    get fullName(): NonAttribute<string> {
+        return `${this.lastName} ${this.firstName}`;
+    }
 }
 
 @Table({
@@ -384,6 +389,12 @@ export class Request extends Model<InferAttributes<Request>, InferCreationAttrib
     @Attribute(DataTypes.BIGINT.UNSIGNED)
     @NotNull
     declare userId: number
+
+    @Attribute(DataTypes.JSON)
+    declare data: CreationOptional<string>
+
+    @Attribute(DataTypes.STRING)
+    declare type: CreationOptional<string>
 
     @BelongsTo(() => Direction, 'directionId')
     declare direction?: NonAttribute<Direction>

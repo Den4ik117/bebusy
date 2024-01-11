@@ -1,7 +1,7 @@
 import { RowDataPacket } from 'mysql2'
 import { IMessage } from './message'
 
-export type ChatType = 'PRIVATE'
+export type ChatType = 'PRIVATE' | 'GROUP'
 
 export interface IChat extends RowDataPacket {
     id: number
@@ -11,4 +11,8 @@ export interface IChat extends RowDataPacket {
     messages?: IMessage[]
     updated_at: string
     created_at: string
+}
+
+export interface IChatIntersect extends RowDataPacket {
+    chat_id: number
 }

@@ -1,5 +1,6 @@
 import { Connection } from 'mysql2/promise'
 import { ChatType, IChat } from '../models'
+import { IChatIntersect } from '../models/chat'
 
 interface CreateChat {
     uuid: string
@@ -12,6 +13,8 @@ interface CreateChat {
 export interface ChatRepository {
     getChatsByUserId(id: number): Promise<IChat[]>
     createChat(chat: CreateChat, userIds: number[]): Promise<IChat>
+    getChatIntersects(firstUserId: number, secondUserId: number): Promise<IChatIntersect[]>
+    getChatById(id: number): Promise<IChat>
 }
 
 export const NewChatRepository = async (connection: Connection): Promise<ChatRepository> => {
@@ -46,8 +49,28 @@ export const NewChatRepository = async (connection: Connection): Promise<ChatRep
         return createdChat
     }
 
+    const getChatIntersects = async (firstUserId: number, secondUserId: number): Promise<IChatIntersect[]> => {
+        const [row] = await connection.execute<IChatIntersect[]>(
+            `SELECT cu.chat_id FROM chat_user cu JOIN chats c on cu.chat_id = c.id WHERE cu.user_id = ? AND c.type = 'PRIVATE' INTERSECT SELECT cu.chat_id FROM chat_user cu JOIN chats c on cu.chat_id = c.id WHERE cu.user_id = ? AND c.type = 'PRIVATE'`,
+            [firstUserId, secondUserId],
+        )
+
+        return row
+    }
+
+    const getChatById = async (id: number): Promise<IChat> => {
+        const [row] = await connection.execute<IChat[]>(
+            `SELECT * FROM chats WHERE id = ? LIMIT 1`,
+            [id],
+        )
+
+        return row[0]
+    }
+
     return {
         getChatsByUserId,
         createChat,
+        getChatIntersects,
+        getChatById,
     }
 }

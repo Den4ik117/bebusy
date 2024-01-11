@@ -14,6 +14,7 @@ export interface IMessage extends RowDataPacket {
     resume_id: number | null
     updated_at: string
     created_at: string
+    human_created_at?: string
     user?: IUser
     resume?: IResume
     actions?: IAction[][]

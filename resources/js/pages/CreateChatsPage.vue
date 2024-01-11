@@ -53,10 +53,10 @@
                                 ></i>
                             </span>
                             <span class="rounded-md flex items-center justify-center w-8 h-8" :class="{ [backgroundColors[index % 3]]: true }">
-                                <span class="font-bold uppercase">{{ user.lastName[0] }}{{ user.firstName[0] }}</span>
+                                <span class="font-bold uppercase">{{ user.last_name[0] }}{{ user.first_name[0] }}</span>
                             </span>
                             <span class="flex flex-col gap-0.5">
-                                <span class="text-xs text-left font-medium">{{ user.lastName }} {{ user.firstName }} {{ user.is_bot ? '[БОТ]' : '' }}</span>
+                                <span class="text-xs text-left font-medium">{{ user.full_name }} {{ user.is_bot ? '[БОТ]' : '' }}</span>
                                 <span class="text-xs text-left text-gray-500">Был(а) в сети неизвестно когда</span>
                             </span>
                         </label>
@@ -68,10 +68,10 @@
                             @click="createChat(user.id)"
                         >
                                 <span class="rounded-md flex items-center justify-center w-8 h-8" :class="{ [backgroundColors[index % 3]]: true }">
-                                    <span class="font-bold uppercase">{{ user.lastName[0] }}{{ user.firstName[0] }}</span>
+                                    <span class="font-bold uppercase">{{ user.last_name[0] }}{{ user.first_name[0] }}</span>
                                 </span>
                             <span class="flex flex-col gap-0.5">
-                                <span class="text-xs text-left font-medium">{{ user.lastName }} {{ user.firstName }} {{ user.is_bot ? '[БОТ]' : '' }}</span>
+                                <span class="text-xs text-left font-medium">{{ user.last_name }} {{ user.first_name }} {{ user.is_bot ? '[БОТ]' : '' }}</span>
                                 <span class="text-xs text-left text-gray-500">Был(а) в сети неизвестно когда</span>
                             </span>
                             <i class="bi bi-chevron-right text-xs"></i>
@@ -91,6 +91,13 @@ import SimplePageLayout from "@/components/SimplePageLayout.vue";
 import AppleCheckbox from "@/components/AppleCheckbox.vue";
 import { onMounted, reactive, ref } from "vue";
 import axios from "axios";
+import {useMessage} from "@/utils/useMessage";
+import {useStore} from "vuex";
+import {fetchChats} from "@/app/store";
+import {getErrorMessage} from "@/utils";
+
+const message = useMessage()
+const store = useStore()
 
 const users = ref([])
 const form = reactive({
@@ -107,15 +114,33 @@ const backgroundColors = [
 ]
 
 const createChat = (id = null) => {
-    form.user_id = typeof id === 'string' ? id : null
+    form.user_id = typeof id === 'number' ? id : null
 
     axios.post('/api/chats', form)
-        .then(() => {
+        .then(async (data) => {
             form.name = ''
             form.user_id = null
             form.user_ids = []
+
+            if (form.is_group) {
+                await fetchChats()
+
+                message.success('Чат успешно создан!')
+            }
+
+            store.commit({
+                type: 'setHash',
+                value: data.data.data.uuid,
+            })
+
+            store.commit({
+                type: 'setPage',
+                value: '',
+            })
         })
-        .catch(e => console.log(e))
+        .catch(e => {
+            message.error(getErrorMessage(e))
+        })
 }
 
 onMounted(() => {

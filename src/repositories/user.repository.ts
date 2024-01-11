@@ -10,6 +10,7 @@ export interface UserRepository {
     createUser(user: Omit<IUser, 'id' | 'constructor'>): Promise<IUser>
     updateUser(user: Pick<IUser, 'id' | 'first_name' | 'middle_name' | 'last_name' | 'email' | 'data'>): Promise<IUser>
     getUsersByIds(ids: number[]): Promise<IUser[]>
+    getUsersExceptSelfAndBots(selfIf: number): Promise<IUser[]>
 }
 
 export const NewUserRepository = async (connection: Connection): Promise<UserRepository> => {
@@ -86,7 +87,16 @@ export const NewUserRepository = async (connection: Connection): Promise<UserRep
         if (ids.length === 0) return []
 
         const [rows] = await connection.execute<IUser[]>(
-            `SELECT * FROM \`users\` WHERE id IN (${ids.join(',')})`,
+            `SELECT *, CONCAT(last_name, ' ', first_name) as full_name FROM \`users\` WHERE id IN (${ids.join(',')})`,
+        )
+
+        return rows
+    }
+
+    const getUsersExceptSelfAndBots = async (selfIf: number): Promise<IUser[]> => {
+        const [rows] = await connection.execute<IUser[]>(
+            `SELECT *, CONCAT(last_name, ' ', first_name) as full_name FROM users WHERE id != ? AND is_bot = 0`,
+            [selfIf],
         )
 
         return rows
@@ -101,5 +111,6 @@ export const NewUserRepository = async (connection: Connection): Promise<UserRep
         createUser,
         updateUser,
         getUsersByIds,
+        getUsersExceptSelfAndBots,
     }
 }

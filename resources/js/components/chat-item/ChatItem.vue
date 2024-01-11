@@ -5,10 +5,10 @@
         </div>
         <div class="grid grid-cols-[1fr_min-content] items-center gap-x-2 gap-y-1">
             <div class="font-medium">{{ chat.name }}</div>
-            <time class="text-gray-500 text-xs">{{ lastMessage?.created_at }}</time>
+            <time class="text-gray-500 text-xs">{{ chat.messages.at(-1)?.human_created_at }}</time>
             <div class="text-gray-500 text-xs truncate">
-                <span class="text-blue-500">{{ lastMessage?.user?.full_name || 'Система' }}: </span>
-                <span>{{ lastMessage?.text }}</span>
+                <span class="text-blue-500">{{ chat.messages.at(-1)?.user?.full_name || 'Система' }}: </span>
+                <span>{{ chat.messages.at(-1)?.text }}</span>
             </div>
 <!--            <span class="w-5 h-5 text-xs rounded-full bg-slate-700 flex items-center justify-center text-white font-medium justify-self-end">4</span>-->
         </div>
@@ -17,9 +17,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
 import { useStore } from 'vuex'
-import { getShortDate } from '@/utils'
 
 const props = defineProps({
     chat: {
@@ -29,18 +27,6 @@ const props = defineProps({
 });
 
 const store = useStore();
-
-const lastMessage = computed(() => {
-    const lastIndex = props.chat.messages?.length - 1
-
-    const lastMessage = lastIndex ? props.chat.messages[lastIndex] : null
-
-    if (lastMessage) {
-        lastMessage.created_at = getShortDate(lastMessage.created_at)
-    }
-
-    return lastMessage || null
-})
 
 const onChatItemClick = () => {
     store.commit({

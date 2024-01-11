@@ -9,7 +9,7 @@
             </div>
             <div class="flex flex-col gap-1">
                 <div class="font-medium text-sm">{{ activeChat?.name || 'Загрузка...' }}</div>
-                <time class="text-blue-500 text-xs">Неизвестно когда был в сети</time>
+                <time class="text-blue-500 text-xs">{{ activeChat?.type === 'GROUP' ? 'Группа для общения' : 'Неизвестно когда был в сети' }}</time>
             </div>
 <!--            <router-link class="absolute rounded top-0 bottom-0 left-0 right-0" :to="`/chats/${chat.uuid}`"></router-link>-->
         </div>

@@ -16,13 +16,17 @@
         <button
             class="absolute top-0 left-0 right-0 bottom-0 w-full h-full"
             type="button"
-            @click="goToChat(mentor.user)"
+            @click="firstOrCreateChat(mentor.user)"
         ></button>
     </div>
 </template>
 
 <script setup>
-import {goToChat} from "@/utils";
+import {getErrorMessage} from "@/utils";
+import axios from "axios";
+import {fetchChats} from "@/app/store";
+import {useMessage} from "@/utils/useMessage";
+import {useStore} from "vuex";
 
 defineProps({
     mentor: {
@@ -30,4 +34,32 @@ defineProps({
         required: true,
     },
 })
+
+const message = useMessage()
+const store = useStore()
+
+const firstOrCreateChat = (user) => {
+    const data = {
+        user_id: +user.id,
+        is_group: false,
+    }
+
+    axios.post('/api/chats', data)
+        .then(async (data) => {
+            await fetchChats()
+
+            store.commit({
+                type: 'setHash',
+                value: data.data.data.uuid,
+            })
+
+            store.commit({
+                type: 'setPage',
+                value: '',
+            })
+        })
+        .catch(e => {
+            message.error(getErrorMessage(e))
+        })
+}
 </script>

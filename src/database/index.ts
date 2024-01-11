@@ -62,8 +62,6 @@ export const createSequelizeConnection = async (): Promise<Sequelize> => {
     await connection.sync({ alter: true })
     // await connection.sync({ force: true })
 
-
-
     // await Chat.create({
     //     id: 1,
     //     uuid: generateUuid(),

@@ -1,8 +1,8 @@
 <template>
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col max-h-[100dvh] gap-4">
         <Header/>
 
-        <ul class="px-4 pb-4">
+        <ul class="px-4 pb-4 overflow-y-auto">
             <ChatItem
                 v-for="chat in chats"
                 :key="chat.id"

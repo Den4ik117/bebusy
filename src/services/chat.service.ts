@@ -1,8 +1,14 @@
 import { Repository } from '../repositories'
-import {IChat, IUser} from '../models'
+import {ChatType, IChat, IUser} from '../models'
+import {v4 as generateUuid} from "uuid";
+import {getCurrentDatetime} from "../utils";
+import {IChatIntersect} from "../models/chat";
 
 export interface ChatService {
     getChatsByUserId(id: number): Promise<IChat[]>
+    createChat(name: string, type: ChatType, userIds: number[]): Promise<IChat>
+    getChatIntersects(firstUserId: number, secondUserId: number): Promise<IChatIntersect[]>
+    getChatById(id: number): Promise<IChat>
 }
 
 export const NewChatService = async (repositories: Repository): Promise<ChatService> => {
@@ -61,7 +67,39 @@ export const NewChatService = async (repositories: Repository): Promise<ChatServ
         return chats
     }
 
+    const createChat = async (name: string, type: ChatType, userIds: number[]): Promise<IChat> => {
+        const chat = await repositories.ChatRepository.createChat({
+            uuid: generateUuid(),
+            name: name,
+            type: type,
+            created_at: getCurrentDatetime(),
+            updated_at: getCurrentDatetime(),
+        }, userIds)
+
+        await repositories.MessageRepository.createMessage({
+            text: 'Чат создан',
+            user_id: null,
+            chat_id: chat.id,
+            resume_id: null,
+            updated_at: getCurrentDatetime(),
+            created_at: getCurrentDatetime(),
+        })
+
+        return chat
+    }
+
+    const getChatIntersects = async (firstUserId: number, secondUserId: number): Promise<IChatIntersect[]> => {
+        return await repositories.ChatRepository.getChatIntersects(firstUserId, secondUserId)
+    }
+
+    const getChatById = async (id: number): Promise<IChat> => {
+        return await repositories.ChatRepository.getChatById(id)
+    }
+
     return {
         getChatsByUserId,
+        createChat,
+        getChatIntersects,
+        getChatById,
     }
 }

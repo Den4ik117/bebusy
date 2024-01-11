@@ -31,6 +31,7 @@ export const createRouter = async (handlers: Handler): Promise<Routes> => {
     router.get('/api/directions', handlers.AuthHandler.checkAuth, handlers.DirectionHandler.getDirections)
 
     router.post('/api/requests', handlers.AuthHandler.checkAuth, handlers.RequestHandler.createRequest)
+    router.post('/api/requestss', handlers.AuthHandler.checkAuth, handlers.RequestHandler.storeRequest)
 
     router.get('/api/mentors', handlers.AuthHandler.checkAuth, handlers.MentorHandler.getActiveMentors)
 

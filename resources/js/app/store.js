@@ -4,6 +4,15 @@ import { getCookie } from '@/utils'
 
 let socket;
 
+export const fetchChats = async () => {
+    await request('/api/chats', 'GET', undefined, undefined, (data) => {
+        store.commit({
+            type: 'setChats',
+            value: data.data,
+        });
+    });
+}
+
 export const store = createStore({
     state() {
         const hash = window.location.pathname.replace('/_/', '').replace('/', '');
@@ -103,12 +112,7 @@ export const initStore = async () => {
         });
     });
 
-    await request('/api/chats', 'GET', undefined, undefined, (data) => {
-        store.commit({
-            type: 'setChats',
-            value: data.data,
-        });
-    });
+    await fetchChats()
 
     await request('/api/me', 'GET', undefined, undefined, (data) => {
         store.commit({

@@ -1,5 +1,6 @@
 import { Connection } from 'mysql2/promise'
 import { IMessage } from '../models'
+import {getShortDate} from "../utils";
 
 export interface MessageRepository {
     createMessage(message: Omit<IMessage, 'id'>): Promise<IMessage>
@@ -15,6 +16,10 @@ export const NewMessageRepository = async (connection: Connection): Promise<Mess
 
         const [rows] = await connection.execute<IMessage[]>('SELECT * FROM `messages` WHERE `id` = LAST_INSERT_ID() LIMIT 1')
 
+        for (let i = 0; i < rows.length; i++) {
+            rows[i].human_created_at = getShortDate(rows[i].created_at)
+        }
+
         return rows[0]
     }
 
@@ -23,6 +28,10 @@ export const NewMessageRepository = async (connection: Connection): Promise<Mess
             'SELECT * FROM `messages` WHERE chat_id = ?',
             [id],
         )
+
+        for (let i = 0; i < rows.length; i++) {
+            rows[i].human_created_at = getShortDate(rows[i].created_at)
+        }
 
         return rows
     }

@@ -1,7 +1,9 @@
 import { Request, Response } from 'express'
 import { Service } from '../services'
-import {Chat, ChatUser, Message, User} from "../models";
+import {Chat, ChatUser, IUser, Message, User} from "../models";
 import {v4} from "uuid";
+
+const Validator = require('validatorjs')
 
 export interface ChatHandler {
     getMyChats(req: Request, res: Response): Promise<void>
@@ -27,85 +29,65 @@ export const NewChatHandler = async (service: Service): Promise<ChatHandler> => 
     }
 
     const getOrCreateChat = async (req: Request, res: Response): Promise<void> => {
-        const { user: currentUser, user_id, name = '', is_group = false, user_ids = [] } = req.body
+        const { is_group = false } = req.body
 
-        // if (user.chats && user.chats.some(chat => {
-        //     if ('ChatUser' in chat && typeof chat.ChatUser === 'object' && chat.ChatUser !== null && 'userId' in chat.ChatUser) {
-        //         return chat.ChatUser.userId == currentUser.id
-        //     }
-        //     return false
-        // })) {
-        //     res.json({
-        //         data: 'already exists',
-        //     })
-        //     return
-        // }
-
-        if (is_group) {
-            const chat = await Chat.create({
-                uuid: v4(),
-                name: name,
-                type: 'GROUP',
-            })
-
-            for (const userId of user_ids) {
-                await ChatUser.sequelize.queryRaw(`INSERT INTO chat_user (chat_id, user_id) VALUES (${chat.id}, ${userId})`)
-            }
-
-            await Message.create({
-                text: 'Чат создан',
-                chatId: chat.id,
-            })
-
-            res.json({
-                data: chat,
-            })
-            return
-        }
-
-        const user = await User.findByPk(user_id, {
-            include: [Chat],
+        const validation = new Validator(req.body, is_group ? {
+            'user.id': 'required|integer',
+            'name': 'required|string|min:2|max:255',
+            'user_ids': 'required|array|min:1',
+            'user_ids.*': 'required|integer',
+        } : {
+            'user.id': 'required|integer',
+            'user_id': 'required|integer',
         })
 
-        if (!user) {
-            res.json({
-                data: null,
-                message: 'User not found',
+        if (validation.fails()) {
+            res.status(422).json({
+                errors: validation.errors.all(),
             })
             return
         }
 
-        try {
-            const chat = await Chat.create({
-                uuid: v4(),
-                name: user.firstName + ' ' + user.lastName,
-                type: 'PRIVATE',
-            })
+        const data = req.body as {
+            user: IUser
+            is_group: boolean
+            name: string
+            user_id: number
+            user_ids: number[]
+        }
 
-            await ChatUser.create({
-                chatId: chat.id,
-                userId: user.id,
-            })
-
-            await ChatUser.create({
-                chatId: chat.id,
-                userId: currentUser.id,
-            })
-
-            await Message.create({
-                text: 'Чат создан',
-                chatId: chat.id,
-            })
+        if (data.is_group) {
+            const chat = await service.ChatService.createChat(
+                data.name,
+                'GROUP',
+                [data.user.id, ...data.user_ids]
+            )
 
             res.json({
                 data: chat,
             })
-        } catch (e) {
-            console.log(e)
+            return
         }
 
+        const chatIntersects = await service.ChatService.getChatIntersects(data.user.id, data.user_id)
+
+        if (chatIntersects.length > 0) {
+            const chat = await service.ChatService.getChatById(chatIntersects[0].chat_id)
+
+            res.json({
+                data: chat,
+            })
+            return
+        }
+
+        const chat = await service.ChatService.createChat(
+            `${data.user.last_name} ${data.user.first_name}`,
+            'PRIVATE',
+            [data.user.id, data.user_id]
+        )
+
         res.json({
-            data: null,
+            data: chat,
         })
     }
 

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { Service } from '../services'
-import {User} from "../models";
+import {IUser, User} from "../models";
 
 export interface UserHandler {
     getCurrentUser(req: Request, res: Response): Promise<void>
@@ -44,7 +44,9 @@ export const NewUserHandler = async (service: Service): Promise<UserHandler> => 
     }
 
     const getUsers = async (req: Request, res: Response) => {
-        const users = await User.findAll()
+        const { id } = req.body.user as IUser
+
+        const users = await service.UserService.getUsersExceptSelfAndBots(id)
 
         res.json({
             data: users,
