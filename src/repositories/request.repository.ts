@@ -10,12 +10,12 @@ export interface RequestRepository {
 export const NewRequestRepository = async (connection: Connection): Promise<RequestRepository> => {
     const createRequest = async (userId: number, data: string, type: string): Promise<IRequest> => {
         await connection.execute(
-            'INSERT INTO requests (full_name, birthdate, about, status, direction_id, user_id, created_at, updated_at, is_mentor, data, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            ['', '', '', RequestStatus.New, 1, userId, getCurrentDatetime(), getCurrentDatetime(), 0, data, type],
+            'INSERT INTO requests (status, user_id, created_at, updated_at, data, type) VALUES (?, ?, ?, ?, ?, ?)',
+            [RequestStatus.New, userId, getCurrentDatetime(), getCurrentDatetime(), data, type],
         )
 
         const [row] = await connection.execute<IRequest[]>(
-            'SELECT * FROM bebusy.requests WHERE id = LAST_INSERT_ID() LIMIT 1',
+            'SELECT * FROM requests WHERE id = LAST_INSERT_ID() LIMIT 1',
         )
 
         return row[0]

@@ -1,41 +1,66 @@
 import { Request, Response } from 'express'
 import { Service } from '../services'
-import {IUser, Request as RequestModel, RequestStatus} from '../models'
+import {IUser} from '../models'
+import {RequestType} from "../models/request";
 
 const Validator = require('validatorjs')
 
 export interface RequestHandler {
     createRequest(req: Request, res: Response): Promise<void>
-    storeRequest(req: Request, res: Response): Promise<void>
+}
+
+const storeRules: Record<RequestType, Record<string, string>> = {
+    [RequestType.FindMentor]: {
+        'full_name': 'required|string|min:2|max:255',
+        'birthdate': 'required|string|min:10|max:12',
+        'about': 'required|string|min:10|max:1024',
+        'direction_id': 'required|integer|min:1',
+    },
+    [RequestType.BecomeMentor]: {
+        'full_name': 'required|string|min:2|max:255',
+        'birthdate': 'required|string|min:10|max:12',
+        'about': 'required|string|min:10|max:1024',
+        'direction_id': 'required|integer|min:1',
+    },
+    [RequestType.RequestCodeReview]: {
+        'full_name': 'required|string|min:2|max:255',
+        'about': 'required|string|min:10|max:1024',
+        'direction_id': 'required|integer|min:1',
+    },
+    [RequestType.IndividualInterview]: {
+        'full_name': 'required|string|min:2|max:255',
+        'birthdate': 'required|string|min:10|max:12',
+        'about': 'required|string|min:10|max:1024',
+        'direction_id': 'required|integer|min:1',
+    },
+    [RequestType.GroupInterview]: {
+        'full_name': 'required|string|min:2|max:255',
+        'birthdate': 'required|string|min:10|max:12',
+        'about': 'required|string|min:10|max:1024',
+        'direction_id': 'required|integer|min:1',
+    },
 }
 
 export const NewRequestHandler = async (service: Service): Promise<RequestHandler> => {
-    const createRequest = async (req: Request, res: Response): Promise<void> => {
-        const user = req.body.user as IUser
+    const getData = (data: Object, rules: Object) => {
+        const newData = {}
 
-        const request = await RequestModel.create({
-            full_name: req.body.full_name,
-            birthdate: req.body.birthdate,
-            about: req.body.about,
-            status: RequestStatus.New,
-            isMentor: req.body.is_mentor,
-            directionId: req.body.direction_id,
-            userId: user.id,
-        })
+        for (const key in rules) {
+            // @ts-ignore
+            newData[key] = data[key]
+        }
 
-        res.json({
-            data: request,
-        })
+        return newData
     }
 
-    const storeRequest = async (req: Request, res: Response): Promise<void> => {
-        // const user = req.body.user as IUser
+    const createRequest = async (req: Request, res: Response): Promise<void> => {
+        const { type = RequestType.FindMentor, user } = req.body as { type: RequestType; user: IUser }
+
+        const rules = storeRules[type]
 
         const validation = new Validator(req.body, {
-            'user.id': 'required|integer',
-            'name': 'required|string|min:2|max:255',
-            'user_ids': 'required|array|min:1',
-            'user_ids.*': 'required|integer',
+            'type': `required|string|in:${Object.values(RequestType).join(',')}`,
+            ...rules,
         })
 
         if (validation.fails()) {
@@ -45,23 +70,18 @@ export const NewRequestHandler = async (service: Service): Promise<RequestHandle
             return
         }
 
-        // const request = await RequestModel.create({
-        //     full_name: req.body.full_name,
-        //     birthdate: req.body.birthdate,
-        //     about: req.body.about,
-        //     status: RequestStatus.New,
-        //     isMentor: req.body.is_mentor,
-        //     directionId: req.body.direction_id,
-        //     userId: user.id,
-        // })
+        const request = await service.RequestService.createRequest(
+            user.id,
+            JSON.stringify(getData(req.body, rules)),
+            type,
+        )
 
-        // res.json({
-        //     data: request,
-        // })
+        res.json({
+            data: request,
+        })
     }
 
     return {
         createRequest,
-        storeRequest,
     }
 }

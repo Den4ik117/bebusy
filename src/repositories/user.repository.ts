@@ -1,5 +1,6 @@
 import { Connection } from 'mysql2/promise'
 import { IUser } from '../models'
+import {IUserUpdate} from "../models/user";
 
 export interface UserRepository {
     getUserByToken(token: string): Promise<IUser | undefined>
@@ -11,6 +12,7 @@ export interface UserRepository {
     updateUser(user: Pick<IUser, 'id' | 'first_name' | 'middle_name' | 'last_name' | 'email' | 'data'>): Promise<IUser>
     getUsersByIds(ids: number[]): Promise<IUser[]>
     getUsersExceptSelfAndBots(selfIf: number): Promise<IUser[]>
+    updateUserById(id: number, data: IUserUpdate): Promise<IUser | undefined>
 }
 
 export const NewUserRepository = async (connection: Connection): Promise<UserRepository> => {
@@ -102,6 +104,19 @@ export const NewUserRepository = async (connection: Connection): Promise<UserRep
         return rows
     }
 
+    const updateUserById = async (id: number, data: IUserUpdate): Promise<IUser | undefined> => {
+        await connection.execute(
+            'UPDATE users SET first_name = ?, last_name = ? WHERE id = ?',
+            [
+                data.first_name,
+                data.last_name,
+                id,
+            ],
+        )
+
+        return await getUserById(id)
+    }
+
     return {
         getUserByToken,
         getUsersByChatId,
@@ -112,5 +127,6 @@ export const NewUserRepository = async (connection: Connection): Promise<UserRep
         updateUser,
         getUsersByIds,
         getUsersExceptSelfAndBots,
+        updateUserById,
     }
 }

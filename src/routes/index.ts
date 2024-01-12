@@ -24,6 +24,7 @@ export const createRouter = async (handlers: Handler): Promise<Routes> => {
     router.post('/api/resumes/:uuid/publish', handlers.AuthHandler.checkAuth, handlers.ResumeHandler.publishResume)
 
     router.get('/api/me', handlers.AuthHandler.checkAuth, handlers.UserHandler.getCurrentUser)
+    router.patch('/api/me', handlers.AuthHandler.checkAuth, handlers.UserHandler.updateCurrentUser)
     // router.get('/api/token', handlers.AuthHandler.checkAuth, handlers.UserHandler.getToken)
     router.get('/api/chats', handlers.AuthHandler.checkAuth, handlers.ChatHandler.getMyChats)
     router.post('/api/chats', handlers.AuthHandler.checkAuth, handlers.ChatHandler.getOrCreateChat)
@@ -31,7 +32,6 @@ export const createRouter = async (handlers: Handler): Promise<Routes> => {
     router.get('/api/directions', handlers.AuthHandler.checkAuth, handlers.DirectionHandler.getDirections)
 
     router.post('/api/requests', handlers.AuthHandler.checkAuth, handlers.RequestHandler.createRequest)
-    router.post('/api/requestss', handlers.AuthHandler.checkAuth, handlers.RequestHandler.storeRequest)
 
     router.get('/api/mentors', handlers.AuthHandler.checkAuth, handlers.MentorHandler.getActiveMentors)
 

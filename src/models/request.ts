@@ -1,5 +1,13 @@
 import { RowDataPacket } from 'mysql2'
 
+export enum RequestType {
+    FindMentor = 'FIND_MENTOR',
+    BecomeMentor = 'BECOME_MENTOR',
+    RequestCodeReview = 'REQUEST_CODE_REVIEW',
+    IndividualInterview = 'INDIVIDUAL_INTERVIEW',
+    GroupInterview = 'GROUP_INTERVIEW',
+}
+
 export interface IRequest extends RowDataPacket {
     id: number
     full_name: string
@@ -12,5 +20,5 @@ export interface IRequest extends RowDataPacket {
     updated_at: string
     is_mentor: number
     data: string
-    type: string
+    type: RequestType
 }

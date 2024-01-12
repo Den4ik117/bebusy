@@ -44,16 +44,16 @@
                         </div>
                         <div class="flex flex-col">
                             <ul class="border-t border-[#0F0F0F] py-2 flex flex-col">
-<!--                                <li>-->
-<!--                                    <button-->
-<!--                                        class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"-->
-<!--                                        type="button"-->
-<!--                                        @click="setPage('settings')"-->
-<!--                                    >-->
-<!--                                        <i class="bi bi-gear flex items-center justify-start"></i>-->
-<!--                                        <span class="text-sm">Настройки</span>-->
-<!--                                    </button>-->
-<!--                                </li>-->
+                                <li>
+                                    <button
+                                        class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"
+                                        type="button"
+                                        @click="setPage('settings')"
+                                    >
+                                        <i class="bi bi-gear flex items-center justify-start"></i>
+                                        <span class="text-sm">Настройки</span>
+                                    </button>
+                                </li>
                                 <li>
                                     <button
                                         class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"

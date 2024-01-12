@@ -67,13 +67,16 @@ import AppMentorList from "@/components/AppMentorList.vue";
 import AppInput from "@/components/AppInput.vue";
 import {computed, onMounted, reactive, ref} from "vue";
 import axios from "axios";
+import {RequestType, useRequests} from "@/utils/useRequests";
+
+const { storeRequest } = useRequests()
 
 const directions = ref([])
 const form = reactive({
     full_name: '',
     direction_id: '',
     about: '',
-    type: 'request_code_review',
+    type: RequestType.RequestCodeReview,
 })
 
 const dynamicRows = computed(() => {
@@ -83,13 +86,12 @@ const dynamicRows = computed(() => {
 })
 
 const createRequest = () => {
-    axios.post('/api/requests', form)
+    storeRequest(form)
         .then(() => {
             form.full_name = ''
             form.direction_id = ''
             form.about = ''
         })
-        .catch(e => console.log(e))
 }
 
 onMounted(() => {

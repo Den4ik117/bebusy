@@ -27,3 +27,8 @@ export class User {
         this.last_name = user.last_name
     }
 }
+
+export interface IUserUpdate {
+    last_name: string
+    first_name: string
+}

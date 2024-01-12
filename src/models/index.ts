@@ -360,31 +360,31 @@ export class Request extends Model<InferAttributes<Request>, InferCreationAttrib
     @AutoIncrement
     declare id: CreationOptional<number>
 
-    @Attribute(DataTypes.STRING)
-    @NotNull
-    declare full_name: number
-
-    @Attribute(DataTypes.DATE)
-    @NotNull
-    declare birthdate: number
-
-    @Attribute(DataTypes.STRING(1024))
-    @NotNull
-    declare about: number
+    // @Attribute(DataTypes.STRING)
+    // @NotNull
+    // declare full_name: number
+    //
+    // @Attribute(DataTypes.DATE)
+    // @NotNull
+    // declare birthdate: number
+    //
+    // @Attribute(DataTypes.STRING(1024))
+    // @NotNull
+    // declare about: number
 
     @Attribute(DataTypes.STRING)
     @Default(RequestStatus.New)
     @NotNull
     declare status: RequestStatus
 
-    @Attribute(DataTypes.BOOLEAN)
-    @Default(false)
-    @NotNull
-    declare isMentor: boolean
+    // @Attribute(DataTypes.BOOLEAN)
+    // @Default(false)
+    // @NotNull
+    // declare isMentor: boolean
 
-    @Attribute(DataTypes.BIGINT.UNSIGNED)
-    @NotNull
-    declare directionId: number
+    // @Attribute(DataTypes.BIGINT.UNSIGNED)
+    // @NotNull
+    // declare directionId: number
 
     @Attribute(DataTypes.BIGINT.UNSIGNED)
     @NotNull
@@ -396,8 +396,8 @@ export class Request extends Model<InferAttributes<Request>, InferCreationAttrib
     @Attribute(DataTypes.STRING)
     declare type: CreationOptional<string>
 
-    @BelongsTo(() => Direction, 'directionId')
-    declare direction?: NonAttribute<Direction>
+    // @BelongsTo(() => Direction, 'directionId')
+    // declare direction?: NonAttribute<Direction>
 
     @BelongsTo(() => User, 'userId')
     declare user?: NonAttribute<User>
