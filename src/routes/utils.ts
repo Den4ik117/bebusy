@@ -58,6 +58,7 @@ export class BotResponse {
     public actions(action: string|string[]): this {
         if (typeof action === 'object') {
             this._actions.push(...action)
+            
             return this
         }
 
