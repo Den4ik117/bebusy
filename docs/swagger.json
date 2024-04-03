@@ -1,0 +1,89 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API документация",
+    "description": "API документация REST методов приложения",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/me": {
+      "get": {
+        "summary": "Получение информации о текущем пользователе",
+        "responses": {
+          "200": {
+            "description": "Информация о пользователе",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Идентификатор пользователя"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Имя пользователя"
+                    },
+                    "email": {
+                      "type": "string",
+                      "description": "Email пользователя"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Обновление информации о текущем пользователе",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Имя пользователя"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "Электронная почта пользователя"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Информация о пользователе",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Идентификатор пользователя"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Имя пользователя"
+                    },
+                    "email": {
+                      "type": "string",
+                      "description": "Email пользователя"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
