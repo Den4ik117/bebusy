@@ -84,6 +84,194 @@
           }
         }
       }
+    },
+    "/api/chats": {
+      "get": {
+        "summary": "Получение списка чатов",
+        "responses": {
+          "200": {
+            "description": "Список чатов",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Идентификатор чата"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Имя чата"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Создание нового чата",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Имя чата"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Информация о созданном чате",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Идентификатор чата"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Имя чата"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/directions": {
+      "get": {
+        "summary": "Получение списка направлений",
+        "responses": {
+          "200": {
+            "description": "Список направлений",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Идентификатор направления"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Имя направления"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/requests": {
+      "post": {
+        "summary": "Создание новой заявки",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "directionId": {
+                    "type": "string",
+                    "description": "Идентификатор направления"
+                  },
+                  "chatId": {
+                    "type": "string",
+                    "description": "Идентификатор чата"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "Сообщение"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Информация о созданной заявке",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Идентификатор заявки"
+                    },
+                    "directionId": {
+                      "type": "string",
+                      "description": "Идентификатор направления"
+                    },
+                    "chatId": {
+                      "type": "string",
+                      "description": "Идентификатор чата"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Сообщение"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mentors": {
+      "get": {
+        "summary": "Получение списка менторов",
+        "responses": {
+          "200": {
+            "description": "Список менторов",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Идентификатор ментора"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Имя ментора"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
