@@ -13,12 +13,6 @@ export interface ResumeService {
 export const NewResumeService = async (repositories: Repository): Promise<ResumeService> => {
     const getResumesByUserId = async (userId: number): Promise<IResume[]> => {
         return await repositories.ResumeRepository.getResumesByUserId(userId)
-
-        // for (let i = 0; i < resumes.length; i++) {
-        //     resumes[i].data.formatted_updated_at = getFormattedUpdatedAt(resumes[i].data.updated_at)
-        // }
-
-        // return resumes
     }
 
     const updateResumePublishedAtByUserIdAndUuid = async (userId: number, uuid: string): Promise<IResume | null> => {
@@ -29,12 +23,6 @@ export const NewResumeService = async (repositories: Repository): Promise<Resume
         await repositories.ResumeRepository.updateResumePublishedAtById(resume.id, getCurrentDatetime())
 
         return await repositories.ResumeRepository.getResumeById(resume.id) || null
-
-        // if (!resume) return null
-        //
-        // resume.data.formatted_updated_at = getFormattedUpdatedAt(resume.data.updated_at)
-        //
-        // return resume
     }
 
     const getPublishedResumesByUserId = async (userId: number): Promise<IResume[]> => {
