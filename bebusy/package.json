@@ -6,10 +6,19 @@
         "build": "vite build"
     },
     "devDependencies": {
+        "@vitejs/plugin-vue": "^5.0.4",
+        "autoprefixer": "^10.4.19",
         "axios": "^1.6.4",
+        "bootstrap-icons": "^1.11.3",
         "laravel-echo": "^1.16.0",
         "laravel-vite-plugin": "^1.0",
+        "postcss": "^8.4.38",
         "pusher-js": "^8.4.0-rc2",
-        "vite": "^5.0"
+        "sass": "^1.75.0",
+        "tailwindcss": "^3.4.3",
+        "vite": "^5.0",
+        "vue": "^3.4.23",
+        "vue-router": "^4.3.2",
+        "vuex": "^4.1.0"
     }
 }
