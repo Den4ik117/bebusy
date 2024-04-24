@@ -11,7 +11,13 @@ class ChatController extends Controller
     {
         $user = $request->user();
 
-        $user->load(['chats', 'chats.messages', 'chats.user', 'chats.information']);
+        $user->load([
+            'chats',
+            'chats.messages',
+            'chats.messages.user',
+            'chats.user',
+            'chats.information',
+        ]);
 
         return response()->json([
             'data' => $user->chats,

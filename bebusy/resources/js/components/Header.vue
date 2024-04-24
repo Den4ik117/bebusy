@@ -38,9 +38,9 @@
                     <div class="grid grid-rows-[min-content_1fr_min-content] min-h-full">
                         <div class="p-4 flex flex-col gap-2 text-sm">
                             <div class="w-12 h-12 rounded-full bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center font-bold">
-                                <span>{{ me.first_name[0] || '' }}{{ me.last_name[0] || '' }}</span>
+                                <span>{{ me.last_name[0] || '' }}{{ me.first_name[0] || '' }}</span>
                             </div>
-                            <span class="font-medium text-gray-300">{{ me.first_name + ' ' + me.last_name }}</span>
+                            <span class="font-medium text-gray-300">{{ me.full_name }}</span>
                         </div>
                         <div class="flex flex-col">
                             <ul class="border-t border-[#0F0F0F] py-2 flex flex-col">
@@ -83,6 +83,15 @@
                                         <i class="bi bi-clipboard2-check-fill flex items-center justify-start"></i>
                                         <span class="text-sm">Собеседования</span>
                                     </button>
+                                </li>
+                                <li v-if="me.role === 'ADMIN'">
+                                    <router-link
+                                        class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"
+                                        :to="{ name: 'admin.dashboard' }"
+                                    >
+                                        <i class="bi bi-bar-chart-fill flex items-center justify-start"></i>
+                                        <span class="text-sm">Панель администратора</span>
+                                    </router-link>
                                 </li>
                                 <li>
                                     <a

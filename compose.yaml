@@ -25,6 +25,7 @@ services:
       - ./bebusy:/app
       - ./bebusy/_docker/services/php/.bashrc:/home/denchik/.bashrc:ro
       - ./bebusy/_docker/services/php/laravel-reverb.conf:/etc/supervisor/conf.d/laravel-reverb.conf:ro
+      - ./bebusy/_docker/services/php/laravel-worker.conf:/etc/supervisor/conf.d/laravel-worker.conf:ro
 
   mysql:
     container_name: bebusy-mysql

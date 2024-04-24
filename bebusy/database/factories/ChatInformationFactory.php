@@ -8,6 +8,7 @@ use App\Models\ChatInformation;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /** @extends Factory<ChatInformation> */
 class ChatInformationFactory extends Factory
@@ -25,6 +26,7 @@ class ChatInformationFactory extends Factory
         $type = fake()->randomElement(self::CHAR_TYPE_CASES);
 
         return [
+            'uuid' => Str::orderedUuid()->toString(),
             'name' => $this->getName($type),
             'type' => $type,
         ];

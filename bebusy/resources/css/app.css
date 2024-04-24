@@ -25,3 +25,8 @@
 .alert-message.error i { color: red; }
 .alert-message.active { top: 20px; }
 
+input:focus,
+button:focus,
+textarea:focus {
+    outline: none;
+}

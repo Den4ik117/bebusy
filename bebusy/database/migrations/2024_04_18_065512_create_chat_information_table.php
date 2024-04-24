@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('chat_information', function (Blueprint $table) {
             $table->id();
+            $table->uuid();
             $table->string('name')->nullable();
             $table->string('type')->index();
             $table->timestamps();

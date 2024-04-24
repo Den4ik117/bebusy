@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -19,10 +20,17 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'uuid',
+        'external_id',
         'first_name',
+        'middle_name',
         'last_name',
         'email',
+        'telegram',
+        'github',
+        'role',
         'password',
+        'last_visit_at',
     ];
 
     /**
@@ -35,6 +43,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = [
+        'full_name',
+    ];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -43,6 +55,7 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            'role' => UserRole::class,
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
@@ -70,5 +83,10 @@ class User extends Authenticatable
             ->count();
 
         return $numberOfChats >= 2;
+    }
+
+    public function mentor(): HasOne
+    {
+        return $this->hasOne(Mentor::class);
     }
 }

@@ -64,7 +64,7 @@
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 import Header from '@/components/Header.vue';
-import ChatItem from '@/components/chat-item';
+import ChatItem from '@/components/ChatItem.vue';
 import ChatPage from '@/pages/ChatPage.vue';
 import MentoringPage from "@/pages/MentoringPage.vue";
 import SettingsPage from "@/pages/SettingsPage.vue";

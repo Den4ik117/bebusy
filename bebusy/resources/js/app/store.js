@@ -1,16 +1,21 @@
 import { createStore } from 'vuex';
-import { request } from '@/api';
 import { getCookie } from '@/utils'
+import {useUsers} from "@/composable/useUsers.js";
+import {useChats} from "@/composable/useChats.js";
+import {useMessages} from "@/composable/useMessages.js";
 
 let socket;
 
+const usersStore = useUsers()
+const chatsStore = useChats()
+
 export const fetchChats = async () => {
-    await request('/api/chats', 'GET', undefined, undefined, (data) => {
+    chatsStore.fetch().then(response => {
         store.commit({
             type: 'setChats',
-            value: data.data,
+            value: response.data.data,
         });
-    });
+    })
 }
 
 export const store = createStore({
@@ -30,11 +35,15 @@ export const store = createStore({
     },
     getters: {
         activeChat: (state) => {
-            return state.chats.find(chat => chat.uuid === state.hash);
+            return state.chats.find(chat => chat.information.uuid === state.hash);
         },
         computedChats: (state) => {
             if (state.search) {
-                return state.chats.filter(chat => chat.name.toLowerCase().indexOf(state.search.toLowerCase()) > -1);
+                return state.chats.filter(chat => {
+                    const name = chat.user?.full_name || chat.information.name
+
+                    return name.toLowerCase().indexOf(state.search.toLowerCase()) > -1
+                });
             }
 
             return state.chats
@@ -87,14 +96,16 @@ export const store = createStore({
     actions: {
         sendMessage: (context) => {
             const msg = {
-                id: Date.now(),
-                event: 'message',
-                text: context.state.message,
-                chat_id: context.getters.activeChat.id,
-                user_id: context.state.me.id,
+                // id: Date.now(),
+                // event: 'message',
+                content: context.state.message,
+                chat_id: context.getters.activeChat.information.id,
+                // user_id: context.state.me.id,
             };
 
-            socket.send(JSON.stringify(msg));
+            useMessages().create(msg)
+
+            // socket.send(JSON.stringify(msg));
 
             context.commit({
                 type: 'setMessage',
@@ -114,12 +125,16 @@ export const initStore = async () => {
 
     await fetchChats()
 
-    await request('/api/me', 'GET', undefined, undefined, (data) => {
+    usersStore.getMe().then(response => {
         store.commit({
             type: 'setMe',
-            value: data.data,
+            value: response.data.data,
         });
-    });
+    })
+
+    // await request('/api/me', 'GET', undefined, undefined, (data) => {
+    //
+    // });
 
     // !store.state.token && await request('/api/token', 'GET', undefined, undefined, (data) => {
     //     store.commit({
@@ -190,5 +205,5 @@ export const initStore = async () => {
         };
     }
 
-    createWebSocketConnection()
+    // createWebSocketConnection()
 };
