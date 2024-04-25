@@ -20,7 +20,7 @@ class OAuthController extends Controller
 //            return to_route('index');
 //        }
 
-        URL::forceRootUrl(config('app.url'));
+//        URL::forceRootUrl(config('app.url'));
 
         $params = http_build_query([
             'response_type' => 'code',
