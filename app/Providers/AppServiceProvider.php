@@ -20,7 +20,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if (app()->isProduction()) {
-            $_SERVER['HTTPS'] = 'on';
+            request()->server->set('HTTPS', 'on');
+//            $_SERVER['HTTPS'] = 'on';
         }
     }
 }
