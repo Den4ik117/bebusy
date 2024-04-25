@@ -18,8 +18,10 @@ class DatabaseSeeder extends Seeder
             GradeSeeder::class,
         ]);
 
-        User::factory(10)->create();
+        if (app()->isLocal()) {
+            User::factory(10)->create();
 
-        ChatInformation::factory(30)->create();
+            ChatInformation::factory(30)->create();
+        }
     }
 }

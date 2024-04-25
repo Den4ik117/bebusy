@@ -12,5 +12,3 @@ bash:
 	@docker compose exec php bash
 node-bash:
 	@docker compose exec vite sh
-bash-root:
-	@docker compose exec -u root php bash
