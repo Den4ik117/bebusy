@@ -6,21 +6,18 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\URL;
 
 class OAuthController extends Controller
 {
     public function redirect(Request $request)
     {
-//        if (app()->isLocal()) {
-//            $user = User::query()->first();
-//
-//            Auth::login($user);
-//
-//            return to_route('index');
-//        }
+        if (app()->isLocal()) {
+            $user = User::query()->first();
 
-//        URL::forceRootUrl(config('app.url'));
+            Auth::login($user);
+
+            return to_route('index');
+        }
 
         $params = http_build_query([
             'response_type' => 'code',
@@ -40,7 +37,7 @@ class OAuthController extends Controller
 //            app('url'),
             $request->headers,
             $request->server,
-            $request->server->set('HTTPS', true),
+//            $request->server->set('HTTPS', true),
             $request->isSecure(),
         );
 
