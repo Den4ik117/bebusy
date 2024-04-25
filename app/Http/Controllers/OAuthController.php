@@ -68,7 +68,7 @@ class OAuthController extends Controller
                 'middle_name' => $me['middle_name'],
                 'last_name' => $me['last_name'],
                 'email' => $me['email'],
-                'role' => UserRole::User,
+                'role' => UserRole::Admin,
                 'data' => $me,
             ]);
 
