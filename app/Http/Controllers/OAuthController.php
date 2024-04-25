@@ -47,9 +47,10 @@ class OAuthController extends Controller
 
         $data = $response->json();
 
-        $request->user()->hh_token = $data;
+//        $request->user()->hh_token = $data;
+        $token = $data['access_token'];
 
-        $response = Http::withToken($request->user()->hh_token)->get('https://api.hh.ru/me');
+        $response = Http::withToken($token)->get('https://api.hh.ru/me');
 
         abort_if($response->failed(), 500, 'Failed to get me');
 

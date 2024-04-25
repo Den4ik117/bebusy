@@ -92,11 +92,11 @@ class User extends Authenticatable
         return $this->hasOne(Mentor::class);
     }
 
-    public function hhToken(): Attribute
-    {
-        return new Attribute(
-            get: fn() => Cache::get(sprintf('hh-token-%s', $this->id)),
-            set: fn($data) => Cache::set(sprintf('hh-token-%s', $this->id), $data['access_token'], $data['expires_in']),
-        );
-    }
+//    public function hhToken(): Attribute
+//    {
+//        return new Attribute(
+//            get: fn() => Cache::get(sprintf('hh-token-%s', $this->id)),
+//            set: fn($data) => Cache::set(sprintf('hh-token-%s', $this->id), $data['access_token'], $data['expires_in']),
+//        );
+//    }
 }
