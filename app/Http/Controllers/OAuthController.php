@@ -11,13 +11,13 @@ class OAuthController extends Controller
 {
     public function redirect()
     {
-        if (app()->isLocal()) {
-            $user = User::query()->first();
-
-            Auth::login($user);
-
-            return to_route('index');
-        }
+//        if (app()->isLocal()) {
+//            $user = User::query()->first();
+//
+//            Auth::login($user);
+//
+//            return to_route('index');
+//        }
 
         $params = http_build_query([
             'response_type' => 'code',
@@ -27,7 +27,14 @@ class OAuthController extends Controller
 
         $url = sprintf('https://hh.ru/oauth/authorize?%s', $params);
 
-        dd($url);
+        dd(
+            $url,
+            config('app.url'),
+            route('index'),
+            url('/'),
+            asset('/'),
+            config('app.env'),
+        );
 
         return redirect($url);
     }
