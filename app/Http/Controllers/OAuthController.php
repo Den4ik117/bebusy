@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\URL;
 
 class OAuthController extends Controller
 {
@@ -27,6 +28,7 @@ class OAuthController extends Controller
 
         $url = sprintf('https://hh.ru/oauth/authorize?%s', $params);
 
+        URL::forceRootUrl(config('app.url'));
         dd(
             $url,
             config('app.url'),
