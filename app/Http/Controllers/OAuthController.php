@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\URL;
 
 class OAuthController extends Controller
 {
-    public function redirect()
+    public function redirect(Request $request)
     {
 //        if (app()->isLocal()) {
 //            $user = User::query()->first();
@@ -38,6 +38,7 @@ class OAuthController extends Controller
             asset('/'),
             config('app.env'),
             app('url'),
+            $request->headers,
         );
 
         return redirect($url);
