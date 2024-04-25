@@ -14,8 +14,10 @@ RUN docker-php-ext-install zip pdo_mysql pcntl
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-RUN useradd -G www-data,root -u $uid -d /home/$user $user
-RUN mkdir -p /home/$user/.composer && chown -R $user:$user /home/$user
+RUN if [ "$user" != "root" ]; then \
+    useradd -G www-data,root -u $uid -d /home/$user $user; \
+    mkdir -p /home/$user/.composer && chown -R $user:$user /home/$user; \
+fi
 
 WORKDIR /app
 
