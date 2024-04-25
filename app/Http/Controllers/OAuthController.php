@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 class OAuthController extends Controller
@@ -42,13 +43,19 @@ class OAuthController extends Controller
 
         $response = Http::post(sprintf('https://hh.ru/oauth/token?%s', $params));
 
-//        if ($response->ok()) {
-//            dd($response->json());
-//        }
+        abort_if($response->failed(), 500, 'Failed to get token');
 
-        dd($response->json(), $request->all(), $params);
+        $data = $response->json();
 
-        dd($request->all());
+        $request->user()->hh_token = $data;
+
+        $response = Http::withToken($request->user()->hh_token)->get('https://api.hh.ru/me');
+
+        abort_if($response->failed(), 500, 'Failed to get me');
+
+        $me = $response->json();
+
+        dd($me);
     }
 
     public function logout()
