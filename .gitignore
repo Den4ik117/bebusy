@@ -1,8 +1,0 @@
-.idea
-node_modules
-build
-dist
-public
-tmp
-.env
-logs
