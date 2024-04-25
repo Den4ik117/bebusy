@@ -20,7 +20,7 @@ services:
       context: ./_docker/services/php
     ports:
       - "8083:8083"
-      - "443:443"
+      - "8084:8084"
     volumes:
       - .:/app
       - ./_docker/services/php/.bashrc:/home/denchik/.bashrc:ro
