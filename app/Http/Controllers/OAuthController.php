@@ -20,6 +20,8 @@ class OAuthController extends Controller
 //            return to_route('index');
 //        }
 
+        URL::forceRootUrl(config('app.url'));
+
         $params = http_build_query([
             'response_type' => 'code',
             'client_id' => config('services.hh.client_id'),
@@ -28,7 +30,6 @@ class OAuthController extends Controller
 
         $url = sprintf('https://hh.ru/oauth/authorize?%s', $params);
 
-        URL::forceRootUrl(config('app.url'));
         dd(
             $url,
             config('app.url'),
@@ -36,6 +37,7 @@ class OAuthController extends Controller
             url('/'),
             asset('/'),
             config('app.env'),
+            app('url'),
         );
 
         return redirect($url);
