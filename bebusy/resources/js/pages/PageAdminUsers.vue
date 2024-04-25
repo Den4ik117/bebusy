@@ -1,11 +1,11 @@
 <template>
   <AppAdminContainer title="Список пользователей">
     <template #header>
-<!--      <RouterLink :to="{ name: 'admin.users.create' }">-->
+      <RouterLink :to="{ name: 'admin.users.create' }">
         <n-button type="primary" size="small">
           Создать пользователя
         </n-button>
-<!--      </RouterLink>-->
+      </RouterLink>
     </template>
 
     <n-table>
@@ -30,12 +30,12 @@
           />
         </td>
         <td>
-<!--          <AppAdminTableActions-->
-<!--            :id="user.id"-->
-<!--            :to="{ name: 'admin.users.edit', params: { id: user.id } }"-->
-<!--            text="Вы уверены, что хотите удалить ментора?"-->
-<!--            @destroy="handleDeleteClick"-->
-<!--          />-->
+          <AppAdminTableActions
+            :id="user.id"
+            :to="{ name: 'admin.users.edit', params: { id: user.id } }"
+            text="Вы уверены, что хотите удалить пользователя?"
+            @destroy="handleDeleteClick"
+          />
         </td>
       </tr>
       </tbody>

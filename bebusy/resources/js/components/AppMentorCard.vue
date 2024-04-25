@@ -25,8 +25,8 @@
 import {getErrorMessage} from "@/utils";
 import axios from "axios";
 import {fetchChats} from "@/app/store";
-import {useMessage} from "@/utils/useMessage";
 import {useStore} from "vuex";
+import {useMessage} from "naive-ui";
 
 defineProps({
     mentor: {

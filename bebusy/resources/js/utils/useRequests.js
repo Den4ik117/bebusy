@@ -1,6 +1,6 @@
 import axios from "axios";
-import {useMessage} from "@/utils/useMessage";
 import {getErrorMessage} from "@/utils/index";
+import {useMessage} from "naive-ui";
 
 export const RequestType = {
     FindMentor: 'FIND_MENTOR',

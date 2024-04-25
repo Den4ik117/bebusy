@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\MentorState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,6 +20,7 @@ class Mentor extends Model
         'price_per_half_hour',
         'price_per_hour',
         'about',
+        'state',
     ];
 
     protected function casts(): array
@@ -26,6 +28,7 @@ class Mentor extends Model
         return [
             'price_per_half_hour' => 'integer',
             'price_per_hour' => 'integer',
+            'state' => MentorState::class,
         ];
     }
 

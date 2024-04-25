@@ -26,6 +26,11 @@ class Message extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function chat(): BelongsTo
+    {
+        return $this->belongsTo(ChatInformation::class, 'chat_id', 'id');
+    }
+
     public function humanCreatedAt(): Attribute
     {
         return new Attribute(

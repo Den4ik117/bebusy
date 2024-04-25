@@ -1,5 +1,19 @@
 <template>
     <SimplePageLayout title="Менторство">
+      <template #right>
+        <n-button
+          type="primary"
+          size="tiny"
+          @click="setPage('become-mentor')"
+        >
+          Стать ментором
+        </n-button>
+<!--        <button-->
+<!--          class="text-sm text-gray-300 font-medium p-1 rounded hover:text-gray-400"-->
+<!--          type="button"-->
+<!--        ></button>-->
+      </template>
+
         <div class="flex flex-col gap-4">
             <div class="flex flex-col gap-1">
                 <h3 class="uppercase text-xs text-gray-500">О менторстве</h3>
@@ -29,40 +43,40 @@
                 </div>
             </div>
 
-            <div class="flex flex-col gap-1">
+<!--            <div class="flex flex-col gap-1">-->
 <!--                <h3 class="uppercase text-xs text-gray-500"></h3>-->
-                <ul class="flex flex-col rounded overflow-hidden bg-[#2c2c2c]">
-                    <li>
-                        <button
-                            class="w-full grid grid-cols-[min-content_1fr_min-content] items-center gap-2 p-2 hover:bg-[#282828]"
-                            type="button"
-                            @click="setPage('find-mentor')"
-                        >
-                            <span class="bg-orange-500 rounded-md flex items-center justify-center w-8 h-8">
-                                <i class="bi bi-plus-circle-fill text-xl"></i>
-                            </span>
-                            <span class="text-xs text-left">Хочу в команду к наставнику</span>
-                            <i class="bi bi-chevron-right text-xs"></i>
-                        </button>
-                    </li>
-                    <li>
-                        <span class="block ml-auto h-px w-[calc(100%-48px)] bg-[#313131]"></span>
-                    </li>
-                    <li>
-                        <button
-                            class="w-full grid grid-cols-[min-content_1fr_min-content] items-center gap-2 p-2 hover:bg-[#282828]"
-                            type="button"
-                            @click="setPage('become-mentor')"
-                        >
-                            <span class="bg-green-500 rounded-xl flex items-center justify-center w-8 h-8">
-                                <i class="bi bi-person-plus-fill text-xl"></i>
-                            </span>
-                            <span class="text-xs text-left">Хочу быть наставником</span>
-                            <i class="bi bi-chevron-right text-xs"></i>
-                        </button>
-                    </li>
-                </ul>
-            </div>
+<!--                <ul class="flex flex-col rounded overflow-hidden bg-[#2c2c2c]">-->
+<!--                    <li>-->
+<!--                        <button-->
+<!--                            class="w-full grid grid-cols-[min-content_1fr_min-content] items-center gap-2 p-2 hover:bg-[#282828]"-->
+<!--                            type="button"-->
+<!--                            @click="setPage('find-mentor')"-->
+<!--                        >-->
+<!--                            <span class="bg-orange-500 rounded-md flex items-center justify-center w-8 h-8">-->
+<!--                                <i class="bi bi-plus-circle-fill text-xl"></i>-->
+<!--                            </span>-->
+<!--                            <span class="text-xs text-left">Хочу в команду к наставнику</span>-->
+<!--                            <i class="bi bi-chevron-right text-xs"></i>-->
+<!--                        </button>-->
+<!--                    </li>-->
+<!--                    <li>-->
+<!--                        <span class="block ml-auto h-px w-[calc(100%-48px)] bg-[#313131]"></span>-->
+<!--                    </li>-->
+<!--                    <li>-->
+<!--                        <button-->
+<!--                            class="w-full grid grid-cols-[min-content_1fr_min-content] items-center gap-2 p-2 hover:bg-[#282828]"-->
+<!--                            type="button"-->
+<!--                            @click=""-->
+<!--                        >-->
+<!--                            <span class="bg-green-500 rounded-xl flex items-center justify-center w-8 h-8">-->
+<!--                                <i class="bi bi-person-plus-fill text-xl"></i>-->
+<!--                            </span>-->
+<!--                            <span class="text-xs text-left">Хочу быть наставником</span>-->
+<!--                            <i class="bi bi-chevron-right text-xs"></i>-->
+<!--                        </button>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </div>-->
 
             <div class="flex flex-col gap-1">
                 <h3 class="uppercase text-xs text-gray-500">Наш опыт</h3>

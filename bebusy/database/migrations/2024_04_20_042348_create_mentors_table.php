@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('price_per_half_hour');
             $table->string('price_per_hour');
             $table->text('about');
+            $table->string('state');
             $table->timestamps();
         });
 

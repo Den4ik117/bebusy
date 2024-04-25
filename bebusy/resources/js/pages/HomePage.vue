@@ -35,10 +35,6 @@
         </transition>
 
         <transition name="page-animation-down">
-            <FindMentorPage v-if="currentPage === 'find-mentor'"/>
-        </transition>
-
-        <transition name="page-animation-down">
             <BecomeMentorPage v-if="currentPage === 'become-mentor'"/>
         </transition>
 
@@ -71,7 +67,7 @@ import SettingsPage from "@/pages/SettingsPage.vue";
 import CodeReviewPage from "@/pages/CodeReviewPage.vue";
 import InterviewsPage from "@/pages/InterviewsPage.vue";
 import AboutPage from "@/pages/AboutPage.vue";
-import FindMentorPage from "@/pages/FindMentorPage.vue";
+// import FindMentorPage from "@/pages/FindMentorPage.vue";
 import BecomeMentorPage from "@/pages/BecomeMentorPage.vue";
 import RequestCodeReviewPage from "@/pages/RequestCodeReviewPage.vue";
 import IndividualInterviewPage from "@/pages/IndividualInterviewPage.vue";

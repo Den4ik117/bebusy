@@ -118,13 +118,12 @@
 <script setup>
 import {ref, computed, watch} from 'vue';
 import { useStore } from 'vuex';
+import { me } from '@/composable/useUsers.js'
 
 const store = useStore();
 
 const visible = ref(false);
 const version = import.meta.env.VITE_APP_VERSION
-
-const me = computed(() => store.state.me);
 
 const onFormSubmit = () => {
 };

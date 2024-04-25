@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Enums\MentorState;
 use App\Http\Controllers\Controller;
 use App\Models\Mentor;
 use App\Models\User;
@@ -49,6 +50,7 @@ class MentorController extends Controller
             'price_per_half_hour' => $request->input('price_per_half_hour'),
             'price_per_hour' => $request->input('price_per_hour'),
             'about' => $request->input('about'),
+            'state' => MentorState::Active,
         ]);
 
         $mentor->directions()->sync($request->input('directions_ids'));

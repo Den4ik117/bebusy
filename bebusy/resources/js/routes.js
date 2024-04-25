@@ -10,14 +10,17 @@ import PageAdminQuestionsEdit from "./pages/PageAdminQuestionsEdit.vue";
 import PageAdminRequirements from "./pages/PageAdminRequirements.vue";
 import PageAdminRequirementsEdit from "./pages/PageAdminRequirementsEdit.vue";
 import PageAdminUsers from "@/pages/PageAdminUsers.vue";
+import PageAdminUsersEdit from "@/pages/PageAdminUsersEdit.vue";
 
 export const createRoutes = () => ([
     {
         path: '/',
+        name: 'chats',
         component: HomePage,
     },
     {
         path: '/_/:uuid',
+        name: 'chat',
         component: HomePage,
     },
     {
@@ -33,6 +36,16 @@ export const createRoutes = () => ([
                 path: 'users',
                 name: 'admin.users',
                 component: PageAdminUsers,
+            },
+            {
+                path: 'users/create',
+                name: 'admin.users.create',
+                component: PageAdminUsersEdit,
+            },
+            {
+                path: 'users/:id/edit',
+                name: 'admin.users.edit',
+                component: PageAdminUsersEdit,
             },
             {
                 path: 'mentors',

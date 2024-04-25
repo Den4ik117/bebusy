@@ -13,9 +13,12 @@ Route::get('/oauth/redirect', [OAuthController::class, 'redirect'])->name('oauth
 Route::get('/oauth/callback', [OAuthController::class, 'callback'])->name('oauth-callback');
 
 Route::prefix('api')->middleware(['auth'])->group(function () {
-    Route::get('/me', [API\UserController::class, 'show']);
+    Route::get('/me', [API\UserController::class, 'getMe']);
+    Route::patch('/me', [API\UserController::class, 'updateMe']);
 
     Route::get('/chats', [API\ChatController::class, 'index']);
+    Route::post('/chats', [API\ChatController::class, 'store']);
+    Route::get('/chats/{chat:uuid}', [API\ChatController::class, 'show']);
 
     Route::get('/users', [API\UserController::class, 'index']);
 
@@ -57,6 +60,11 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
         Route::get('/requirements/{requirement}', [API\RequirementController::class, 'show']);
         Route::put('/requirements/{requirement}', [API\RequirementController::class, 'update']);
         Route::delete('/requirements/{requirement}', [API\RequirementController::class, 'destroy']);
+
+        Route::post('/users', [API\UserController::class, 'store']);
+        Route::get('/users/{user}', [API\UserController::class, 'show']);
+        Route::put('/users/{user}', [API\UserController::class, 'update']);
+        Route::delete('/users/{user}', [API\UserController::class, 'destroy']);
     });
 });
 

@@ -4,8 +4,8 @@
       <router-link
         class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"
         :class="{
-          'bg-[#2b2b2b]': ['admin.users'].includes(route.name),
-          'hover:bg-[#2b2b2b]': !['admin.users'].includes(route.name),
+          'bg-[#2b2b2b]': ['admin.users', 'admin.users.create', 'admin.users.edit'].includes(route.name),
+          'hover:bg-[#2b2b2b]': !['admin.users', 'admin.users.create', 'admin.users.edit'].includes(route.name),
         }"
         :to="{ name: 'admin.users' }"
       >

@@ -5,12 +5,15 @@
         </div>
         <div class="grid grid-cols-[1fr_min-content] items-center gap-x-2 gap-y-1">
             <div class="font-medium">{{ chat.user?.full_name || chat.information.name }}</div>
-            <time class="text-gray-500 text-xs">{{ chat.messages.at(-1)?.human_created_at }}</time>
+            <time class="text-gray-500 text-xs">{{ chat.latest_message?.human_created_at }}</time>
             <div class="text-gray-500 text-xs truncate">
-                <span class="text-blue-500">{{ chat.messages.at(-1)?.user?.full_name || 'Система' }}: </span>
-                <span>{{ chat.messages.at(-1)?.content }}</span>
+                <span class="text-blue-500">{{ chat.latest_message?.user?.full_name || 'Система' }}: </span>
+                <span>{{ chat.latest_message?.content }}</span>
             </div>
-<!--            <span class="w-5 h-5 text-xs rounded-full bg-slate-700 flex items-center justify-center text-white font-medium justify-self-end">4</span>-->
+            <span
+              v-show="chat.unread_messages_count > 0"
+              class="w-5 h-5 text-xs rounded-full bg-slate-700 flex items-center justify-center text-white font-medium justify-self-end"
+            >{{ chat.unread_messages_count }}</span>
         </div>
         <button class="absolute rounded top-0 bottom-0 left-0 right-0" type="button" @click="onChatItemClick"></button>
     </div>

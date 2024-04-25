@@ -4,7 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Events\MessageSent;
 use App\Http\Controllers\Controller;
+use App\Models\Chat;
 use App\Models\Message;
+use App\Models\UnreadMessage;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
@@ -22,9 +24,21 @@ class MessageController extends Controller
             'user_id' => $request->user()->id,
         ]);
 
-        $message->load(['user']);
+        $message->load(['chat', 'chat.chats']);
 
-        MessageSent::dispatch($message);
+        $message->chat->chats->each(function (Chat $chat) use ($request, $message) {
+            UnreadMessage::query()->create([
+                'message_id' => $message->id,
+                'chat_id' => $chat->id,
+                'read_at' => $request->user()->id === $chat->owner_id ? now() : null,
+            ]);
+        });
+
+//        $message = Message::query()
+//            ->with(['user'])
+//            ->find($message->id);
+
+        MessageSent::dispatch();
 
         return response()->json([
             'data' => $message,
