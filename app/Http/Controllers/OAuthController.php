@@ -11,12 +11,12 @@ class OAuthController extends Controller
 {
     public function redirect()
     {
-        if (!app()->isProduction()) {
+        if (app()->isLocal()) {
             $user = User::query()->first();
 
             Auth::login($user);
 
-            return redirect('/');
+            return to_route('index');
         }
 
         $params = http_build_query([
@@ -26,6 +26,8 @@ class OAuthController extends Controller
         ]);
 
         $url = sprintf('https://hh.ru/oauth/authorize?%s', $params);
+
+        dd($url);
 
         return redirect($url);
     }
@@ -42,12 +44,19 @@ class OAuthController extends Controller
 
         $response = Http::post(sprintf('https://hh.ru/oauth/token?%s', $params));
 
-        if ($response->ok()) {
-            dd($response->json());
-        }
+//        if ($response->ok()) {
+//            dd($response->json());
+//        }
 
-        dd($response->json());
+        dd($response->json(), $request->all(), $params);
 
         dd($request->all());
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+
+        return to_route('index');
     }
 }

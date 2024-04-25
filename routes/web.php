@@ -4,13 +4,14 @@ use App\Http\Controllers\API as API;
 use App\Http\Controllers\OAuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'index');
+Route::view('/', 'index')->name('index');
 Route::view('/_/{uuid}', 'index');
 Route::view('/admin', 'index');
 Route::view('/admin/{all}', 'index')->where('all', '.*');
 
 Route::get('/oauth/redirect', [OAuthController::class, 'redirect'])->name('oauth-redirect');
 Route::get('/oauth/callback', [OAuthController::class, 'callback'])->name('oauth-callback');
+Route::get('/logout', [OAuthController::class, 'logout'])->name('logout');
 
 Route::prefix('api')->middleware(['auth'])->group(function () {
     Route::get('/me', [API\UserController::class, 'getMe']);
@@ -66,12 +67,4 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
         Route::put('/users/{user}', [API\UserController::class, 'update']);
         Route::delete('/users/{user}', [API\UserController::class, 'destroy']);
     });
-});
-
-Route::get('/test', function () {
-    $result = \App\Models\User::query()
-        ->with(['chats', 'chats.messages', 'chats.user', 'chats.information'])
-        ->find(1);
-
-    dd($result->toArray());
 });
