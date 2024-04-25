@@ -39,7 +39,7 @@ class OAuthController extends Controller
             config('app.env'),
 //            app('url'),
             $request->headers,
-            $request->server,
+            $request->server->set('HTTPS', true),
             $request->isSecure(),
         );
 
