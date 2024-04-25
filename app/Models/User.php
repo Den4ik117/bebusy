@@ -31,6 +31,7 @@ class User extends Authenticatable
         'github',
         'role',
         'password',
+        'data',
         'last_visit_at',
     ];
 
@@ -41,6 +42,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'data',
         'remember_token',
     ];
 
@@ -60,6 +62,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'last_visit_at' => 'immutable_datetime',
             'password' => 'hashed',
+            'data' => 'array',
         ];
     }
 
@@ -92,11 +95,11 @@ class User extends Authenticatable
         return $this->hasOne(Mentor::class);
     }
 
-//    public function hhToken(): Attribute
-//    {
-//        return new Attribute(
-//            get: fn() => Cache::get(sprintf('hh-token-%s', $this->id)),
-//            set: fn($data) => Cache::set(sprintf('hh-token-%s', $this->id), $data['access_token'], $data['expires_in']),
-//        );
-//    }
+    public function hhToken(): Attribute
+    {
+        return new Attribute(
+            get: fn() => Cache::get(sprintf('hh-token-%s', $this->id)),
+            set: fn($data) => Cache::set(sprintf('hh-token-%s', $this->id), $data['access_token'], $data['expires_in']),
+        );
+    }
 }
