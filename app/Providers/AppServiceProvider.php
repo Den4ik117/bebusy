@@ -21,7 +21,6 @@ class AppServiceProvider extends ServiceProvider
     {
         if (app()->isProduction()) {
             request()->server->set('HTTPS', 'on');
-//            $_SERVER['HTTPS'] = 'on';
         }
     }
 }

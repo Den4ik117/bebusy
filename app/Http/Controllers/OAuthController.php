@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 
 class OAuthController extends Controller
 {
-    public function redirect(Request $request)
+    public function redirect()
     {
         if (app()->isLocal()) {
             $user = User::query()->first();
@@ -26,20 +26,6 @@ class OAuthController extends Controller
         ]);
 
         $url = sprintf('https://hh.ru/oauth/authorize?%s', $params);
-
-        dd(
-            $url,
-            config('app.url'),
-            route('index'),
-            url('/'),
-            asset('/'),
-            config('app.env'),
-//            app('url'),
-            $request->headers,
-            $request->server,
-//            $request->server->set('HTTPS', true),
-            $request->isSecure(),
-        );
 
         return redirect($url);
     }
