@@ -12,3 +12,10 @@ bash:
 	@docker compose exec php bash
 node-bash:
 	@docker compose exec vite sh
+
+prod-up:
+	@docker compose up -d
+	@docker compose exec -u root -d php supervisord
+prod-restart prod-r:
+	@make down
+	@make prod-up
