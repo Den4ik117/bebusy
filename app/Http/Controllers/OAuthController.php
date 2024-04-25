@@ -39,6 +39,7 @@ class OAuthController extends Controller
             config('app.env'),
             app('url'),
             $request->headers,
+            $request->getScheme(),
         );
 
         return redirect($url);
