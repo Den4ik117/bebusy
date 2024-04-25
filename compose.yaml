@@ -7,8 +7,8 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./bebusy/_docker/services/web/nginx.conf:/etc/nginx/conf.d/default.conf
-      - ./bebusy:/app
+      - ./_docker/services/web/nginx.conf:/etc/nginx/conf.d/default.conf
+      - .:/app
     restart: always
 
   php:
@@ -17,22 +17,22 @@ services:
       args:
         user: denchik
         uid: 1000
-      context: ./bebusy/_docker/services/php
+      context: ./_docker/services/php
     ports:
       - "8083:8083"
       - "443:443"
     volumes:
-      - ./bebusy:/app
-      - ./bebusy/_docker/services/php/.bashrc:/home/denchik/.bashrc:ro
-      - ./bebusy/_docker/services/php/laravel-reverb.conf:/etc/supervisor/conf.d/laravel-reverb.conf:ro
-      - ./bebusy/_docker/services/php/laravel-worker.conf:/etc/supervisor/conf.d/laravel-worker.conf:ro
+      - .:/app
+      - ./_docker/services/php/.bashrc:/home/denchik/.bashrc:ro
+      - ./_docker/services/php/laravel-reverb.conf:/etc/supervisor/conf.d/laravel-reverb.conf:ro
+      - ./_docker/services/php/laravel-worker.conf:/etc/supervisor/conf.d/laravel-worker.conf:ro
 
   mysql:
     container_name: bebusy-mysql
     image: mysql
     restart: always
     volumes:
-      - ./bebusy/_docker/volumes/mysql:/var/lib/mysql
+      - ./_docker/volumes/mysql:/var/lib/mysql
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_USER: ${DB_USERNAME}
@@ -50,6 +50,6 @@ services:
     working_dir: /app
     tty: true
     volumes:
-      - ./bebusy:/app
+      - .:/app
     environment:
       - NODE_OPTIONS=--max-old-space-size=4096
