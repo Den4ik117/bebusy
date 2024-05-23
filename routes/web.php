@@ -4,11 +4,6 @@ use App\Http\Controllers\API as API;
 use App\Http\Controllers\OAuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'index')->name('index');
-Route::view('/_/{uuid}', 'index');
-Route::view('/admin', 'index');
-Route::view('/admin/{all}', 'index')->where('all', '.*');
-
 Route::get('/oauth/redirect', [OAuthController::class, 'redirect'])->name('oauth-redirect');
 Route::get('/oauth/callback', [OAuthController::class, 'callback'])->name('oauth-callback');
 Route::get('/logout', [OAuthController::class, 'logout'])->name('logout');
@@ -25,10 +20,16 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
 
     Route::post('/messages', [API\MessageController::class, 'store']);
 
-    Route::middleware(['role:admin'])->group(function () {
+    Route::withoutMiddleware(['auth'])->group(function () {
         Route::get('/mentors', [API\MentorController::class, 'index']);
-        Route::post('/mentors', [API\MentorController::class, 'store']);
         Route::get('/mentors/{mentor}', [API\MentorController::class, 'show']);
+        Route::get('/interviews', [API\InterviewController::class, 'index']);
+        Route::get('/questions', [API\QuestionController::class, 'index']);
+        Route::get('/requirements', [API\RequirementController::class, 'index']);
+    });
+
+    Route::middleware(['role:admin'])->group(function () {
+        Route::post('/mentors', [API\MentorController::class, 'store']);
         Route::put('/mentors/{mentor}', [API\MentorController::class, 'update']);
         Route::delete('/mentors/{mentor}', [API\MentorController::class, 'destroy']);
 
@@ -38,7 +39,6 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
 
         Route::get('/skills', [API\SkillController::class, 'index']);
 
-        Route::get('/interviews', [API\InterviewController::class, 'index']);
         Route::post('/interviews', [API\InterviewController::class, 'store']);
         Route::get('/interviews/{interview}', [API\InterviewController::class, 'show']);
         Route::put('/interviews/{interview}', [API\InterviewController::class, 'update']);
@@ -46,7 +46,6 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
 
         Route::get('/grades', [API\GradeController::class, 'index']);
 
-        Route::get('/questions', [API\QuestionController::class, 'index']);
         Route::post('/questions', [API\QuestionController::class, 'store']);
         Route::get('/questions/{question}', [API\QuestionController::class, 'show']);
         Route::put('/questions/{question}', [API\QuestionController::class, 'update']);
@@ -56,7 +55,6 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
 
         Route::get('/development-directions', [API\DevelopmentDirectionController::class, 'index']);
 
-        Route::get('/requirements', [API\RequirementController::class, 'index']);
         Route::post('/requirements', [API\RequirementController::class, 'store']);
         Route::get('/requirements/{requirement}', [API\RequirementController::class, 'show']);
         Route::put('/requirements/{requirement}', [API\RequirementController::class, 'update']);
@@ -66,5 +64,9 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
         Route::get('/users/{user}', [API\UserController::class, 'show']);
         Route::put('/users/{user}', [API\UserController::class, 'update']);
         Route::delete('/users/{user}', [API\UserController::class, 'destroy']);
+
+        Route::post('/avatars', [API\AvatarController::class, 'store']);
     });
 });
+
+Route::view('{all}', 'index')->where('all', '.*');

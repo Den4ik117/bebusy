@@ -63,10 +63,7 @@
 
 <script setup>
 import SimplePageLayout from "@/components/SimplePageLayout.vue";
-import AppMentorList from "@/components/AppMentorList.vue";
-import AppInput from "@/components/AppInput.vue";
 import {computed, onMounted, reactive, ref} from "vue";
-import axios from "axios";
 import {RequestType, useRequests} from "@/utils/useRequests";
 
 const { storeRequest } = useRequests()

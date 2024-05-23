@@ -20,7 +20,7 @@ class OAuthController extends Controller
 
             Auth::login($user);
 
-            return to_route('index');
+            return redirect('/');
         }
 
         $params = http_build_query([
@@ -99,13 +99,13 @@ class OAuthController extends Controller
 
         Auth::login($user);
 
-        return to_route('index');
+        return redirect('/');
     }
 
     public function logout()
     {
         Auth::logout();
 
-        return to_route('index');
+        return redirect('/');
     }
 }

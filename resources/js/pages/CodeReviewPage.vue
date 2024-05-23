@@ -71,8 +71,6 @@
 </template>
 
 <script setup>
-import SimpleHeader from "@/components/SimpleHeader.vue";
-import AppMentorList from "@/components/AppMentorList.vue";
 import SimplePageLayout from "@/components/SimplePageLayout.vue";
 import {useStore} from "vuex";
 

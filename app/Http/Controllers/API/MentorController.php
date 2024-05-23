@@ -94,13 +94,18 @@ class MentorController extends Controller
         ]);
     }
 
-    public function show(Mentor $mentor)
+    public function show($mentor)
     {
-        $mentor->load([
+        $mentorQuery = is_numeric($mentor)
+            ? Mentor::query()->where('id', $mentor)
+            : Mentor::query()->where('slug', $mentor);
+
+        $mentor = $mentorQuery->with([
             'directions',
             'services',
             'skills',
-        ]);
+            'user',
+        ])->firstOrFail();
 
         return response()->json([
             'data' => $mentor,

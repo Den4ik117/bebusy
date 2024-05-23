@@ -6,6 +6,9 @@ import {useMessage} from "naive-ui";
 export const users = ref([])
 export const me = ref()
 
+export const isOpenMenu = ref(false)
+export const isAuth = ref(document.querySelector('meta[name="auth"]')?.content === '1')
+
 export const useUsers = () => {
     const axios = useAxios()
     const message = useMessage()

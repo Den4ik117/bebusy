@@ -55,14 +55,13 @@
                                     </button>
                                 </li>
                                 <li>
-                                    <button
+                                    <router-link
                                         class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"
-                                        type="button"
-                                        @click="setPage('mentoring')"
+                                        :to="{ name: 'mentors' }"
                                     >
                                         <i class="bi bi-journal-bookmark-fill flex items-center justify-start"></i>
                                         <span class="text-sm">Менторство</span>
-                                    </button>
+                                    </router-link>
                                 </li>
                                 <li>
                                     <button
@@ -75,14 +74,13 @@
                                     </button>
                                 </li>
                                 <li>
-                                    <button
+                                    <router-link
                                         class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"
-                                        type="button"
-                                        @click="setPage('interviews')"
+                                        :to="{ name: 'interviews' }"
                                     >
                                         <i class="bi bi-clipboard2-check-fill flex items-center justify-start"></i>
                                         <span class="text-sm">Собеседования</span>
-                                    </button>
+                                    </router-link>
                                 </li>
                                 <li v-if="me.role === 'ADMIN'">
                                     <router-link

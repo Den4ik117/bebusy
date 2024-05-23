@@ -30,6 +30,7 @@ class User extends Authenticatable
         'telegram',
         'github',
         'role',
+        'avatar_url',
         'password',
         'data',
         'last_visit_at',

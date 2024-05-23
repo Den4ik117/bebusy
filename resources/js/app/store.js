@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-import {useUsers} from "@/composable/useUsers.js";
+import {useUsers, isAuth} from "@/composable/useUsers.js";
 import {useChats} from "@/composable/useChats.js";
 import {useRoute} from "vue-router";
 
@@ -81,19 +81,21 @@ export const store = createStore({
 });
 
 export const initStore = async () => {
-    window.addEventListener('popstate', (event) => {
-        store.commit({
-            type: 'setHash',
-            value: event.state?.hash || '',
-        });
+  if (!isAuth.value) return
+
+  window.addEventListener('popstate', (event) => {
+    store.commit({
+      type: 'setHash',
+      value: event.state?.hash || '',
     });
+  });
 
-    await fetchChats()
+  await fetchChats()
 
-    usersStore.getMe().then(response => {
-        store.commit({
-            type: 'setMe',
-            value: response.data.data,
-        });
-    })
+  usersStore.getMe().then(response => {
+    store.commit({
+      type: 'setMe',
+      value: response.data.data,
+    });
+  })
 };

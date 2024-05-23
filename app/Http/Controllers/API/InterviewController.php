@@ -11,7 +11,12 @@ class InterviewController extends Controller
 {
     public function index()
     {
-        $interviews = Interview::query()->get();
+        $interviews = Interview::query()
+            ->with([
+                'direction',
+                'grade',
+            ])
+            ->get();
 
         return response()->json([
             'data' => $interviews,

@@ -8,8 +8,8 @@ export const useRequirements = () => {
     const axios = useAxios()
     const message = useMessage()
 
-    const fetch = () => {
-        axios.get('/api/requirements')
+    const fetch = (params) => {
+        axios.get('/api/requirements', { params })
             .then(response => {
                 requirements.value = response.data.data
             })

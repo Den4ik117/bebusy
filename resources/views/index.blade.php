@@ -10,23 +10,11 @@
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     @vite(['resources/js/app.js'])
     <title>{{ config('app.name') }}</title>
+    <meta name="auth" content="{{ auth()->check() }}">
 </head>
 <body class="antialiased bg-[#181818] text-white">
 
-@auth
-    <div class="lg:max-w-screen-lg max-w-md w-full mx-auto bg-[#212121] h-[100dvh] border-x border-[#0F0F0F] relative overflow-hidden">
-        <div id="app"></div>
-    </div>
-@endauth
-
-@guest
-    <div class="max-w-md w-full mx-auto h-[100dvh] flex flex-col justify-center items-center">
-        <a
-            class="text-indigo-400 px-4 py-2 rounded uppercase text-sm font-medium hover:bg-indigo-100 hover:bg-opacity-10"
-            href="/oauth/redirect"
-        >Войти через HeadHunter</a>
-    </div>
-@endguest
+<div id="app"></div>
 
 @production
     <!-- Yandex.Metrika counter -->

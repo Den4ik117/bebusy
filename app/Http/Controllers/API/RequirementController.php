@@ -8,10 +8,15 @@ use Illuminate\Http\Request;
 
 class RequirementController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $request->validate([
+            'direction_id' => 'nullable|integer|exists:directions,id',
+        ]);
+
         $requirements = Requirement::query()
             ->with(['skill', 'direction'])
+            ->when($request->input('direction_id'), fn($q, $v) => $q->where('direction_id', $v))
             ->get();
 
         return response()->json([

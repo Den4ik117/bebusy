@@ -80,6 +80,21 @@
           clearable
         />
       </n-form-item>
+
+      <n-form-item
+        label="Выберите аватар"
+        path="avatar_url"
+      >
+        <n-upload
+          v-model:file-list="fileList"
+          list-type="image-card"
+          :max="1"
+          accept="image/*"
+          @before-upload="uploadAvatar"
+        >
+          Загрузить фото
+        </n-upload>
+      </n-form-item>
     </n-form>
   </AppAdminContainer>
 </template>
@@ -91,8 +106,10 @@ import {useRoute} from "vue-router";
 import AppAdminContainer from "../components/AppAdminContainer.vue";
 import {useUsers} from "@/composable/useUsers.js";
 import {UserRoleEnum, UserRoleEnumTranslates} from "@/types.js";
+import {useAvatars} from "../composable/useAvatars.js";
 
 const formRef = ref(null)
+const fileList = ref([])
 const formValue = reactive({
   first_name: null,
   middle_name: null,
@@ -101,9 +118,11 @@ const formValue = reactive({
   telegram: null,
   github: null,
   role: null,
+  avatar_url: null,
 })
 const message = useMessage()
 const usersStore = useUsers()
+const avatarsStore = useAvatars()
 const route = useRoute()
 /** @type {import('naive-ui').FormRules} */
 const rules = {
@@ -135,6 +154,8 @@ const clearForm = () => {
   formValue.telegram = null
   formValue.github = null
   formValue.role = null
+  formValue.avatar_url = null
+  fileList.value = []
 }
 
 const callback = () => {
@@ -158,6 +179,21 @@ const handleValidateClick = async () => {
   }
 }
 
+const uploadAvatar = async (e) => {
+  await avatarsStore.upload(e.file.file)
+    .then(response => {
+      formValue.avatar_url = response.data.data.url
+      fileList.value = [{
+        id: 1,
+        name: response.data.data.url,
+        status: 'finished',
+        url: response.data.data.url,
+      }]
+    })
+
+  return false
+}
+
 onMounted(() => {
   isEdit && usersStore.fetchOne(route.params.id)
     .then((response) => {
@@ -170,6 +206,13 @@ onMounted(() => {
       formValue.telegram = user.telegram
       formValue.github = user.github
       formValue.role = user.role
+      formValue.avatar_url = user.avatar_url
+      fileList.value = user.avatar_url ? [{
+        id: 1,
+        name: user.avatar_url,
+        status: 'finished',
+        url: user.avatar_url,
+      }] : []
     })
 })
 </script>

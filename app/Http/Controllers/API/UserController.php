@@ -74,6 +74,7 @@ class UserController extends Controller
             'telegram' => 'nullable|string|url|max:255',
             'github' => 'nullable|string|url|max:255',
             'role' => ['required', 'string', Rule::enum(UserRole::class)],
+            'avatar_url' => 'nullable|string|max:255',
         ]);
 
         $user = User::query()->create([
@@ -85,6 +86,7 @@ class UserController extends Controller
             'telegram' => $request->input('telegram'),
             'github' => $request->input('github'),
             'role' => $request->input('role'),
+            'avatar_url' => $request->input('avatar_url'),
         ]);
 
         event(new Registered($user));
@@ -104,6 +106,7 @@ class UserController extends Controller
             'telegram' => 'nullable|string|url|max:255',
             'github' => 'nullable|string|url|max:255',
             'role' => ['required', 'string', Rule::enum(UserRole::class)],
+            'avatar_url' => 'nullable|string|max:255',
         ]);
 
         $user->update([
@@ -114,6 +117,7 @@ class UserController extends Controller
             'telegram' => $request->input('telegram'),
             'github' => $request->input('github'),
             'role' => $request->input('role'),
+            'avatar_url' => $request->input('avatar_url'),
         ]);
 
         return response()->json([

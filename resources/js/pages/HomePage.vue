@@ -1,4 +1,5 @@
 <template>
+  <div v-if="isAuth" class="lg:max-w-screen-lg max-w-md w-full mx-auto bg-[#212121] h-[100dvh] border-x border-[#0F0F0F] relative overflow-hidden">
     <div class="flex flex-col max-h-[100dvh] gap-4">
         <Header/>
 
@@ -19,15 +20,7 @@
         </transition>
 
         <transition name="page-animation">
-            <MentoringPage v-if="currentPage === 'mentoring'"/>
-        </transition>
-
-        <transition name="page-animation">
             <CodeReviewPage v-if="currentPage === 'code-review'"/>
-        </transition>
-
-        <transition name="page-animation">
-            <InterviewsPage v-if="currentPage === 'interviews'"/>
         </transition>
 
         <transition name="page-animation">
@@ -35,25 +28,20 @@
         </transition>
 
         <transition name="page-animation-down">
-            <BecomeMentorPage v-if="currentPage === 'become-mentor'"/>
-        </transition>
-
-        <transition name="page-animation-down">
             <RequestCodeReviewPage v-if="currentPage === 'request-code-review'"/>
-        </transition>
-
-        <transition name="page-animation-down">
-            <IndividualInterviewPage v-if="currentPage === 'individual-interviews'"/>
-        </transition>
-
-        <transition name="page-animation-down">
-            <GroupInterviewPage v-if="currentPage === 'group-interviews'"/>
         </transition>
 
         <transition name="page-animation-down">
             <CreateChatsPage v-if="currentPage === 'create-chats'"/>
         </transition>
     </div>
+  </div>
+  <div v-else class="max-w-md w-full mx-auto h-[100dvh] flex flex-col justify-center items-center">
+    <a
+      class="text-indigo-400 px-4 py-2 rounded uppercase text-sm font-medium hover:bg-indigo-100 hover:bg-opacity-10"
+      href="/oauth/redirect"
+    >Войти через HeadHunter</a>
+  </div>
 </template>
 
 <script setup>
@@ -62,17 +50,12 @@ import { useStore } from 'vuex';
 import Header from '@/components/Header.vue';
 import ChatItem from '@/components/ChatItem.vue';
 import ChatPage from '@/pages/ChatPage.vue';
-import MentoringPage from "@/pages/MentoringPage.vue";
 import SettingsPage from "@/pages/SettingsPage.vue";
 import CodeReviewPage from "@/pages/CodeReviewPage.vue";
-import InterviewsPage from "@/pages/InterviewsPage.vue";
 import AboutPage from "@/pages/AboutPage.vue";
-// import FindMentorPage from "@/pages/FindMentorPage.vue";
-import BecomeMentorPage from "@/pages/BecomeMentorPage.vue";
 import RequestCodeReviewPage from "@/pages/RequestCodeReviewPage.vue";
-import IndividualInterviewPage from "@/pages/IndividualInterviewPage.vue";
-import GroupInterviewPage from "@/pages/GroupInterviewPage.vue";
 import CreateChatsPage from "@/pages/CreateChatsPage.vue";
+import {isAuth} from "../composable/useUsers.js";
 
 const store = useStore();
 
