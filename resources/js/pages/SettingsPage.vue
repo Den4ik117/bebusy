@@ -10,33 +10,40 @@
 
         <div class="flex flex-col gap-4">
             <div class="flex flex-col gap-4">
-                <div class="-mx-1 flex flex-col gap-1">
-                    <label
-                        for="form-full-name"
-                        class="block uppercase text-xs text-gray-500 ml-2"
-                    >Фамилия</label>
-                    <input
-                        id="form-full-name"
-                        class="bg-[#2c2c2c] rounded-md border border-[#2c2c2c] text-sm px-2 py-2"
-                        type="text"
-                        v-model="form.last_name"
-                        placeholder="Фамилия"
-                    >
-                </div>
+              <AppFormItem label="Фамилия" required>
+                <n-input
+                  v-model:value="form.last_name"
+                  placeholder="Фамилия"
+                />
+              </AppFormItem>
 
-                <div class="-mx-1 flex flex-col gap-1">
-                    <label
-                        for="form-full-name"
-                        class="block uppercase text-xs text-gray-500 ml-2"
-                    >Имя</label>
-                    <input
-                        id="form-full-name"
-                        class="bg-[#2c2c2c] rounded-md border border-[#2c2c2c] text-sm px-2 py-2"
-                        type="text"
-                        v-model="form.first_name"
-                        placeholder="Имя"
-                    >
-                </div>
+              <AppFormItem label="Имя" required>
+                <n-input
+                  v-model:value="form.first_name"
+                  placeholder="Имя"
+                />
+              </AppFormItem>
+
+              <AppFormItem label="Отчество">
+                <n-input
+                  v-model:value="form.middle_name"
+                  placeholder="Отчество"
+                />
+              </AppFormItem>
+
+              <AppFormItem label="Telegram">
+                <n-input
+                  v-model:value="form.telegram"
+                  placeholder="Ссылка на Telegram"
+                />
+              </AppFormItem>
+
+              <AppFormItem label="GitHub">
+                <n-input
+                  v-model:value="form.github"
+                  placeholder="Ссылка на GitHub"
+                />
+              </AppFormItem>
             </div>
         </div>
     </SimplePageLayout>
@@ -44,38 +51,29 @@
 
 <script setup>
 import SimplePageLayout from "@/components/SimplePageLayout.vue";
-import {useStore} from "vuex";
-import {computed, reactive, watch} from "vue";
-import axios from "axios";
-import {getErrorMessage} from "@/utils";
-import {useMessage} from "@/utils/useMessage";
+import {onMounted, reactive} from "vue";
+import {me, useUsers} from "@/composable/useUsers.js";
+import AppFormItem from "@/components/AppFormItem.vue";
 
-const store = useStore()
-const message = useMessage()
+const usersStore = useUsers()
 
-const me = computed(() => store.state.me)
 const form = reactive({
-    last_name: me.value?.last_name || '',
-    first_name: me.value?.first_name || '',
-})
-
-watch(me, (user) => {
-    form.last_name = user?.last_name || ''
-    form.first_name = user?.first_name || ''
+    last_name: null,
+    first_name: null,
+    middle_name: null,
+    telegram: null,
+    github: null,
 })
 
 const storeSettings = () => {
-    axios.patch('/api/me', form)
-        .then(data => {
-            store.commit({
-                type: 'setMe',
-                value: data.data.data,
-            })
-
-            message.success('Информация о пользователе успешно обновлена')
-        })
-        .catch(e => {
-            message.error(getErrorMessage(e))
-        })
+  usersStore.updateMe(form)
 }
+
+onMounted(() => {
+  form.last_name = me.value?.last_name
+  form.first_name = me.value?.first_name
+  form.middle_name = me.value?.middle_name
+  form.telegram = me.value?.telegram
+  form.github = me.value?.github
+})
 </script>

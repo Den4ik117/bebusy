@@ -14,19 +14,16 @@
                 <AppleCheckbox v-model:value="form.is_group"/>
             </div>
 
-            <div v-show="form.is_group" class="-mx-1 mb-2 flex flex-col gap-1">
-                <label
-                    for="form-full-name"
-                    class="block uppercase text-xs text-gray-500 ml-2"
-                >Название группы</label>
-                <input
-                    id="form-full-name"
-                    class="bg-[#2c2c2c] rounded-md border border-[#2c2c2c] text-sm px-2 py-2"
-                    type="text"
-                    v-model="form.name"
-                    placeholder="Введите название группы"
-                >
-            </div>
+            <AppFormItem
+              v-show="form.is_group"
+              label="Название группы"
+              required
+            >
+              <n-input
+                v-model:value="form.name"
+                placeholder="Введите название группы"
+              />
+            </AppFormItem>
 
             <ul class="flex -mx-4 flex-col overflow-hidden bg-[#2c2c2c]">
                 <template v-for="(user, index) in users" :key="user.id">
@@ -90,22 +87,33 @@
 import SimplePageLayout from "@/components/SimplePageLayout.vue";
 import AppleCheckbox from "@/components/AppleCheckbox.vue";
 import { onMounted, reactive, ref } from "vue";
-import axios from "axios";
-import {useMessage} from "@/utils/useMessage";
 import {useStore} from "vuex";
 import {fetchChats} from "@/app/store";
 import {getErrorMessage} from "@/utils";
+import {useMessage} from "naive-ui";
+import AppFormItem from "@/components/AppFormItem.vue";
+import {useChats} from "@/composable/useChats.js";
+import {users, useUsers} from "@/composable/useUsers.js";
 
 const message = useMessage()
 const store = useStore()
+const chatsStore = useChats()
+const usersStore = useUsers()
 
-const users = ref([])
+// const users = ref([])
 const form = reactive({
-    name: '',
+    name: null,
     user_id: null,
     user_ids: [],
     is_group: false,
 })
+
+const clearForm = () => {
+  form.name = null
+  form.user_id = null
+  form.user_ids = []
+  form.is_group = false
+}
 
 const backgroundColors = [
     'bg-orange-500',
@@ -114,39 +122,41 @@ const backgroundColors = [
 ]
 
 const createChat = (id = null) => {
-    form.user_id = typeof id === 'number' ? id : null
+  const data = (typeof id === 'number' && !form.is_group) ? {
+    is_group: form.is_group,
+    user_id: id,
+  } : {
+    is_group: form.is_group,
+    name: form.name,
+    user_ids: form.user_ids,
+  }
 
-    axios.post('/api/chats', form)
-        .then(async (data) => {
-            form.name = ''
-            form.user_id = null
-            form.user_ids = []
+  chatsStore.create(data)
+    .then(response => {
+      clearForm()
 
-            if (form.is_group) {
-                await fetchChats()
+      fetchChats()
 
-                message.success('Чат успешно создан!')
-            }
+      store.commit({
+        type: 'setHash',
+        value: response.data.data.uuid,
+      })
 
-            store.commit({
-                type: 'setHash',
-                value: data.data.data.uuid,
-            })
-
-            store.commit({
-                type: 'setPage',
-                value: '',
-            })
-        })
-        .catch(e => {
-            message.error(getErrorMessage(e))
-        })
+      store.commit({
+        type: 'setPage',
+        value: '',
+      })
+    })
+    .catch(e => message.error(getErrorMessage(e)))
 }
 
 onMounted(() => {
-    fetch('/api/users')
-        .then(data => data.json())
-        .then(data => users.value = data.data)
-        .catch(e => console.log(e))
+  usersStore.fetch({
+    except_me: Number(true),
+  })
+    // fetch('/api/users')
+    //     .then(data => data.json())
+    //     .then(data => users.value = data.data)
+    //     .catch(e => console.log(e))
 })
 </script>

@@ -26,7 +26,7 @@
                         <button
                             class="w-full grid grid-cols-[min-content_1fr_min-content] items-center gap-2 p-2 hover:bg-[#282828]"
                             type="button"
-                            @click="setPage('request-code-review')"
+                            @click="showModal = true"
                         >
                             <span class="bg-orange-500 rounded-md flex items-center justify-center w-8 h-8">
                                 <i class="bi bi-pencil-square text-xl"></i>
@@ -37,6 +37,50 @@
                     </li>
                 </ul>
             </div>
+
+          <n-modal v-model:show="showModal">
+            <n-card
+              class="!w-[400px]"
+              title="Заявка на код-ревью"
+              :bordered="false"
+              size="small"
+              role="dialog"
+              aria-modal="true"
+            >
+              <n-form
+                size="small"
+                ref="formRef"
+                :model="formValue"
+              >
+                <n-form-item
+                  label="Пользователь"
+                  path="full_name"
+                >
+                  <n-input
+                    :value="me.full_name"
+                    disabled
+                  />
+                </n-form-item>
+                <n-form-item
+                  label="Дополнетельные данные"
+                  path="extra"
+                >
+                  <n-input
+                    v-model:value="formValue.extra"
+                    type="textarea"
+                    placeholder="Дополнительные данные"
+                  />
+                </n-form-item>
+              </n-form>
+
+              <template #footer>
+                <n-button
+                  size="small"
+                  @click="handleClickButton"
+                >Сохранить</n-button>
+              </template>
+            </n-card>
+          </n-modal>
 
             <div class="flex flex-col gap-1">
                 <h3 class="uppercase text-xs text-gray-500">Почему это так важно</h3>
@@ -71,12 +115,34 @@
 </template>
 
 <script setup>
-import SimpleHeader from "@/components/SimpleHeader.vue";
-import AppMentorList from "@/components/AppMentorList.vue";
 import SimplePageLayout from "@/components/SimplePageLayout.vue";
 import {useStore} from "vuex";
+import {reactive, ref} from "vue";
+import {me} from "../composable/useUsers.js";
+import {useRequests} from "../composable/useRequests.js";
+import {RequestType} from "../types.js";
 
 const store = useStore()
+const requestsStore = useRequests()
+const showModal = ref(false)
+const formRef = ref()
+const formValue = reactive({
+  type: RequestType.RequestCodeReview,
+  extra: null,
+})
+
+const clearForm = () => {
+  formValue.extra = null
+}
+
+const handleClickButton = () => {
+  requestsStore.create(formValue)
+    .then(() => {
+      clearForm()
+
+      showModal.value = false
+    })
+}
 
 const setPage = (page) => {
     store.commit({

@@ -61,8 +61,10 @@
 import { reactive, computed, onMounted, watch, ref } from 'vue';
 import { useStore } from 'vuex';
 import MessageItem from '@/components/message-item';
+import {useMessages} from "@/composable/useMessages.js";
 
 const store = useStore();
+const messagesStore = useMessages();
 
 const form = reactive({
     message: computed({
@@ -78,9 +80,7 @@ const messageBox = ref(null);
 
 const activeChat = computed(() => store.getters.activeChat);
 
-const lastMessage = computed(() => activeChat.value?.messages?.at(-1))
-
-const actions = computed(() => lastMessage.value?.actions || [])
+const actions = computed(() => activeChat.value?.latest_message?.value?.actions || [])
 
 const showAvatar = (index) => {
     const currentMessage = activeChat.value?.messages?.[index];
@@ -102,7 +102,15 @@ watch(() => activeChat.value?.messages.length, () => {
 });
 
 const onSubmitForm = () => {
-    store.dispatch('sendMessage');
+  messagesStore.create({
+    content: store.state.message,
+    chat_id: store.getters.activeChat.information.id,
+  })
+
+  store.commit({
+    type: 'setMessage',
+    value: '',
+  })
 };
 
 const onActionClick = (text) => {

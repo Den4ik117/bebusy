@@ -1,16 +1,18 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue';
-import path from 'path'
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import vue from '@vitejs/plugin-vue'
+import path from "path";
 
 export default defineConfig({
-    build: {
-        manifest: true,
-        outDir: 'public',
-        rollupOptions: {
-            input: 'resources/js/app.js',
-        },
+    server: {
+        host: '127.0.0.1',
+        port: 8082,
     },
     plugins: [
+        laravel({
+            input: ['resources/js/app.js'],
+            refresh: true,
+        }),
         vue(),
     ],
     resolve: {
@@ -18,4 +20,4 @@ export default defineConfig({
             '@': path.resolve(__dirname, './resources/js'),
         },
     },
-})
+});

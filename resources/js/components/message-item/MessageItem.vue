@@ -1,7 +1,7 @@
 <template>
     <template v-if="!message.user">
         <div class="flex justify-center">
-            <span class="bg-[#212121] px-3 py-1 rounded-full text-sm">{{ message.text }}</span>
+            <span class="bg-[#212121] px-3 py-1 rounded-full text-sm">{{ message.content }}</span>
         </div>
     </template>
     <template v-else>
@@ -17,8 +17,9 @@
                 class="rounded-md p-2 text-sm whitespace-pre-wrap relative"
                 :class="{ 'bg-[#212121] rounded-bl-none ml-[9px]': !isMe, 'bg-indigo-600 rounded-br-none mr-[9px]': isMe }"
             >
-                <ResumeMessage v-if="message.resume" :resume="message.resume"/>
-                <span v-else>{{ message.text }}</span>
+<!--                <ResumeMessage v-if="message.resume" :resume="message.resume"/>-->
+<!--                <span v-else>{{ message.content }}</span>-->
+                <span>{{ message.content }}</span>
 
                 <svg v-if="isMe" width="9" height="20" class="absolute -right-[9px] -bottom-[3px] fill-indigo-600">
                     <defs>
@@ -52,7 +53,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
-import ResumeMessage from '@/components/resume-message'
+// import ResumeMessage from '@/components/resume-message'
 
 const store = useStore();
 

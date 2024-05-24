@@ -4,7 +4,7 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 export default {
     content: [
         './resources/**/*.vue',
-        './views/**/*.ejs'
+        './resources/**/*.blade.php',
     ],
     theme: {
         extend: {
@@ -13,5 +13,10 @@ export default {
             }
         },
     },
-    plugins: [],
+    safelist: [
+      'bg-blue-300',
+      'text-blue-700',
+      'bg-gray-300',
+      'text-gray-700',
+    ],
 }
