@@ -17,6 +17,8 @@ import PageQuestions from "./pages/PageQuestions.vue";
 import PageRequirements from "./pages/PageRequirements.vue";
 import PageMentorShow from "./pages/PageMentorShow.vue";
 import PageQuestionShow from "./pages/PageQuestionShow.vue";
+import PageAdminRequests from "./pages/PageAdminRequests.vue";
+import PageAdminRequestsEdit from "./pages/PageAdminRequestsEdit.vue";
 
 export const createRoutes = () => ([
   {
@@ -142,6 +144,16 @@ export const createRoutes = () => ([
               path: 'requirements/:id/edit',
               name: 'admin.requirements.edit',
               component: PageAdminRequirementsEdit,
+          },
+          {
+              path: 'requests',
+              name: 'admin.requests',
+              component: PageAdminRequests,
+          },
+          {
+              path: 'requests/:uuid',
+              name: 'admin.requests.edit',
+              component: PageAdminRequestsEdit,
           },
       ],
   }

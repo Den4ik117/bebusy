@@ -11,7 +11,7 @@
         filterable
       />
 
-      <n-table>
+      <n-table v-if="requirements.length > 0">
         <thead>
         <tr>
           <th>№</th>
@@ -27,6 +27,7 @@
         </tr>
         </tbody>
       </n-table>
+      <div v-else>Пожалуйста, выберите требование</div>
     </div>
   </AppLayout>
 </template>

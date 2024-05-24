@@ -71,6 +71,20 @@
       </router-link>
     </li>
     <li>
+      <router-link
+        class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"
+        :class="{
+          'bg-[#2b2b2b]': ['admin.requests', 'admin.requests.edit'].includes(route.name),
+          'hover:bg-[#2b2b2b]': !['admin.requests', 'admin.requests.edit'].includes(route.name),
+        }"
+        :to="{ name: 'admin.requests' }"
+        @click="isOpenMenu = false"
+      >
+        <i class="bi bi-ui-radios-grid flex items-center justify-start"></i>
+        <span class="text-sm">Заявки</span>
+      </router-link>
+    </li>
+    <li>
       <a
         class="grid grid-cols-[24px_1fr] gap-2 items-center py-3 px-4 text-left hover:bg-[#2b2b2b] w-full"
         href="/"

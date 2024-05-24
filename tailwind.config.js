@@ -13,5 +13,10 @@ export default {
             }
         },
     },
-    plugins: [],
+    safelist: [
+      'bg-blue-300',
+      'text-blue-700',
+      'bg-gray-300',
+      'text-gray-700',
+    ],
 }

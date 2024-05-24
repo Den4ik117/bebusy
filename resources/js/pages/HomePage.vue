@@ -1,39 +1,42 @@
 <template>
-  <div v-if="isAuth" class="lg:max-w-screen-lg max-w-md w-full mx-auto bg-[#212121] h-[100dvh] border-x border-[#0F0F0F] relative overflow-hidden">
-    <div class="flex flex-col max-h-[100dvh] gap-4">
+  <div
+    v-if="isAuth"
+    class="lg:max-w-screen-lg max-w-md w-full mx-auto bg-[#212121] h-[100dvh] border-x border-[#0F0F0F] relative overflow-hidden"
+  >
+    <div class="grid lg:grid-cols-[min-content_1fr] grid-cols-1">
+      <AppMenu class="hidden lg:block"/>
+
+      <div class="flex flex-col max-h-[100dvh] gap-4">
         <Header/>
 
         <ul class="px-4 pb-4 overflow-y-auto">
-            <ChatItem
-                v-for="chat in chats"
-                :key="chat.id"
-                :chat="chat"
-            />
+          <ChatItem
+            v-for="chat in chats"
+            :key="chat.id"
+            :chat="chat"
+          />
         </ul>
 
         <transition name="page-animation">
-            <ChatPage v-if="isOpenChat"/>
+          <ChatPage v-if="isOpenChat"/>
         </transition>
 
         <transition name="page-animation">
-            <SettingsPage v-if="currentPage === 'settings'"/>
+          <SettingsPage v-if="currentPage === 'settings'"/>
         </transition>
 
         <transition name="page-animation">
-            <CodeReviewPage v-if="currentPage === 'code-review'"/>
+          <CodeReviewPage v-if="currentPage === 'code-review'"/>
         </transition>
 
         <transition name="page-animation">
-            <AboutPage v-if="currentPage === 'about'"/>
+          <AboutPage v-if="currentPage === 'about'"/>
         </transition>
 
         <transition name="page-animation-down">
-            <RequestCodeReviewPage v-if="currentPage === 'request-code-review'"/>
+          <CreateChatsPage v-if="currentPage === 'create-chats'"/>
         </transition>
-
-        <transition name="page-animation-down">
-            <CreateChatsPage v-if="currentPage === 'create-chats'"/>
-        </transition>
+      </div>
     </div>
   </div>
   <div v-else class="max-w-md w-full mx-auto h-[100dvh] flex flex-col justify-center items-center">
@@ -53,9 +56,9 @@ import ChatPage from '@/pages/ChatPage.vue';
 import SettingsPage from "@/pages/SettingsPage.vue";
 import CodeReviewPage from "@/pages/CodeReviewPage.vue";
 import AboutPage from "@/pages/AboutPage.vue";
-import RequestCodeReviewPage from "@/pages/RequestCodeReviewPage.vue";
 import CreateChatsPage from "@/pages/CreateChatsPage.vue";
 import {isAuth} from "../composable/useUsers.js";
+import AppMenu from "../components/AppMenu.vue";
 
 const store = useStore();
 

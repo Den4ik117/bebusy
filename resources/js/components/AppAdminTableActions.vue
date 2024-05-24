@@ -23,7 +23,7 @@
 
 <script setup>
 defineProps({
-  id: Number,
+  id: [Number, String],
   to: Object,
   text: String,
 })

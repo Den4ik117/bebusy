@@ -20,6 +20,8 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
 
     Route::post('/messages', [API\MessageController::class, 'store']);
 
+    Route::post('/requests', [API\RequestController::class, 'store']);
+
     Route::withoutMiddleware(['auth'])->group(function () {
         Route::get('/mentors', [API\MentorController::class, 'index']);
         Route::get('/mentors/{mentor}', [API\MentorController::class, 'show']);
@@ -66,6 +68,13 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
         Route::delete('/users/{user}', [API\UserController::class, 'destroy']);
 
         Route::post('/avatars', [API\AvatarController::class, 'store']);
+
+        Route::get('/requests', [API\RequestController::class, 'index']);
+        Route::get('/requests/{uuid}', [API\RequestController::class, 'show']);
+        Route::patch('/requests/{uuid}', [API\RequestController::class, 'update']);
+        Route::delete('/requests/{uuid}', [API\RequestController::class, 'destroy']);
+
+        Route::get('/dashboard', [API\DashboardController::class, 'index']);
     });
 });
 
